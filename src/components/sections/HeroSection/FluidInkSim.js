@@ -1,19 +1,21 @@
 /**
  * WebGL ink-in-water simulation
- * Curl-noise advection + soft diffusion (no pressure solve needed for visual ink)
+ * Curl-noise advection + diffusion + periodic water surface glow
  */
 const SIM_RES = 512;
 
 const VERT = `attribute vec2 a;varying vec2 uv;
 void main(){uv=a*.5+.5;gl_Position=vec4(a,0,1);}`;
 
+// 잉크 splat — 순수 가우시안
 const SPLAT_FRAG = `precision highp float;
 uniform sampler2D uT;uniform vec2 uP;uniform vec3 uC;uniform float uR;varying vec2 uv;
 void main(){
-  vec2 d=uv-uP;float s=exp(-dot(d,d)/uR);
+  vec2 d=uv-uP;
+  float s=exp(-dot(d,d)/uR);
   vec4 cur=texture2D(uT,uv);
   vec3 col=mix(cur.rgb,uC,s*(1.-cur.a*.5));
-  gl_FragColor=vec4(col,min(cur.a+s*.6,1.));
+  gl_FragColor=vec4(col,min(cur.a+s*.14,1.));
 }`;
 
 const ADVECT_FRAG = `precision highp float;
@@ -28,30 +30,71 @@ vec2 curl(vec2 p){
   return vec2(gn(p+vec2(0,e))-gn(p-vec2(0,e)),-(gn(p+vec2(e,0))-gn(p-vec2(e,0))))/(2.*e);
 }
 void main(){
-  vec2 vel=curl(uv*3.5+uTime*.045)*.0013;
+  vec2 vel=curl(uv*4.0+uTime*.068)*.00110;
   vec4 adv=texture2D(uT,uv-vel);
   vec4 d1=texture2D(uT,uv+vec2(uPx.x*2.,0.));
   vec4 d2=texture2D(uT,uv-vec2(uPx.x*2.,0.));
   vec4 d3=texture2D(uT,uv+vec2(0.,uPx.y*2.));
   vec4 d4=texture2D(uT,uv-vec2(0.,uPx.y*2.));
-  gl_FragColor=mix(adv,(adv+d1+d2+d3+d4)/5.,.18);
+  gl_FragColor=mix(adv,(adv+d1+d2+d3+d4)/5.,.15);
 }`;
 
 const DISPLAY_FRAG = `precision highp float;
-uniform sampler2D uT;uniform float uTime;varying vec2 uv;
+uniform sampler2D uT;
+uniform float uTime;
+varying vec2 uv;
+
+// 코스틱 광 굴절 패턴
+float caustic(vec2 p,float t){
+  float c=sin(p.x*7.8+t*1.05)*cos(p.y*6.1-t*.78)
+         +sin(p.x*4.9-t*.65)*cos(p.y*8.7+t*1.25)
+         +sin((p.x+p.y)*6.4+t*.92)*.55
+         +cos((p.x-p.y)*5.1-t*1.18)*.40;
+  return pow(max(c*.28+.5,0.),4.);
+}
+
+// 다이아몬드 타일 외곽선 (물결 왜곡 UV 사용)
+float diamondTile(vec2 p){
+  const float sz=0.072;
+  vec2 q=mod(p,sz)/sz-0.5;
+  float d=abs(q.x)+abs(q.y);
+  return smoothstep(0.038,0.0,abs(d-0.42));
+}
+
 void main(){
-  float rx=sin(uv.x*52.+uTime*1.2)*sin(uv.y*41.+uTime*.75)*.0016;
-  float ry=cos(uv.x*47.+uTime*.85)*cos(uv.y*58.+uTime*1.45)*.0016;
-  vec4 dye=texture2D(uT,uv+vec2(rx,ry));
+  // 수면 물결 왜곡 UV
+  float rx=sin(uv.x*52.+uTime*1.2)*sin(uv.y*41.+uTime*.75)*.0018;
+  float ry=cos(uv.x*47.+uTime*.85)*cos(uv.y*58.+uTime*1.45)*.0018;
+  vec2 wUV=uv+vec2(rx,ry);
+
+  vec4 dye=texture2D(uT,wUV);
+  float ia=clamp(dye.a*.85,0.,1.);
+
+  // 수면 기본색
   vec3 water=vec3(.955,.967,.985);
-  vec3 ink=dye.a>.001?dye.rgb/dye.a:water;
-  vec3 g=vec3(dot(ink,vec3(.299,.587,.114)));
-  ink=clamp(mix(g,ink,0.80),0.,1.);   // 채도 낮춤
-  ink=mix(ink,vec3(0.98),0.30);        // 화이트 믹스 → 파스텔
-  float ia=clamp(dye.a*2.,0.,1.);
-  vec3 col=mix(water,ink,ia*.87);
-  float sh=(sin(uv.x*85.+uTime*2.1)*sin(uv.y*70.+uTime*1.7)*.5+.5)*.013*(1.-ia*.5);
-  gl_FragColor=vec4(col+sh,1.);
+
+  // 코스틱: 잉크 두께에 따른 굴절
+  vec2 inkRefract=vec2(rx,ry)*7.0*ia;
+  float ca=caustic(uv*2.4+inkRefract,uTime*.48);
+  vec3 base=water+vec3(.86,.96,1.0)*ca*.07;
+
+  // 잉크 색상 추출 + 채도 부스트 (약간 낮춤)
+  vec3 ink=dye.a>.001?dye.rgb/dye.a:vec3(0.);
+  vec3 lum=vec3(dot(ink,vec3(.299,.587,.114)));
+  ink=clamp(mix(lum,ink,1.20),0.,1.);
+
+  // 반투명 합성 (블렌드 약간 낮춤)
+  vec3 col=mix(base,mix(base,ink,.68),ia);
+
+  // 수면 코스틱 오버레이
+  col+=vec3(.90,.97,1.)*ca*.018;
+
+  // 다이아몬드 타일 외곽선 — 잉크 아래서 희미해짐
+  float tile=diamondTile(wUV);
+  vec3 tileLine=vec3(0.74,0.82,0.91);
+  col=mix(col,tileLine,tile*(1.0-ia*0.90)*0.28);
+
+  gl_FragColor=vec4(min(col,vec3(1.)),1.);
 }`;
 
 function mkShader(gl, type, src) {
@@ -88,13 +131,16 @@ export default class FluidInkSim {
     const gl = canvas.getContext('webgl', { alpha: false, depth: false, antialias: false });
     if (!gl) throw new Error('WebGL not supported');
     this.gl = gl;
+
     this._sp = mkProg(gl, SPLAT_FRAG);
     this._ap = mkProg(gl, ADVECT_FRAG);
     this._dp = mkProg(gl, DISPLAY_FRAG);
+
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
     this._buf = buf;
+
     this._fbos = [mkFBO(gl, SIM_RES, SIM_RES), mkFBO(gl, SIM_RES, SIM_RES)];
     this._r = 0;
     this._fbos.forEach(({ fbo }) => {
@@ -102,6 +148,7 @@ export default class FluidInkSim {
       gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
     });
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
   }
 
   _draw(prog) {
@@ -138,8 +185,9 @@ export default class FluidInkSim {
   step(dt) {
     const gl = this.gl;
     this.time += dt;
+
+    // 잉크 advect + diffuse
     const w = 1 - this._r;
-    // Advect + diffuse
     gl.useProgram(this._ap);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this._fbos[w].fbo);
     gl.viewport(0, 0, SIM_RES, SIM_RES);
@@ -149,7 +197,8 @@ export default class FluidInkSim {
     this._draw(this._ap);
     this._r = w;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    // Display
+
+    // 화면 출력
     gl.useProgram(this._dp);
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     this._tex(this._dp, 'uT', 0, this._fbos[this._r].tex);

@@ -2,27 +2,30 @@ import { useEffect, useRef, useState } from 'react';
 import FluidInkSim from './FluidInkSim';
 import styles from './HeroSection.module.css';
 
+// R/G/B 채널 하나가 압도적으로 튀는 순수 잉크 컬러 (흰 느낌 없음)
 const EMOTIONS = [
-  { text: '따뜻한 차 한 잔',       color: [1.0, 0.55, 0.20], x: 25, y: 12 },
-  { text: '취준 성공',             color: [1.0, 0.87, 0.20], x: 72, y: 8  },
-  { text: '완벽한 아침',           color: [0.90, 0.95, 0.60], x: 50, y: 22 },
-  { text: '이불 밖은 위험해',      color: [0.50, 0.70, 1.0],  x: 18, y: 38 },
-  { text: '보고싶어',              color: [1.0, 0.50, 0.70],  x: 80, y: 34 },
-  { text: '특별한 데이트',         color: [1.0, 0.45, 0.58],  x: 86, y: 52 },
-  { text: '새 옷 쇼핑',            color: [0.40, 0.88, 0.82], x: 55, y: 55 },
-  { text: '아무것도 하기 싫은 날', color: [0.65, 0.60, 0.90], x: 20, y: 68 },
-  { text: '오늘은 칼퇴',           color: [0.35, 0.85, 0.55], x: 75, y: 73 },
-  { text: '치킨 맛있다',           color: [1.0,  0.68, 0.28], x: 44, y: 85 },
+  { text: '따뜻한 차 한 잔',       color: [1.00, 0.38, 0.00], x: 25, y: 12 }, // 버닝 오렌지   R↑↑
+  { text: '취준 성공',             color: [0.05, 0.95, 0.12], x: 72, y: 8  }, // 네온 그린      G↑↑
+  { text: '완벽한 아침',           color: [0.00, 0.60, 1.00], x: 50, y: 22 }, // 일렉트릭 블루  B↑↑
+  { text: '이불 밖은 위험해',      color: [0.08, 0.10, 1.00], x: 18, y: 38 }, // 퓨어 블루      B↑↑↑
+  { text: '보고싶어',              color: [1.00, 0.04, 0.72], x: 80, y: 34 }, // 핫 마젠타      R↑↑
+  { text: '특별한 데이트',         color: [1.00, 0.04, 0.18], x: 86, y: 52 }, // 비비드 레드    R↑↑↑
+  { text: '새 옷 쇼핑',            color: [0.00, 0.92, 0.70], x: 55, y: 55 }, // 비비드 틸      G↑↑
+  { text: '아무것도 하기 싫은 날', color: [0.50, 0.00, 1.00], x: 20, y: 68 }, // 비비드 바이올렛 B↑↑
+  { text: '오늘은 칼퇴',           color: [0.18, 1.00, 0.05], x: 75, y: 73 }, // 네온 라임      G↑↑↑
+  { text: '치킨 맛있다',           color: [1.00, 0.60, 0.00], x: 44, y: 85 }, // 딥 앰버        R↑↑
 ];
 
-const FILL_RATE = 0.45; // fill units per second while hovering
+const FILL_RATE = 0.70; // fill units per second while hovering
 
 export default function HeroSection() {
   const canvasRef   = useRef(null);
   const simRef      = useRef(null);
   const rafRef      = useRef(null);
   const prevTimeRef = useRef(null);
-  const hoverRef    = useRef(-1);
+  const hoverRef     = useRef(-1);
+  const prevHoverRef = useRef(-1);
+  const hoverSizeRef = useRef(EMOTIONS.map(() => 0));
   const fillsRef    = useRef(EMOTIONS.map(() => 0));
   const doneRef     = useRef(0);
   const labelRefs   = useRef([]);
@@ -40,8 +43,10 @@ export default function HeroSection() {
   const handleReset = () => {
     if (!overlayReady) return;
     setAllDone(false);
-    // fills + label DOM 초기화
+    // fills + label 초기화
     fillsRef.current = EMOTIONS.map(() => 0);
+    hoverSizeRef.current = EMOTIONS.map(() => 0);
+    prevHoverRef.current = -1;
     doneRef.current = 0;
     labelRefs.current.forEach(el => {
       if (!el) return;
@@ -78,13 +83,19 @@ export default function HeroSection() {
       prevTimeRef.current = now;
 
       const idx = hoverRef.current;
+      // 재호버 시 hover 크기 리셋 (fill 게이지는 유지)
+      if (idx !== prevHoverRef.current) {
+        if (idx >= 0) hoverSizeRef.current[idx] = 0;
+        prevHoverRef.current = idx;
+      }
       if (idx >= 0) {
         const fills = fillsRef.current;
         if (fills[idx] < 1) {
           fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
+          hoverSizeRef.current[idx] = Math.min(hoverSizeRef.current[idx] + FILL_RATE * dt, 1);
           const em = EMOTIONS[idx];
-          const spread = 0.018 + fills[idx] * 0.028;
-          const r = 0.5 + fills[idx] * 2.2;
+          const spread = 0.028 + fills[idx] * 0.049;
+          const r = 0.35 + hoverSizeRef.current[idx] * 2.2;
           for (let k = 0; k < 5; k++) {
             sim.splat(
               em.x / 100 + (Math.random() - 0.5) * spread,
