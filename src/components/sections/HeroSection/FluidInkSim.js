@@ -46,7 +46,8 @@ void main(){
   vec3 water=vec3(.955,.967,.985);
   vec3 ink=dye.a>.001?dye.rgb/dye.a:water;
   vec3 g=vec3(dot(ink,vec3(.299,.587,.114)));
-  ink=clamp(mix(g,ink,1.35),0.,1.);
+  ink=clamp(mix(g,ink,0.80),0.,1.);   // 채도 낮춤
+  ink=mix(ink,vec3(0.98),0.30);        // 화이트 믹스 → 파스텔
   float ia=clamp(dye.a*2.,0.,1.);
   vec3 col=mix(water,ink,ia*.87);
   float sh=(sin(uv.x*85.+uTime*2.1)*sin(uv.y*70.+uTime*1.7)*.5+.5)*.013*(1.-ia*.5);

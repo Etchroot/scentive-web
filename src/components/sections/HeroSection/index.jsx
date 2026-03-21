@@ -84,7 +84,7 @@ export default function HeroSection() {
           fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
           const em = EMOTIONS[idx];
           const spread = 0.018 + fills[idx] * 0.028;
-          const r = 1.0 + fills[idx] * 2.2;
+          const r = 0.5 + fills[idx] * 2.2;
           for (let k = 0; k < 5; k++) {
             sim.splat(
               em.x / 100 + (Math.random() - 0.5) * spread,
