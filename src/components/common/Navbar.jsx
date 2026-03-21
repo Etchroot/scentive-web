@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import Button from '../ui/Button';
 import styles from './Navbar.module.css';
 
@@ -14,35 +15,35 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNav = (e, targetId) => {
-    e.preventDefault();
-    const el = document.getElementById(targetId);
-    if (el) {
-      const offset = 56; // navbar height
-      const top = el.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
-  };
-
   return (
     <nav className={`${styles.nav} ${scrolled ? styles.shadowed : ''}`}>
       <div className={styles.inner}>
         {/* 로고 */}
-        <a href="/" className={styles.logo} aria-label="Scentive 홈">
+        <Link to="/" className={styles.logo} aria-label="Scentive 홈">
           Scentive
-        </a>
+        </Link>
 
         {/* 링크 */}
         <ul className={styles.links}>
           <li>
-            <a href="#how-it-works" onClick={(e) => handleNav(e, 'how-it-works')} className={styles.link}>
+            <NavLink
+              to="/how-it-works"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
               서비스
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#brand-story" onClick={(e) => handleNav(e, 'brand-story')} className={styles.link}>
+            <NavLink
+              to="/brand-story"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
               스토리
-            </a>
+            </NavLink>
           </li>
           <li>
             <a
