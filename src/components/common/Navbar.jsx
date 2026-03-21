@@ -27,6 +27,16 @@ export default function Navbar() {
         <ul className={styles.links}>
           <li>
             <NavLink
+              to="/manifesto"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
+              선언
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/how-it-works"
               className={({ isActive }) =>
                 isActive ? `${styles.link} ${styles.active}` : styles.link
@@ -43,6 +53,16 @@ export default function Navbar() {
               }
             >
               스토리
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/app"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
+              다운로드
             </NavLink>
           </li>
           <li>
