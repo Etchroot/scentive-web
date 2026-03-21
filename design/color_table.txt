@@ -1,0 +1,65 @@
+Black  : #000000
+White  : #FFFFFF
+
+Neutral 700 : #1F1F1F
+Neutral 600 : #4B4B4B
+Neutral 500 : #8E8E8E
+Neutral 400 : #CACACA
+Neutral 300 : #E1E1E1
+Neutral 200 : #EEEEEE
+Neutral 100 : #F5F5F5
+Neutral 50  : #FAFAFA
+
+Primary 700 : #00ABB6
+Primary 600 : #15C5CE
+Primary 500 : #47CFD6
+Primary 400 : #7DDDE1
+Primary 300 : #B0EBEC
+Primary 200 : #DFF7F7
+Primary 100 : #EEF9FC
+Primary 50  : #F9FFFF
+
+Auxiliary 700 : #FF632F
+Auxiliary 600 : #FF8156
+Auxiliary 500 : #FFA487
+Auxiliary 400 : #FFC8B6
+Auxiliary 300 : #FFE1D6
+Auxiliary 200 : #FFE2EE
+Auxiliary 100 : #FFF6F3
+Auxiliary 50  : #FFFCFC
+
+Danger 700 : #EC2D30
+Danger 600 : #F64C4C
+Danger 500 : #EB6F70
+Danger 400 : #F49898
+Danger 300 : #FFCCD2
+Danger 200 : #FFEEEE
+Danger 100 : #FEF2F2
+Danger 50  : #FFFBFB
+
+Warning 700 : #FF9B0E
+Warning 600 : #FFAD00
+Warning 500 : #FFC62B
+Warning 400 : #FFDD82
+Warning 300 : #FFEAB3
+Warning 200 : #FFF7E1
+Warning 100 : #FFF9EE
+Warning 50  : #FFFDF6
+
+Success 700 : #0C9D61
+Success 600 : #47BB81
+Success 500 : #6BC497
+Success 400 : #97D4B4
+Success 300 : #C0E5D1
+Success 200 : #E5F5EC
+Success 100 : #F2FAF6
+Success 50  : #FBFEFC
+
+Info 700 : #3A70E2
+Info 600 : #3B82F6
+Info 500 : #4BA1FF
+Info 400 : #93CBFF
+Info 300 : #BDDDFD
+Info 200 : #E4F2FF
+Info 100 : #F1F8FF
+Info 50  : #F8FCFF

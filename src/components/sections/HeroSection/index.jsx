@@ -40,10 +40,9 @@ export default function HeroSection() {
     return () => clearTimeout(t);
   }, [allDone]);
 
-  const handleReset = () => {
-    if (!overlayReady) return;
+  // 공통 초기화 (오버레이 닫기 + 상태 리셋)
+  const _resetState = () => {
     setAllDone(false);
-    // fills + label 초기화
     fillsRef.current = EMOTIONS.map(() => 0);
     hoverSizeRef.current = EMOTIONS.map(() => 0);
     prevHoverRef.current = -1;
@@ -55,7 +54,23 @@ export default function HeroSection() {
       delete el.dataset.done;
     });
     simRef.current?.clear();
+  };
+
+  // 배경 클릭 → 초기화 + 상단 이동
+  const handleReset = () => {
+    if (!overlayReady) return;
+    _resetState();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 서비스 둘러보기 클릭 → 초기화 + 서비스 섹션 이동
+  const handleGoToService = (e) => {
+    e.stopPropagation();
+    if (!overlayReady) return;
+    _resetState();
+    setTimeout(() => {
+      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   };
 
   useEffect(() => {
@@ -175,11 +190,11 @@ export default function HeroSection() {
         {allDone && (
           <div
             className={`${styles.janhyangOverlay} ${overlayReady ? styles.overlayReady : ''}`}
-            onClick={() => overlayReady && document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={handleReset}
           >
             <p className={styles.janhyangText}>잔향</p>
             <p className={styles.janhyangSub}>모든 감정이 향으로 피어났습니다</p>
-            {overlayReady && <p className={styles.overlayHint}>— 서비스 둘러보기 —</p>}
+            {overlayReady && <p className={styles.overlayHint} onClick={handleGoToService}>— 서비스 둘러보기 —</p>}
           </div>
         )}
       </div>

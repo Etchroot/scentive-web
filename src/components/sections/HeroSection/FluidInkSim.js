@@ -53,11 +53,12 @@ float caustic(vec2 p,float t){
   return pow(max(c*.28+.5,0.),4.);
 }
 
-// 다이아몬드 타일 — 단일 가는 선
+// 다이아몬드 타일 — 세로로 긴 단일 선 (N700 색상)
 float diamondTile(vec2 p){
-  const float sz=0.216;
+  const float sz=0.432; // 2배 더 확대
   vec2 q=mod(p,sz)/sz-0.5;
-  float d=abs(q.x)+abs(q.y);
+  // x를 1.55배 압축 → 세로로 더 긴 다이아몬드
+  float d=abs(q.x)*1.55+abs(q.y)*0.82;
   return smoothstep(0.020,0.0,abs(d-0.44));
 }
 
@@ -89,10 +90,10 @@ void main(){
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;
 
-  // 다이아몬드 타일 — 잉크 아래서 희미해짐
+  // 다이아몬드 타일 — N700(#1F1F1F), 잉크 아래서 희미해짐
   float tile=diamondTile(wUV);
-  vec3 tileLine=vec3(0.48,0.60,0.75); // 진한 블루-그레이
-  col=mix(col,tileLine,tile*(1.0-ia*0.82)*0.52);
+  vec3 tileLine=vec3(0.122,0.122,0.122); // Neutral 700
+  col=mix(col,tileLine,tile*(1.0-ia*0.82)*0.48);
 
   gl_FragColor=vec4(min(col,vec3(1.)),1.);
 }`;
