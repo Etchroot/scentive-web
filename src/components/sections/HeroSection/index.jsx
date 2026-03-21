@@ -33,7 +33,6 @@ export default function HeroSection() {
   const labelRefs   = useRef([]);
   const [allDone, setAllDone] = useState(false);
   const [overlayReady, setOverlayReady] = useState(false);
-  const isMobile = useRef(typeof window !== 'undefined' && window.innerWidth < 768);
 
   // 애니메이션 완료(~3.2s) 후 클릭 활성화
   useEffect(() => {
@@ -74,7 +73,6 @@ export default function HeroSection() {
   };
 
   useEffect(() => {
-    if (isMobile.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -159,11 +157,7 @@ export default function HeroSection() {
 
       {/* ── 수면 캔버스 영역 ── */}
       <div className={styles.canvasZone}>
-        {!isMobile.current ? (
-          <canvas ref={canvasRef} className={styles.canvas} />
-        ) : (
-          <div className={styles.mobileWater} />
-        )}
+        <canvas ref={canvasRef} className={styles.canvas} />
 
         {/* SCENTIVE 텍스트 패턴 — CSS SVG 벡터 (해상도 독립) */}
         <div className={styles.scentivePattern} aria-hidden="true" />
@@ -183,6 +177,9 @@ export default function HeroSection() {
             }}
             onMouseEnter={() => { hoverRef.current = i; }}
             onMouseLeave={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
+            onTouchStart={() => { hoverRef.current = i; }}
+            onTouchEnd={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
+            onTouchCancel={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
           >
             {em.text}
             <span className={styles.labelInk} />
