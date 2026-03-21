@@ -50,7 +50,6 @@
   flex-direction: column;
   gap: 1px;
   border: 1px solid var(--color-border-default);
-  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -122,7 +121,6 @@
 .visionCard {
   padding: 28px 24px;
   border: 1px solid var(--color-border-default);
-  border-radius: 10px;
   background: rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
@@ -134,16 +132,6 @@
   border-color: var(--color-border-strong);
 }
 
-.visionFeatured {
-  background: var(--color-text-primary);
-  border-color: var(--color-text-primary);
-}
-
-.visionFeatured .visionNum,
-.visionFeatured .visionTitle,
-.visionFeatured .visionDesc {
-  color: var(--color-bg-warm);
-}
 
 .visionNum {
   font-size: 11px;
@@ -172,7 +160,6 @@
   gap: 14px;
   padding: 24px 28px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 8px;
   background: transparent;
 }
 

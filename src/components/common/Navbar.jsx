@@ -52,7 +52,7 @@ export default function Navbar() {
                 isActive ? `${styles.link} ${styles.active}` : styles.link
               }
             >
-              선언
+              브랜드 철학
             </NavLink>
           </li>
           <li>

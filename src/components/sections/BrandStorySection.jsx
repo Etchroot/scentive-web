@@ -89,7 +89,7 @@ export default function BrandStorySection() {
             {VISIONS.map((v) => (
               <div
                 key={v.num}
-                className={`${styles.visionCard} ${v.featured ? styles.visionFeatured : ''}`}
+                className={styles.visionCard}
               >
                 <span className={styles.visionNum}>{v.num}</span>
                 <h3 className={styles.visionTitle}>{v.title}</h3>

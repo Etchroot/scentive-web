@@ -53,7 +53,7 @@
 /* 스텝 아이템 */
 .stepItem {
   display: grid;
-  grid-template-columns: 32px 1fr 140px;
+  grid-template-columns: 32px 1fr 200px;
   gap: 24px;
   align-items: start;
   padding: 36px 0;
@@ -131,7 +131,7 @@
 }
 
 .phoneBezel {
-  width: 120px;
+  width: 180px;
   border-radius: 18px;
   overflow: hidden;
   border: 2px solid var(--color-text-primary);
@@ -163,7 +163,7 @@
   }
 
   .phoneBezel {
-    width: 90px;
+    width: 135px;
   }
 
   .connector {
