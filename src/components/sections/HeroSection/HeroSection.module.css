@@ -1,11 +1,9 @@
 .hero {
   width: 100%;
-  height: calc(100svh - var(--navbar-height));
-  min-height: 600px;
+  min-height: 280vh;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 /* ── 텍스트 전용 영역 — 캔버스와 완전히 분리 ── */

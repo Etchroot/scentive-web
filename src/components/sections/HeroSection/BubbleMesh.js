@@ -63,12 +63,12 @@ export const EMOTION_BUBBLES = [
 ];
 
 // 깔대기 경계 (HeroScene._buildGlassFunnel과 동일)
-const TOP_Y      =  2.2;
-const RECT_BOT_Y =  0.6;
-const NECK_TOP_Y = -2.0;
-const TOP_X      =  3.0;
+const TOP_Y      =  3.8;
+const RECT_BOT_Y =  2.2;
+const NECK_TOP_Y = -3.0;
+const TOP_X      =  2.8;
 const NECK_X     =  0.35;
-const BUBBLE_BOT_Y = -1.5; // 버블이 내려갈 수 있는 최저점 (목 위)
+const BUBBLE_BOT_Y = -2.5; // 버블이 내려갈 수 있는 최저점 (목 위)
 
 // y 위치에 따른 깔대기 내부 x 한계
 function funnelXLimit(y) {

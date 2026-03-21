@@ -31,7 +31,7 @@ export default class HeroScene {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 100);
-    this.camera.position.z = 8;
+    this.camera.position.z = 10;
 
     const ambient = new THREE.AmbientLight(0xffffff, 0.7);
     const dir = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -47,16 +47,16 @@ export default class HeroScene {
   // ── 유리 깔대기 (Canvas2D 텍스처) ──────────────────────────────
   _buildGlassFunnel() {
     // 깔대기 world 좌표 정의
-    const TOP_Y      =  2.2;
-    const RECT_BOT_Y =  0.6;   // 직사각형 → 사다리꼴 시작 y
-    const NECK_TOP_Y = -2.0;   // 사다리꼴 끝 / 목 시작 y
-    const NECK_BOT_Y = -2.8;   // 목 바닥 y
-    const TOP_X      =  3.0;   // 상단 반폭
+    const TOP_Y      =  3.8;
+    const RECT_BOT_Y =  2.2;   // 직사각형 → 사다리꼴 시작 y
+    const NECK_TOP_Y = -3.0;   // 사다리꼴 끝 / 목 시작 y
+    const NECK_BOT_Y = -4.0;   // 목 바닥 y
+    const TOP_X      =  2.8;   // 상단 반폭
     const NECK_X     =  0.35;  // 목 반폭
 
     // 텍스처 캔버스 — world bbox 보다 약간 크게
-    const WX_MIN = -3.6, WX_MAX = 3.6;
-    const WY_MAX =  2.5, WY_MIN = -3.1;
+    const WX_MIN = -3.4, WX_MAX = 3.4;
+    const WY_MAX =  4.4, WY_MIN = -4.6;
     const WW = WX_MAX - WX_MIN;
     const WH = WY_MAX - WY_MIN;
     const CW = 720, CH = Math.round(CW * WH / WW);
