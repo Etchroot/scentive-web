@@ -53,16 +53,12 @@ float caustic(vec2 p,float t){
   return pow(max(c*.28+.5,0.),4.);
 }
 
-// 다이아몬드 타일 — 외선 + 내선 이중 구조 (고급 패턴)
+// 다이아몬드 타일 — 단일 가는 선
 float diamondTile(vec2 p){
-  const float sz=0.216; // 3배 크기
+  const float sz=0.216;
   vec2 q=mod(p,sz)/sz-0.5;
   float d=abs(q.x)+abs(q.y);
-  // 외곽선 (굵고 진하게)
-  float outer=smoothstep(0.062,0.0,abs(d-0.44));
-  // 내측 장식선 (가는 보조선)
-  float inner=smoothstep(0.022,0.0,abs(d-0.32))*0.45;
-  return max(outer,inner);
+  return smoothstep(0.020,0.0,abs(d-0.44));
 }
 
 void main(){
@@ -82,13 +78,13 @@ void main(){
   float ca=caustic(uv*2.4+inkRefract,uTime*.48);
   vec3 base=water+vec3(.86,.96,1.0)*ca*.07;
 
-  // 잉크 색상 추출 + 채도 부스트 (약간 낮춤)
+  // 잉크 색상 추출 (채도 부스트 제거, 밝기 추가 감소)
   vec3 ink=dye.a>.001?dye.rgb/dye.a:vec3(0.);
   vec3 lum=vec3(dot(ink,vec3(.299,.587,.114)));
-  ink=clamp(mix(lum,ink,1.20),0.,1.);
+  ink=clamp(mix(lum,ink,1.00),0.,1.)*0.72;
 
-  // 반투명 합성 (블렌드 약간 낮춤)
-  vec3 col=mix(base,mix(base,ink,.68),ia);
+  // 반투명 합성
+  vec3 col=mix(base,mix(base,ink,.55),ia);
 
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;

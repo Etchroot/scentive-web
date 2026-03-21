@@ -138,7 +138,7 @@ export default function HeroSection() {
           <span className={styles.highlight}>향으로</span> 번역합니다.
         </h1>
         <p className={styles.sub}>
-          감정에 마우스를 올려 수면을 물들여보세요.
+          일상과 감정에 마우스를 올려 수면을 향으로 물들여보세요
         </p>
       </div>
 
@@ -175,11 +175,11 @@ export default function HeroSection() {
         {allDone && (
           <div
             className={`${styles.janhyangOverlay} ${overlayReady ? styles.overlayReady : ''}`}
-            onClick={handleReset}
+            onClick={() => overlayReady && document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           >
             <p className={styles.janhyangText}>잔향</p>
             <p className={styles.janhyangSub}>모든 감정이 향으로 피어났습니다</p>
-            {overlayReady && <p className={styles.overlayHint}>— 클릭하여 다시 시작 —</p>}
+            {overlayReady && <p className={styles.overlayHint}>— 서비스 둘러보기 —</p>}
           </div>
         )}
       </div>
