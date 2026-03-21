@@ -15,7 +15,7 @@ void main(){
   float s=exp(-dot(d,d)/uR);
   vec4 cur=texture2D(uT,uv);
   vec3 col=mix(cur.rgb,uC,s*(1.-cur.a*.5));
-  gl_FragColor=vec4(col,min(cur.a+s*.14,0.68));
+  gl_FragColor=vec4(col,min(cur.a+s*.14,0.80));
 }`;
 
 const ADVECT_FRAG = `precision highp float;
@@ -77,13 +77,14 @@ void main(){
   ink=clamp(mix(lum,ink,1.00),0.,1.)*0.72;
 
   // 반투명 합성
-  vec3 col=mix(base,mix(base,ink,.55),ia);
+  vec3 col=mix(base,mix(base,ink,.65),ia);
 
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;
 
-  // SCENTIVE 텍스트 패턴 — N700, 물결 왜곡 적용, 잉크 아래서 희미해짐
-  float patMask=texture2D(uTextPat,wUV*vec2(3.5,7.0)).a;
+  // SCENTIVE 텍스트 패턴 — y 플립(Canvas2D↔WebGL 좌표 보정), 3배 간격
+  vec2 patUV=vec2(wUV.x,1.0-wUV.y)*vec2(1.17,2.33);
+  float patMask=texture2D(uTextPat,patUV).a;
   col=mix(col,vec3(0.122,0.122,0.122),patMask*(1.0-ia*0.82)*0.44);
 
   gl_FragColor=vec4(min(col,vec3(1.)),1.);
