@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
 import styles from './Navbar.module.css';
 
-const APP_URL = 'https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK?usp=drive_link';
 const EMOTION_MAP_URL = 'https://janhyang-1e4bc.web.app';
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -27,16 +27,6 @@ export default function Navbar() {
         <ul className={styles.links}>
           <li>
             <NavLink
-              to="/manifesto"
-              className={({ isActive }) =>
-                isActive ? `${styles.link} ${styles.active}` : styles.link
-              }
-            >
-              선언
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/how-it-works"
               className={({ isActive }) =>
                 isActive ? `${styles.link} ${styles.active}` : styles.link
@@ -53,6 +43,16 @@ export default function Navbar() {
               }
             >
               스토리
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/manifesto"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
+              선언
             </NavLink>
           </li>
           <li>
@@ -81,7 +81,7 @@ export default function Navbar() {
         </ul>
 
         {/* CTA */}
-        <Button variant="primary" href={APP_URL} target="_blank" rel="noopener noreferrer">
+        <Button variant="primary" onClick={() => navigate('/app')}>
           앱 다운로드
         </Button>
       </div>

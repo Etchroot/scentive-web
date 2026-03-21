@@ -61,7 +61,7 @@ export default function AppCtaSection() {
                   <path d="M12 16L6 10h4V3h4v7h4l-6 6z" fill="currentColor"/>
                   <path d="M20 21H4v-2h16v2z" fill="currentColor"/>
                 </svg>
-                Google Play에서 다운로드
+                앱 다운로드
               </Button>
               <p className={styles.btnSub}>Android · 무료</p>
             </div>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FluidInkSim from './FluidInkSim';
 import styles from './HeroSection.module.css';
 
@@ -19,6 +20,7 @@ const EMOTIONS = [
 const FILL_RATE = 0.70; // fill units per second while hovering
 
 export default function HeroSection() {
+  const navigate    = useNavigate();
   const canvasRef   = useRef(null);
   const simRef      = useRef(null);
   const rafRef      = useRef(null);
@@ -63,14 +65,12 @@ export default function HeroSection() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 서비스 둘러보기 클릭 → 초기화 + 서비스 섹션 이동
+  // 서비스 둘러보기 클릭 → 초기화 + /how-it-works 라우트 이동
   const handleGoToService = (e) => {
     e.stopPropagation();
     if (!overlayReady) return;
     _resetState();
-    setTimeout(() => {
-      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-    }, 50);
+    navigate('/how-it-works');
   };
 
   useEffect(() => {
