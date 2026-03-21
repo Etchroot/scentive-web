@@ -165,6 +165,9 @@ export default function HeroSection() {
           <div className={styles.mobileWater} />
         )}
 
+        {/* SCENTIVE 텍스트 패턴 — CSS SVG 벡터 (해상도 독립) */}
+        <div className={styles.scentivePattern} aria-hidden="true" />
+
         {/* 감정 라벨 — 수면 위에 떠있음 */}
         {EMOTIONS.map((em, i) => (
           <div

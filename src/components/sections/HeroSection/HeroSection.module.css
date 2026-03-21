@@ -67,6 +67,16 @@
   background: linear-gradient(160deg, #e8f4fd 0%, #dbeaf6 40%, #cfe0f0 100%);
 }
 
+/* ── SCENTIVE 텍스트 패턴 (CSS SVG 벡터) ── */
+.scentivePattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><text x='40' y='133' font-family='Helvetica Neue,Arial,sans-serif' font-weight='700' font-size='11' fill='%231F1F1F' fill-opacity='0.22'>SCENTIVE</text><text x='440' y='267' font-family='Helvetica Neue,Arial,sans-serif' font-weight='700' font-size='11' fill='%231F1F1F' fill-opacity='0.22'>SCENTIVE</text></svg>");
+  background-repeat: repeat;
+  background-size: 800px 400px;
+}
+
 /* ── 감정 라벨 ── */
 .emotionLabel {
   position: absolute;
