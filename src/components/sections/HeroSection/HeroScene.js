@@ -2,10 +2,21 @@ import * as THREE from 'three';
 import BubbleMesh, { EMOTION_BUBBLES } from './BubbleMesh';
 import ParticleSystem from './ParticleSystem';
 
+// Funnel world constants — must match BubbleMesh.js
+const FUNNEL = {
+  TOP_Y:      4.4,   // rect top
+  RECT_BOT_Y: 0.8,   // rect → 45° taper starts here
+  NECK_TOP_Y: -0.72, // taper ends (45°: height = TOP_X - NECK_X = 1.52)
+  NECK_BOT_Y: -0.92, // sharp tip bottom
+  TOP_X:      1.6,   // rect half-width
+  NECK_X:     0.08,  // neck half-width (very narrow)
+};
+
 export default class HeroScene {
-  constructor(canvas, onAllCompleted) {
+  constructor(canvas, onAllCompleted, onDropReachBottle) {
     this.canvas = canvas;
     this.onAllCompleted = onAllCompleted;
+    this.onDropReachBottle = onDropReachBottle;
     this.time = 0;
     this.lastTime = performance.now();
     this.mouse = new THREE.Vector2(9999, 9999);
@@ -14,6 +25,7 @@ export default class HeroScene {
     this.fillSpeed = 0.35;
     this.condensing = new Set();
     this.allDone = false;
+    this.droplets = [];
 
     this._init();
     this._bindEvents();
@@ -44,19 +56,22 @@ export default class HeroScene {
     this._buildFogSprite();
   }
 
-  // ── 유리 깔대기 (Canvas2D 텍스처) ──────────────────────────────
-  _buildGlassFunnel() {
-    // 깔대기 world 좌표 정의 (80% scale)
-    const TOP_Y      =  3.04;
-    const RECT_BOT_Y =  1.76;  // 직사각형 → 사다리꼴 시작 y
-    const NECK_TOP_Y = -2.40;  // 사다리꼴 끝 / 목 시작 y
-    const NECK_BOT_Y = -3.20;  // 목 바닥 y
-    const TOP_X      =  2.24;  // 상단 반폭
-    const NECK_X     =  0.28;  // 목 반폭
+  // Camera z adjusts so the whole funnel always fits the viewport
+  _adjustCamera(w, h) {
+    const aspect = w / h;
+    this.camera.aspect = aspect;
+    const tanHalfFov = Math.tan(27.5 * Math.PI / 180);
+    const z_w = (FUNNEL.TOP_X * 1.3) / (tanHalfFov * aspect);  // fit width
+    const z_h = (FUNNEL.TOP_Y * 1.08) / tanHalfFov;             // fit height
+    this.camera.position.z = Math.max(5, Math.min(22, Math.max(z_w, z_h)));
+    this.camera.updateProjectionMatrix();
+  }
 
-    // 텍스처 캔버스 — world bbox 보다 약간 크게
-    const WX_MIN = -2.8, WX_MAX = 2.8;
-    const WY_MAX =  3.6, WY_MIN = -3.7;
+  _buildGlassFunnel() {
+    const { TOP_Y, RECT_BOT_Y, NECK_TOP_Y, NECK_BOT_Y, TOP_X, NECK_X } = FUNNEL;
+
+    const WX_MIN = -2.2, WX_MAX = 2.2;
+    const WY_MAX = 4.8,  WY_MIN = -1.1;
     const WW = WX_MAX - WX_MIN;
     const WH = WY_MAX - WY_MIN;
     const CW = 720, CH = Math.round(CW * WH / WW);
@@ -68,7 +83,7 @@ export default class HeroScene {
     cv.width = CW; cv.height = CH;
     const ctx = cv.getContext('2d');
 
-    // 깔대기 경로
+    // Funnel path: wide rect top → 45° taper → sharp neck
     const p = new Path2D();
     p.moveTo(mapX(-TOP_X), mapY(TOP_Y));
     p.lineTo(mapX( TOP_X), mapY(TOP_Y));
@@ -80,68 +95,65 @@ export default class HeroScene {
     p.lineTo(mapX(-TOP_X), mapY(RECT_BOT_Y));
     p.closePath();
 
-    // ─ 클립 영역 안에 유리 레이어 합성 ─
     ctx.save();
     ctx.clip(p);
 
-    // 기본 유리 색 (가로 그라데이션)
+    // Main glass body (horizontal gradient)
     const gMain = ctx.createLinearGradient(0, 0, CW, 0);
     gMain.addColorStop(0.00, 'rgba(170,210,248,0.58)');
-    gMain.addColorStop(0.07, 'rgba(240,250,255,0.42)');
-    gMain.addColorStop(0.28, 'rgba(215,232,252,0.09)');
-    gMain.addColorStop(0.72, 'rgba(215,232,252,0.09)');
-    gMain.addColorStop(0.93, 'rgba(205,228,250,0.28)');
+    gMain.addColorStop(0.10, 'rgba(240,250,255,0.40)');
+    gMain.addColorStop(0.30, 'rgba(215,232,252,0.07)');
+    gMain.addColorStop(0.70, 'rgba(215,232,252,0.07)');
+    gMain.addColorStop(0.90, 'rgba(205,228,250,0.30)');
     gMain.addColorStop(1.00, 'rgba(150,195,238,0.55)');
     ctx.fillStyle = gMain;
     ctx.fillRect(0, 0, CW, CH);
 
-    // 왼쪽 반사 하이라이트
-    const gHL = ctx.createLinearGradient(0, 0, 52, 0);
-    gHL.addColorStop(0, 'rgba(255,255,255,0.32)');
+    // Left wall inner highlight
+    const lx = mapX(-TOP_X);
+    const gHL = ctx.createLinearGradient(lx, 0, lx + 36, 0);
+    gHL.addColorStop(0, 'rgba(255,255,255,0.30)');
     gHL.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = gHL;
-    ctx.fillRect(0, 0, 52, CH);
+    ctx.fillRect(lx, 0, 36, CH);
 
-    // 오른쪽 그림자
-    const gSH = ctx.createLinearGradient(CW - 48, 0, CW, 0);
+    // Right wall inner shadow
+    const rx = mapX(TOP_X);
+    const gSH = ctx.createLinearGradient(rx - 36, 0, rx, 0);
     gSH.addColorStop(0, 'rgba(0,20,60,0)');
-    gSH.addColorStop(1, 'rgba(0,20,60,0.10)');
+    gSH.addColorStop(1, 'rgba(0,20,60,0.14)');
     ctx.fillStyle = gSH;
-    ctx.fillRect(CW - 48, 0, 48, CH);
+    ctx.fillRect(rx - 36, 0, 36, CH);
 
-    // 목(neck) 빛 집중 효과
+    // Neck light concentration glow
     const neckCX = mapX(0), neckCY = mapY((NECK_TOP_Y + NECK_BOT_Y) / 2);
-    const gNeck = ctx.createRadialGradient(neckCX, neckCY + 20, 5, neckCX, neckCY, 90);
-    gNeck.addColorStop(0, 'rgba(165,218,255,0.40)');
+    const gNeck = ctx.createRadialGradient(neckCX, neckCY, 3, neckCX, neckCY, 65);
+    gNeck.addColorStop(0, 'rgba(165,218,255,0.50)');
     gNeck.addColorStop(1, 'rgba(165,218,255,0)');
     ctx.fillStyle = gNeck;
     ctx.fillRect(0, 0, CW, CH);
 
-    // 세로 내부 반사 선 (왼쪽 벽 안쪽)
+    // Vertical inner reflection strip
     const gVR = ctx.createLinearGradient(0, 0, 0, CH);
-    gVR.addColorStop(0, 'rgba(255,255,255,0.12)');
+    gVR.addColorStop(0, 'rgba(255,255,255,0.13)');
     gVR.addColorStop(1, 'rgba(255,255,255,0.02)');
     ctx.fillStyle = gVR;
-    ctx.fillRect(mapX(-TOP_X) + 14, 0, 10, CH);
+    ctx.fillRect(lx + 14, 0, 8, CH);
 
     ctx.restore();
 
-    // 테두리 (유리 가장자리)
+    // Glass edge stroke
     ctx.strokeStyle = 'rgba(95,152,210,0.55)';
-    ctx.lineWidth = 2.4;
+    ctx.lineWidth = 2.0;
     ctx.lineJoin = 'round';
     ctx.stroke(p);
 
-    // THREE.js PlaneGeometry에 텍스처 적용
     const tex = new THREE.CanvasTexture(cv);
     const geo = new THREE.PlaneGeometry(WW, WH);
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(0, (WY_MAX + WY_MIN) / 2, -1.0);
     this.scene.add(mesh);
-
-    // 버블 제한용으로 저장
-    this.funnelBounds = { TOP_Y, RECT_BOT_Y, NECK_TOP_Y, NECK_BOT_Y, TOP_X, NECK_X };
   }
 
   _buildFogSprite() {
@@ -157,18 +169,6 @@ export default class HeroScene {
     this.fogSprite = new THREE.Sprite(mat);
     this.fogSprite.scale.set(2.5, 2.5, 1);
     this.scene.add(this.fogSprite);
-  }
-
-  // 카메라 z를 캔버스 비율에 맞게 조정해 깔대기가 항상 화면에 맞게 보이도록 함
-  _adjustCamera(w, h) {
-    const aspect = w / h;
-    this.camera.aspect = aspect;
-    // 깔대기 반폭(TOP_X=2.24) + 25% 여유가 뷰포트 너비에 맞도록 z 계산
-    const TARGET_HALF_W = 2.24 * 1.25;
-    const fovRad = 55 * Math.PI / 180;
-    const z = TARGET_HALF_W / (Math.tan(fovRad / 2) * aspect);
-    this.camera.position.z = Math.max(5, Math.min(20, z));
-    this.camera.updateProjectionMatrix();
   }
 
   _bindEvents() {
@@ -227,6 +227,7 @@ export default class HeroScene {
     }
 
     this.particleSystem.update(dt);
+    this._updateDroplets(dt);
 
     if (!this.allDone && this.bubbleMesh.getAllCompleted()) {
       this.allDone = true;
@@ -234,17 +235,86 @@ export default class HeroScene {
     }
   }
 
+  // Bubble shrinks → becomes a droplet that slides down the funnel
   _triggerCondense(idx, origin) {
     this.condensing.add(idx);
     this.bubbleMesh.startCondense(idx);
-    this.particleSystem.spawn(origin, EMOTION_BUBBLES[idx].color, 28);
     const mesh = this.bubbleMesh.getMeshes()[idx];
+    const bubbleR = EMOTION_BUBBLES[idx].radius / 100;
+    const color = EMOTION_BUBBLES[idx].color;
     let s = 1.0;
     const shrink = setInterval(() => {
-      s -= 0.06;
-      if (s <= 0) { clearInterval(shrink); mesh.visible = false; }
-      else mesh.scale.setScalar(s);
+      s -= 0.07;
+      if (s <= 0) {
+        clearInterval(shrink);
+        mesh.visible = false;
+        this._spawnDroplet(origin.clone(), color, bubbleR * 0.4);
+      } else {
+        mesh.scale.setScalar(s);
+      }
     }, 16);
+  }
+
+  _spawnDroplet(pos, color, radius) {
+    const geo = new THREE.SphereGeometry(radius, 14, 10);
+    const mat = new THREE.MeshPhongMaterial({
+      color: new THREE.Color(color[0], color[1], color[2]),
+      transparent: true,
+      opacity: 0.85,
+      shininess: 140,
+      specular: new THREE.Color(0.8, 0.9, 1.0),
+    });
+    const drop = new THREE.Mesh(geo, mat);
+    drop.position.copy(pos);
+    this.scene.add(drop);
+    this.droplets.push({ mesh: drop, vx: 0, vy: 0 });
+  }
+
+  // Gravity + funnel wall following (45° taper) → falls into bottle
+  _updateDroplets(dt) {
+    if (!this.droplets.length) return;
+
+    const GRAVITY = 7;
+    const { TOP_X, NECK_X, RECT_BOT_Y, NECK_TOP_Y, NECK_BOT_Y } = FUNNEL;
+    const funnelX = y => {
+      if (y >= RECT_BOT_Y) return TOP_X;
+      if (y <= NECK_TOP_Y) return NECK_X;
+      const t = (y - NECK_TOP_Y) / (RECT_BOT_Y - NECK_TOP_Y);
+      return NECK_X + (TOP_X - NECK_X) * t;
+    };
+
+    this.droplets = this.droplets.filter(d => {
+      d.vy -= GRAVITY * dt;
+      d.vx *= 0.96;
+      d.mesh.position.x += d.vx * dt;
+      d.mesh.position.y += d.vy * dt;
+
+      const pos = d.mesh.position;
+      const xLim = funnelX(pos.y);
+
+      // Hit wall → redirect along 45° wall surface
+      if (pos.x > xLim) {
+        pos.x = xLim;
+        const spd = Math.hypot(d.vx, d.vy);
+        d.vx = -spd * 0.707;
+        d.vy = -spd * 0.707;
+      } else if (pos.x < -xLim) {
+        pos.x = -xLim;
+        const spd = Math.hypot(d.vx, d.vy);
+        d.vx = spd * 0.707;
+        d.vy = -spd * 0.707;
+      }
+
+      // Fell through neck into bottle
+      if (pos.y < NECK_BOT_Y - 0.6) {
+        this.scene.remove(d.mesh);
+        d.mesh.geometry.dispose();
+        d.mesh.material.dispose();
+        this.onDropReachBottle?.();
+        return false;
+      }
+      return true;
+    });
   }
 
   dispose() {
@@ -252,6 +322,11 @@ export default class HeroScene {
     const el = this.canvas.parentElement;
     if (el) el.removeEventListener('mousemove', this._onMouseMove);
     window.removeEventListener('resize', this._onResize);
+    this.droplets.forEach(d => {
+      this.scene.remove(d.mesh);
+      d.mesh.geometry.dispose();
+      d.mesh.material.dispose();
+    });
     this.particleSystem.dispose();
     this.renderer.dispose();
   }

@@ -62,13 +62,13 @@ export const EMOTION_BUBBLES = [
   { text: '특별한 데이트',         color: [1.0, 0.5,  0.6],  radius: 48 },
 ];
 
-// 깔대기 경계 (HeroScene._buildGlassFunnel과 동일, 80% scale)
-const TOP_Y      =  3.04;
-const RECT_BOT_Y =  1.76;
-const NECK_TOP_Y = -2.40;
-const TOP_X      =  2.24;
-const NECK_X     =  0.28;
-const BUBBLE_BOT_Y = -2.0; // 버블이 내려갈 수 있는 최저점 (목 위)
+// 깔대기 경계 (HeroScene.js의 FUNNEL 상수와 동일)
+const TOP_Y      =  4.4;
+const RECT_BOT_Y =  0.8;
+const NECK_TOP_Y = -0.72;
+const TOP_X      =  1.6;
+const NECK_X     =  0.08;
+const BUBBLE_BOT_Y = -0.3; // 버블 최저점 (목 위, 약간 테이퍼 진입)
 
 // y 위치에 따른 깔대기 내부 x 한계
 function funnelXLimit(y) {

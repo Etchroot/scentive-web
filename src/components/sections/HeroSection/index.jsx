@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import HeroScene from './HeroScene';
 import BubbleLabels from './BubbleLabels';
+import { EMOTION_BUBBLES } from './BubbleMesh';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
   const canvasRef   = useRef(null);
   const sceneRef    = useRef(null);
   const [allCompleted, setAllCompleted] = useState(false);
+  const [dropCount, setDropCount] = useState(0);
   const [sceneObjects, setSceneObjects] = useState({ scene: null, camera: null, renderer: null });
   const isMobile = useRef(typeof window !== 'undefined' && window.innerWidth < 768);
 
@@ -14,7 +16,11 @@ export default function HeroSection() {
     if (isMobile.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const heroScene = new HeroScene(canvas, () => setAllCompleted(true));
+    const heroScene = new HeroScene(
+      canvas,
+      () => setAllCompleted(true),
+      () => setDropCount(c => c + 1),
+    );
     sceneRef.current = heroScene;
     setSceneObjects({ scene: heroScene.scene, camera: heroScene.camera, renderer: heroScene.renderer });
     return () => heroScene.dispose();
@@ -53,17 +59,21 @@ export default function HeroSection() {
         {/* 스크롤 완료 힌트 */}
         {allCompleted && <ScrollHint />}
 
-        {/* 향수병 — 항상 하단 고정 */}
+        {/* 향수병 — 항상 하단 고정, 물방울 떨어질 때마다 채워짐 */}
         <div className={styles.bottleWrap}>
-          <BottleSvg />
+          <BottleSvg fillRatio={dropCount / EMOTION_BUBBLES.length} />
         </div>
       </div>
     </section>
   );
 }
 
-/* 잔향 향수병 SVG */
-function BottleSvg() {
+/* 잔향 향수병 SVG — fillRatio: 0~1 (물방울이 쌓일수록 채워짐) */
+function BottleSvg({ fillRatio = 0 }) {
+  const maxFillH = 88;  // bottle body height (y:72→160)
+  const fillH = Math.round(maxFillH * fillRatio);
+  const fillY = 160 - fillH;  // bottom-up fill
+
   return (
     <svg viewBox="0 0 100 175" xmlns="http://www.w3.org/2000/svg"
       className={styles.bottleSvg} aria-label="잔향 향수병">
@@ -87,10 +97,15 @@ function BottleSvg() {
       <ellipse cx="50" cy="33" rx="8.5" ry="2.2" fill="rgba(210,232,250,0.40)"/>
       <rect x="22" y="72" width="56" height="88" rx="5"
         fill="url(#bG3)" stroke="#1F1F1F" strokeWidth="0.9"/>
-      <rect x="23" y="122" width="54" height="37"
-        fill="url(#bL3)" clipPath="url(#bClip3)"/>
-      <path d="M23,122 C33,118 67,126 77,122"
-        stroke="rgba(220,158,45,0.55)" strokeWidth="0.9" fill="none" clipPath="url(#bClip3)"/>
+
+      {/* 동적 액체 — 물방울 떨어질 때마다 아래서부터 채워짐 */}
+      {fillH > 0 && <>
+        <rect x="23" y={fillY} width="54" height={fillH}
+          fill="url(#bL3)" clipPath="url(#bClip3)"/>
+        <path d={`M23,${fillY} C33,${fillY - 4} 67,${fillY + 4} 77,${fillY}`}
+          stroke="rgba(220,158,45,0.55)" strokeWidth="0.9" fill="none" clipPath="url(#bClip3)"/>
+      </>}
+
       <rect x="28" y="88" width="44" height="54" rx="1.5" fill="#F6EFE0"/>
       <rect x="30" y="90" width="40" height="50" rx="1"
         fill="none" stroke="#C8B090" strokeWidth="0.6"/>
