@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import FluidInkSim from './FluidInkSim';
 import styles from './HeroSection.module.css';
 
-// R/G/B 채널 하나가 압도적으로 튀는 순수 잉크 컬러 (흰 느낌 없음)
+// 감정 → 향 매핑 (잉크 컬러: 비비드, scentColor: 향 고유 색상)
 const EMOTIONS = [
-  { text: '따뜻한 차 한 잔',       color: [1.00, 0.38, 0.00], x: 25, y: 12 }, // 버닝 오렌지   R↑↑
-  { text: '취준 성공',             color: [0.05, 0.95, 0.12], x: 72, y: 8  }, // 네온 그린      G↑↑
-  { text: '완벽한 아침',           color: [0.00, 0.60, 1.00], x: 50, y: 22 }, // 일렉트릭 블루  B↑↑
-  { text: '이불 밖은 위험해',      color: [0.08, 0.10, 1.00], x: 18, y: 38 }, // 퓨어 블루      B↑↑↑
-  { text: '보고싶어',              color: [1.00, 0.04, 0.72], x: 80, y: 34 }, // 핫 마젠타      R↑↑
-  { text: '특별한 데이트',         color: [1.00, 0.04, 0.18], x: 86, y: 52 }, // 비비드 레드    R↑↑↑
-  { text: '새 옷 쇼핑',            color: [0.00, 0.92, 0.70], x: 55, y: 55 }, // 비비드 틸      G↑↑
-  { text: '아무것도 하기 싫은 날', color: [0.50, 0.00, 1.00], x: 20, y: 68 }, // 비비드 바이올렛 B↑↑
-  { text: '오늘은 칼퇴',           color: [0.18, 1.00, 0.05], x: 75, y: 73 }, // 네온 라임      G↑↑↑
-  { text: '치킨 맛있다',           color: [1.00, 0.60, 0.00], x: 44, y: 85 }, // 딥 앰버        R↑↑
+  { text: '따뜻한 차 한 잔',       color: [1.00, 0.38, 0.00], x: 25, y: 12, scent: '캐모마일',      scentColor: '#FFF7E1' },
+  { text: '취준 성공',             color: [0.05, 0.95, 0.12], x: 72, y: 8,  scent: '골드 앰버',    scentColor: '#FFAD00' },
+  { text: '완벽한 아침',           color: [0.00, 0.60, 1.00], x: 50, y: 22, scent: '화이트 머스크', scentColor: '#EFEFEF' },
+  { text: '이불 밖은 위험해',      color: [0.08, 0.10, 1.00], x: 18, y: 38, scent: '산달우드',      scentColor: '#FFE1D6' },
+  { text: '보고싶어',              color: [1.00, 0.04, 0.72], x: 80, y: 34, scent: '로즈',          scentColor: '#FFC8B6' },
+  { text: '특별한 데이트',         color: [1.00, 0.04, 0.18], x: 86, y: 52, scent: '자스민',        scentColor: '#FFE2EE' },
+  { text: '새 옷 쇼핑',            color: [0.00, 0.92, 0.70], x: 55, y: 55, scent: '그린 티',       scentColor: '#B0EBEC' },
+  { text: '아무것도 하기 싫은 날', color: [0.50, 0.00, 1.00], x: 20, y: 68, scent: '베티버',        scentColor: '#CACACA' },
+  { text: '오늘은 칼퇴',           color: [0.18, 1.00, 0.05], x: 75, y: 73, scent: '시트러스',      scentColor: '#C0E5D1' },
+  { text: '치킨 맛있다',           color: [1.00, 0.60, 0.00], x: 44, y: 85, scent: '바닐라',        scentColor: '#FFA487' },
 ];
 
 const FILL_RATE = 0.70; // fill units per second while hovering
@@ -172,6 +172,7 @@ export default function HeroSection() {
               left: `${em.x}%`,
               top:  `${em.y}%`,
               '--label-color': `rgb(${em.color.map(c => Math.round(c * 255)).join(',')})`,
+              '--scent-color': em.scentColor,
               '--fill': 0,
               '--i': i,
             }}
@@ -181,7 +182,8 @@ export default function HeroSection() {
             onTouchEnd={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
             onTouchCancel={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
           >
-            {em.text}
+            <span className={styles.emotionText}>{em.text}</span>
+            <span className={styles.scentText}>{em.scent}</span>
             <span className={styles.labelInk} />
           </div>
         ))}
