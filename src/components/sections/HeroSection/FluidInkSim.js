@@ -83,7 +83,7 @@ void main(){
   col+=vec3(.90,.97,1.)*ca*.018;
 
   // SCENTIVE 텍스트 패턴 — y 플립(Canvas2D↔WebGL 좌표 보정), 3배 간격
-  vec2 patUV=vec2(wUV.x,1.0-wUV.y)*vec2(1.17,2.33);
+  vec2 patUV=vec2(wUV.x,1.0-wUV.y)*vec2(0.78,1.55);
   float patMask=texture2D(uTextPat,patUV).a;
   col=mix(col,vec3(0.122,0.122,0.122),patMask*(1.0-ia*0.82)*0.44);
 
@@ -124,7 +124,7 @@ function mkTextPatTex(gl) {
   cv.width = cw; cv.height = ch;
   const ctx = cv.getContext('2d');
   ctx.clearRect(0, 0, cw, ch);
-  ctx.font = 'bold 44px "Helvetica Neue", "Arial", sans-serif';
+  ctx.font = 'bold 22px "Helvetica Neue", "Arial", sans-serif';
   ctx.fillStyle = 'rgba(31,31,31,1)'; // N700
   ctx.textBaseline = 'middle';
   const text = 'SCENTIVE';
