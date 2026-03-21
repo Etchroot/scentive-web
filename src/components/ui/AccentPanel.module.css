@@ -1,0 +1,9 @@
+.panel {
+  border-left: 3px solid var(--color-border-strong);
+  padding: 16px 20px;
+  background-color: transparent;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text-primary);
+  font-style: italic;
+}

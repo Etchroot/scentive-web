@@ -1,0 +1,9 @@
+.wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.warm    { background-color: var(--color-bg-warm); }
+.neutral { background-color: var(--color-bg-neutral); }
+.impact  { background-color: var(--color-bg-impact); }
+.white   { background-color: #ffffff; }

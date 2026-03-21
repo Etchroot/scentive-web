@@ -1,0 +1,112 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 좌상단 카피 */
+.copy {
+  position: absolute;
+  top: 80px;
+  left: 64px;
+  max-width: 460px;
+}
+
+.eyebrow {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.headline {
+  font-size: clamp(36px, 4.5vw, 54px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.highlight {
+  border-bottom: 3px solid var(--color-point);
+  padding-bottom: 1px;
+}
+
+.sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* 버블 텍스트 라벨 */
+.labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bubbleLabel {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  letter-spacing: -0.01em;
+}
+
+/* 스크롤 힌트 */
+.scrollHint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInUp 0.8s ease forwards;
+  color: var(--color-text-secondary);
+}
+
+.scrollLabel {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scrollArrow {
+  animation: bounce 1.6s ease infinite;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .copy {
+    top: 48px;
+    left: 24px;
+    right: 24px;
+    max-width: none;
+  }
+  .headline { font-size: 32px; }
+  .bubbleLabel { font-size: 10px; }
+}

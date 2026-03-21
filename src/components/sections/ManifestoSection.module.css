@@ -1,0 +1,102 @@
+.section {
+  position: relative;
+  padding: 96px 0 120px;
+}
+
+.inner {
+  position: relative;
+}
+
+.eyebrow {
+  color: var(--color-text-primary);
+  opacity: 0.4;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 선언문 블록 */
+.lineWrap {
+  border-top: 0.5px solid rgba(31, 31, 31, 0.18);
+  padding: 28px 0 36px;
+  transition: opacity 0.5s ease;
+}
+
+.lineWrap:last-child {
+  border-bottom: 0.5px solid rgba(31, 31, 31, 0.18);
+}
+
+/* 상태 */
+.hidden  { opacity: 0.15; }
+.active  { opacity: 1.0; }
+.revealed { opacity: 1.0; }
+
+.lineHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.lineIndex {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  min-width: 22px;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.lineText {
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* 키워드 상태 */
+.keywordActive {
+  color: var(--color-point);
+  background-color: var(--color-point);
+  color: var(--color-text-primary);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.keywordRevealed {
+  border-bottom: 2.5px solid var(--color-point);
+  padding-bottom: 1px;
+}
+
+/* 스크롤 인디케이터 */
+.scrollTrack {
+  position: absolute;
+  right: 24px;
+  top: 96px;
+  bottom: 120px;
+  width: 1px;
+  background: rgba(31, 31, 31, 0.12);
+}
+
+.scrollThumb {
+  position: absolute;
+  top: 0;
+  left: -1.5px;
+  width: 4px;
+  background-color: var(--color-point);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+  min-height: 32px;
+}
+
+@media (max-width: 768px) {
+  .section { padding: 72px 0 80px; }
+  .scrollTrack { display: none; }
+}

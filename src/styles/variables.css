@@ -1,0 +1,47 @@
+/* =========================================
+   Scentive — CSS 변수 시스템
+   CLAUDE.md 기준. HEX 하드코딩 금지.
+   ========================================= */
+
+:root {
+  /* 배경 */
+  --color-bg-warm:     #FFF7E1;
+  --color-bg-neutral:  #FAFAFA;
+  --color-bg-impact:   #CACACA;
+
+  /* 포인트 */
+  --color-point:       #FFDD82; /* 소면적 강조 전용 — 섹션 배경 금지 */
+  --color-accent:      #FFC62B;
+
+  /* 텍스트 */
+  --color-text-primary:   #1F1F1F; /* 섹션 전체 배경 금지 */
+  --color-text-secondary: #4B4B4B;
+  --color-text-muted:     #8E8E8E;
+
+  /* 보더 */
+  --color-border-strong:  #1F1F1F;
+  --color-border-default: #E1E1E1;
+  --color-border-light:   #EEEEEE;
+
+  /* 레이아웃 */
+  --container-max-width: 1200px;
+  --container-padding: 0 52px;
+  --navbar-height: 56px;
+
+  /* 트랜지션 */
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* 반응형 컨테이너 패딩 */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --container-padding: 0 16px;
+  }
+}

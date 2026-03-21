@@ -1,0 +1,172 @@
+.section {
+  padding: 96px 0 120px;
+}
+
+.header {
+  margin-bottom: 56px;
+}
+
+.eyebrow {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.title {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* 스텝 리스트 */
+.stepList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 수직 커넥터 */
+.connector {
+  position: absolute;
+  left: 15px;
+  top: 16px;
+  bottom: 16px;
+  width: 1px;
+  background: var(--color-border-light);
+}
+
+.connectorFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-point);
+  transition: height 0.5s ease;
+  height: 0%;
+}
+
+/* 스텝 아이템 */
+.stepItem {
+  display: grid;
+  grid-template-columns: 32px 1fr 140px;
+  gap: 24px;
+  align-items: start;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  transition: opacity 0.3s ease;
+}
+
+.stepItem:first-child { padding-top: 0; }
+
+/* 스텝 번호 원 */
+.stepNum {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* 스텝 상태별 색상 */
+.status_done .stepNum {
+  background-color: var(--color-point);
+  color: var(--color-text-primary);
+}
+
+.status_active .stepNum {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-neutral);
+}
+
+.status_upcoming .stepNum {
+  background-color: #E5E5E5;
+  color: var(--color-text-muted);
+}
+
+/* 본문 */
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.status_upcoming .stepTitle,
+.status_upcoming .stepDesc {
+  color: var(--color-text-muted);
+}
+
+.stepDesc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  max-width: 380px;
+}
+
+/* 스크린샷 */
+.stepVisual {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.phoneBezel {
+  width: 120px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid var(--color-text-primary);
+  aspect-ratio: 9 / 19;
+  background: var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.screenshot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .section { padding: 72px 0 80px; }
+
+  .stepItem {
+    grid-template-columns: 32px 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .stepVisual {
+    grid-column: 2;
+    margin-top: 16px;
+  }
+
+  .phoneBezel {
+    width: 90px;
+  }
+
+  .connector {
+    display: none;
+  }
+}

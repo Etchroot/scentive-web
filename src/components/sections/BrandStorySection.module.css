@@ -1,0 +1,210 @@
+.section {
+  padding: 96px 0 120px;
+}
+
+.eyebrow {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* ─── 파트 1 ─── */
+.part1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+  margin-bottom: 72px;
+}
+
+.part1Left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.heading1 {
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+}
+
+.body1 {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+}
+
+.accent {
+  margin-top: 8px;
+}
+
+/* 5감 카드 */
+.sensesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.senseCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  transition: background-color var(--transition-base);
+  position: relative;
+}
+
+.senseCard + .senseCard {
+  border-top: 1px solid var(--color-border-light);
+}
+
+.senseHighlight {
+  background-color: var(--color-point);
+}
+
+.senseLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-width: 36px;
+}
+
+.senseDesc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.senseBadge {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+/* ─── 구분선 ─── */
+.divider {
+  margin: 0 0 72px;
+}
+
+/* ─── 파트 2 ─── */
+.part2Header {
+  margin-bottom: 40px;
+}
+
+.heading2 {
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+}
+
+.visionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.visionCard {
+  padding: 28px 24px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color var(--transition-base);
+}
+
+.visionCard:hover {
+  border-color: var(--color-border-strong);
+}
+
+.visionFeatured {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+
+.visionFeatured .visionNum,
+.visionFeatured .visionTitle,
+.visionFeatured .visionDesc {
+  color: var(--color-bg-warm);
+}
+
+.visionNum {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.visionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.35;
+}
+
+.visionDesc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+/* 푸터 메시지 */
+.footerMsg {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px 28px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  background: transparent;
+}
+
+.dot {
+  color: var(--color-point);
+  font-size: 8px;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.footerMsg p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.footerMsg strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* 반응형 */
+@media (max-width: 900px) {
+  .part1 {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .visionsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 72px 0 80px; }
+}

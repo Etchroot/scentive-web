@@ -1,0 +1,165 @@
+.section {
+  padding: 72px 0 80px;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 52px;
+}
+
+.eyebrow {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.headline {
+  font-size: clamp(26px, 3.2vw, 42px);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.highlight {
+  border-bottom: 3px solid var(--color-point);
+  padding-bottom: 2px;
+}
+
+.sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-bottom: 48px;
+  max-width: 440px;
+}
+
+/* CTA 액션 */
+.ctaActions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* QR */
+.qrBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.qrFrame {
+  width: 88px;
+  height: 88px;
+  background: #ffffff;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.qrImg {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.qrLabel {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+}
+
+/* 버튼 블록 */
+.btnBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.downloadBtn {
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 6px;
+  gap: 10px;
+}
+
+.btnSub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  padding-left: 4px;
+}
+
+/* Footer */
+.footer {
+  margin-top: 64px;
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footerLogo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+}
+
+.footerLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.footerLink {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-base);
+}
+
+.footerLink:hover {
+  color: var(--color-text-primary);
+}
+
+.copyright {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* 모바일 */
+@media (max-width: 640px) {
+  .inner { padding: 0 16px; }
+
+  .ctaActions {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .btnBlock {
+    align-items: center;
+  }
+
+  .footerInner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+}
