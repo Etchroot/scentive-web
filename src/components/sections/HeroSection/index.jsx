@@ -1,35 +1,101 @@
 import { useEffect, useRef, useState } from 'react';
-import HeroScene from './HeroScene';
-import BubbleLabels from './BubbleLabels';
-import { EMOTION_BUBBLES } from './BubbleMesh';
+import FluidInkSim from './FluidInkSim';
 import styles from './HeroSection.module.css';
+
+const EMOTIONS = [
+  { text: '따뜻한 차 한 잔',       color: [1.0, 0.55, 0.20], x: 25, y: 12 },
+  { text: '취준 성공',             color: [1.0, 0.87, 0.20], x: 72, y: 8  },
+  { text: '완벽한 아침',           color: [0.90, 0.95, 0.60], x: 50, y: 22 },
+  { text: '이불 밖은 위험해',      color: [0.50, 0.70, 1.0],  x: 18, y: 38 },
+  { text: '보고싶어',              color: [1.0, 0.50, 0.70],  x: 80, y: 34 },
+  { text: '특별한 데이트',         color: [1.0, 0.45, 0.58],  x: 86, y: 52 },
+  { text: '새 옷 쇼핑',            color: [0.40, 0.88, 0.82], x: 55, y: 55 },
+  { text: '아무것도 하기 싫은 날', color: [0.65, 0.60, 0.90], x: 20, y: 68 },
+  { text: '오늘은 칼퇴',           color: [0.35, 0.85, 0.55], x: 75, y: 73 },
+  { text: '치킨 맛있다',           color: [1.0,  0.68, 0.28], x: 44, y: 85 },
+];
+
+const FILL_RATE = 0.45; // fill units per second while hovering
 
 export default function HeroSection() {
   const canvasRef   = useRef(null);
-  const sceneRef    = useRef(null);
-  const [allCompleted, setAllCompleted] = useState(false);
-  const [dropCount, setDropCount] = useState(0);
-  const [sceneObjects, setSceneObjects] = useState({ scene: null, camera: null, renderer: null });
+  const simRef      = useRef(null);
+  const rafRef      = useRef(null);
+  const prevTimeRef = useRef(null);
+  const hoverRef    = useRef(-1);
+  const fillsRef    = useRef(EMOTIONS.map(() => 0));
+  const doneRef     = useRef(0);
+  const labelRefs   = useRef([]);
+  const [allDone, setAllDone] = useState(false);
   const isMobile = useRef(typeof window !== 'undefined' && window.innerWidth < 768);
 
   useEffect(() => {
     if (isMobile.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const heroScene = new HeroScene(
-      canvas,
-      () => setAllCompleted(true),
-      () => setDropCount(c => c + 1),
-    );
-    sceneRef.current = heroScene;
-    setSceneObjects({ scene: heroScene.scene, camera: heroScene.camera, renderer: heroScene.renderer });
-    return () => heroScene.dispose();
+
+    let sim;
+    try { sim = new FluidInkSim(canvas); }
+    catch (e) { console.warn('WebGL unavailable', e); return; }
+    simRef.current = sim;
+
+    const resize = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (w > 0 && h > 0) sim.resize(w, h);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const loop = (now) => {
+      rafRef.current = requestAnimationFrame(loop);
+      const dt = prevTimeRef.current
+        ? Math.min((now - prevTimeRef.current) / 1000, 0.05)
+        : 0.016;
+      prevTimeRef.current = now;
+
+      const idx = hoverRef.current;
+      if (idx >= 0) {
+        const fills = fillsRef.current;
+        if (fills[idx] < 1) {
+          fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
+          const em = EMOTIONS[idx];
+          const spread = 0.018 + fills[idx] * 0.028;
+          const r = 1.0 + fills[idx] * 2.2;
+          for (let k = 0; k < 5; k++) {
+            sim.splat(
+              em.x / 100 + (Math.random() - 0.5) * spread,
+              em.y / 100 + (Math.random() - 0.5) * spread,
+              em.color, r,
+            );
+          }
+          // Direct DOM update — avoids 60fps React re-renders
+          const el = labelRefs.current[idx];
+          if (el) {
+            el.style.setProperty('--fill', fills[idx]);
+            if (fills[idx] >= 1 && !el.dataset.done) {
+              el.dataset.done = '1';
+              el.classList.add(styles.labelDone);
+              doneRef.current++;
+              if (doneRef.current === EMOTIONS.length) setAllDone(true);
+            }
+          }
+        }
+      }
+      sim.step(dt);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+      sim.dispose();
+    };
   }, []);
 
   return (
     <section className={styles.hero} id="hero">
 
-      {/* ── 텍스트 전용 영역 — 버블/캔버스와 완전히 분리 ── */}
+      {/* ── 텍스트 영역 — 수면 위 인트로 ── */}
       <div className={styles.textZone}>
         <span className={styles.eyebrow}>Scent × Emotion × AI</span>
         <h1 className={styles.headline}>
@@ -37,132 +103,47 @@ export default function HeroSection() {
           <span className={styles.highlight}>향으로</span> 번역합니다.
         </h1>
         <p className={styles.sub}>
-          마우스를 움직여 하루의 감정들을 향으로 채워보세요.
+          감정에 마우스를 올려 수면을 물들여보세요.
         </p>
       </div>
 
-      {/* ── Three.js 캔버스 영역 — 나머지 공간 전부 ── */}
+      {/* ── 수면 캔버스 영역 ── */}
       <div className={styles.canvasZone}>
         {!isMobile.current ? (
           <canvas ref={canvasRef} className={styles.canvas} />
         ) : (
-          <div className={styles.mobileFallback}><MobileBubbles /></div>
+          <div className={styles.mobileWater} />
         )}
 
-        {/* 버블 텍스트 라벨 (Three.js 위치 동기화) */}
-        <BubbleLabels
-          scene={sceneObjects.scene}
-          camera={sceneObjects.camera}
-          renderer={sceneObjects.renderer}
-        />
+        {/* 감정 라벨 — 수면 위에 떠있음 */}
+        {EMOTIONS.map((em, i) => (
+          <div
+            key={i}
+            ref={el => labelRefs.current[i] = el}
+            className={styles.emotionLabel}
+            style={{
+              left: `${em.x}%`,
+              top:  `${em.y}%`,
+              '--label-color': `rgb(${em.color.map(c => Math.round(c * 255)).join(',')})`,
+              '--fill': 0,
+              '--i': i,
+            }}
+            onMouseEnter={() => { hoverRef.current = i; }}
+            onMouseLeave={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
+          >
+            {em.text}
+            <span className={styles.labelInk} />
+          </div>
+        ))}
 
-        {/* 스크롤 완료 힌트 */}
-        {allCompleted && <ScrollHint />}
-
-        {/* 향수병 — 항상 하단 고정, 물방울 떨어질 때마다 채워짐 */}
-        <div className={styles.bottleWrap}>
-          <BottleSvg fillRatio={dropCount / EMOTION_BUBBLES.length} />
-        </div>
+        {/* 잔향 — 모든 감정이 채워지면 수면 위로 떠오름 */}
+        {allDone && (
+          <div className={styles.janhyangOverlay}>
+            <p className={styles.janhyangText}>잔향</p>
+            <p className={styles.janhyangSub}>모든 감정이 향으로 피어났습니다</p>
+          </div>
+        )}
       </div>
     </section>
-  );
-}
-
-/* 잔향 향수병 SVG — fillRatio: 0~1 (물방울이 쌓일수록 채워짐) */
-function BottleSvg({ fillRatio = 0 }) {
-  const maxFillH = 88;  // bottle body height (y:72→160)
-  const fillH = Math.round(maxFillH * fillRatio);
-  const fillY = 160 - fillH;  // bottom-up fill
-
-  return (
-    <svg viewBox="0 0 100 175" xmlns="http://www.w3.org/2000/svg"
-      className={styles.bottleSvg} aria-label="잔향 향수병">
-      <defs>
-        <clipPath id="bClip3"><rect x="22" y="72" width="56" height="88" rx="5"/></clipPath>
-        <linearGradient id="bG3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%"   stopColor="rgba(230,242,252,0.75)"/>
-          <stop offset="20%"  stopColor="rgba(248,253,255,0.50)"/>
-          <stop offset="60%"  stopColor="rgba(235,245,255,0.30)"/>
-          <stop offset="100%" stopColor="rgba(215,232,248,0.65)"/>
-        </linearGradient>
-        <linearGradient id="bL3" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="rgba(255,205,90,0.55)"/>
-          <stop offset="100%" stopColor="rgba(235,165,50,0.45)"/>
-        </linearGradient>
-      </defs>
-      <path d="M38 34 L34 73 L66 73 L62 34 Z"
-        fill="rgba(238,247,254,0.60)" stroke="#1F1F1F" strokeWidth="0.9" strokeLinejoin="round"/>
-      <ellipse cx="50" cy="34" rx="12" ry="3.5"
-        fill="rgba(235,246,254,0.90)" stroke="#1F1F1F" strokeWidth="0.9"/>
-      <ellipse cx="50" cy="33" rx="8.5" ry="2.2" fill="rgba(210,232,250,0.40)"/>
-      <rect x="22" y="72" width="56" height="88" rx="5"
-        fill="url(#bG3)" stroke="#1F1F1F" strokeWidth="0.9"/>
-
-      {/* 동적 액체 — 물방울 떨어질 때마다 아래서부터 채워짐 */}
-      {fillH > 0 && <>
-        <rect x="23" y={fillY} width="54" height={fillH}
-          fill="url(#bL3)" clipPath="url(#bClip3)"/>
-        <path d={`M23,${fillY} C33,${fillY - 4} 67,${fillY + 4} 77,${fillY}`}
-          stroke="rgba(220,158,45,0.55)" strokeWidth="0.9" fill="none" clipPath="url(#bClip3)"/>
-      </>}
-
-      <rect x="28" y="88" width="44" height="54" rx="1.5" fill="#F6EFE0"/>
-      <rect x="30" y="90" width="40" height="50" rx="1"
-        fill="none" stroke="#C8B090" strokeWidth="0.6"/>
-      <foreignObject x="28" y="88" width="44" height="54">
-        <div xmlns="http://www.w3.org/1999/xhtml"
-          style={{ width:'100%', height:'100%', display:'flex', flexDirection:'column',
-            alignItems:'center', justifyContent:'center', gap:'3px' }}>
-          <span style={{ fontSize:'19px', fontWeight:'600', color:'#2a2a2a', lineHeight:1,
-            fontFamily:"'Noto Serif KR','Malgun Gothic',serif", letterSpacing:'0.03em' }}>잔향</span>
-          <span style={{ fontSize:'4.8px', letterSpacing:'0.9px', textTransform:'uppercase',
-            color:'#8a7a6a', fontFamily:'sans-serif' }}>EAU DE PARFUM</span>
-          <span style={{ fontSize:'4.8px', color:'#aaa', fontFamily:'sans-serif' }}>50ml</span>
-        </div>
-      </foreignObject>
-      <rect x="27" y="78" width="7" height="76" rx="3"
-        fill="rgba(255,255,255,0.22)" clipPath="url(#bClip3)"/>
-      <ellipse cx="50" cy="160" rx="28" ry="5.5"
-        fill="rgba(228,240,250,0.70)" stroke="#1F1F1F" strokeWidth="0.8"/>
-    </svg>
-  );
-}
-
-function MobileBubbles() {
-  const bubbles = [
-    { text: '따뜻한 차 한 잔', color: 'rgba(255,140,51,0.3)', delay: '0s' },
-    { text: '완벽한 아침',     color: 'rgba(230,242,153,0.4)', delay: '0.4s' },
-    { text: '보고싶어',        color: 'rgba(255,153,191,0.35)', delay: '0.8s' },
-    { text: '오늘은 칼퇴',     color: 'rgba(102,217,153,0.35)', delay: '1.2s' },
-    { text: '새 옷 쇼핑',     color: 'rgba(128,230,217,0.35)', delay: '0.6s' },
-    { text: '특별한 데이트',   color: 'rgba(255,128,153,0.35)', delay: '1s' },
-  ];
-  return (
-    <>
-      {bubbles.map((b, i) => (
-        <div key={i} className={styles.mobileBubble}
-          style={{ '--bubble-color': b.color, '--delay': b.delay,
-            left: `${15+(i%3)*28}%`, top: `${20+Math.floor(i/3)*35}%` }}>
-          {b.text}
-        </div>
-      ))}
-    </>
-  );
-}
-
-function ScrollHint() {
-  return (
-    <div style={{
-      position: 'absolute', bottom: '36px', left: '50%',
-      transform: 'translateX(-50%)', display: 'flex',
-      flexDirection: 'column', alignItems: 'center', gap: '6px',
-      color: 'var(--color-text-secondary)', animation: 'fadeInUp 0.8s ease forwards',
-      pointerEvents: 'none',
-    }}>
-      <span style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Scroll</span>
-      <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-        <path d="M10 2v20M3 16l7 8 7-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </div>
   );
 }

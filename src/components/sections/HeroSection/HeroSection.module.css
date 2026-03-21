@@ -1,15 +1,15 @@
 .hero {
   width: 100%;
   min-height: 280vh;
-  background-color: #ffffff;
+  background: #f5f7fa;
   display: flex;
   flex-direction: column;
 }
 
-/* ── 텍스트 전용 영역 — 캔버스와 완전히 분리 ── */
+/* ── 텍스트 영역 ── */
 .textZone {
   flex-shrink: 0;
-  padding: 48px 64px 28px;
+  padding: 48px 64px 32px;
   background: #ffffff;
   position: relative;
   z-index: 10;
@@ -44,11 +44,12 @@
   color: var(--color-text-muted);
 }
 
-/* ── Three.js 캔버스 영역 — 나머지 공간 전부 ── */
+/* ── 수면 캔버스 영역 ── */
 .canvasZone {
   flex: 1;
   position: relative;
   overflow: hidden;
+  background: #edf2f7;
 }
 
 .canvas {
@@ -59,50 +60,125 @@
   display: block;
 }
 
-/* 향수병 — canvasZone 하단 중앙 */
-.bottleWrap {
+/* 모바일 폴백 — 수면 느낌의 정적 배경 */
+.mobileWater {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
+  background: linear-gradient(160deg, #e8f4fd 0%, #dbeaf6 40%, #cfe0f0 100%);
+}
+
+/* ── 감정 라벨 ── */
+.emotionLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 8px 16px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+  animation: labelFloat calc(3.2s + var(--i, 0) * 0.18s) ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.55s);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.emotionLabel:hover {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+}
+
+/* 잉크 채우기 효과 — scaleX(var(--fill)) */
+.labelInk {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: var(--label-color);
+  opacity: 0.28;
+  transform-origin: left center;
+  transform: scaleX(var(--fill, 0));
   pointer-events: none;
 }
 
-.bottleSvg {
-  width: 80px;
-  height: auto;
-  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.08));
+/* 완료된 라벨 — 잉크 속으로 녹아듦 */
+.labelDone {
+  opacity: 0.18 !important;
+  animation-play-state: paused !important;
+  transform: translate(-50%, -50%) scale(0.88) !important;
+  transition: opacity 0.8s ease, transform 0.8s ease !important;
+  pointer-events: none;
+  filter: blur(0.5px);
 }
 
-/* 모바일 */
-@media (max-width: 640px) {
-  .textZone {
-    padding: 32px 24px 20px;
-  }
-  .headline { font-size: 30px; }
+@keyframes labelFloat {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%       { transform: translate(-50%, calc(-50% - 5px)); }
 }
 
-/* 모바일 fallback 버블 */
-.mobileFallback {
-  position: absolute;
+/* ── 잔향 완료 오버레이 ── */
+.janhyangOverlay {
+  position: fixed;
   inset: 0;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(245, 243, 239, 0.80);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  z-index: 100;
+  pointer-events: none;
+  animation: overlayFadeIn 1.4s ease forwards;
 }
 
-.mobileBubble {
-  position: absolute;
-  background: var(--bubble-color, rgba(255,221,130,0.3));
-  border-radius: 50px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 500;
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.janhyangText {
+  margin: 0;
+  font-size: clamp(72px, 14vw, 148px);
+  font-weight: 300;
   color: var(--color-text-primary);
-  white-space: nowrap;
-  animation: floatBubble 4s ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
+  letter-spacing: 0.08em;
+  font-family: 'Noto Serif KR', 'Malgun Gothic', Georgia, serif;
+  animation: textRise 2s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
 }
 
-@keyframes floatBubble {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%       { transform: translateY(-12px) scale(1.03); }
+.janhyangSub {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  animation: textRise 2s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+}
+
+@keyframes textRise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* ── 모바일 ── */
+@media (max-width: 640px) {
+  .textZone    { padding: 32px 24px 20px; }
+  .headline    { font-size: 30px; }
+  .emotionLabel { font-size: 12px; padding: 7px 13px; }
 }
