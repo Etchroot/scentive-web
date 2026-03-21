@@ -43,6 +43,7 @@ const DISPLAY_FRAG = `precision highp float;
 uniform sampler2D uT;
 uniform sampler2D uTextPat;
 uniform float uTime;
+uniform vec2 uRes;
 varying vec2 uv;
 
 // 코스틱 광 굴절 패턴
@@ -82,8 +83,10 @@ void main(){
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;
 
-  // SCENTIVE 텍스트 패턴 — y 플립(Canvas2D↔WebGL 좌표 보정), 3배 간격
-  vec2 patUV=vec2(wUV.x,1.0-wUV.y)*vec2(0.78,1.55);
+  // SCENTIVE 텍스트 패턴 — 비율 보정: sy = sx * (Th/Tw) * (W/H) * 2 (텍스처 2:1 보정)
+  float psx=0.78;
+  float psy=psx*2.0*(uRes.y/uRes.x); // 캔버스 종횡비 + 512x256 텍스처 보정
+  vec2 patUV=vec2(wUV.x,1.0-wUV.y)*vec2(psx,psy);
   float patMask=texture2D(uTextPat,patUV).a;
   col=mix(col,vec3(0.122,0.122,0.122),patMask*(1.0-ia*0.82)*0.44);
 
@@ -124,7 +127,7 @@ function mkTextPatTex(gl) {
   cv.width = cw; cv.height = ch;
   const ctx = cv.getContext('2d');
   ctx.clearRect(0, 0, cw, ch);
-  ctx.font = 'bold 22px "Helvetica Neue", "Arial", sans-serif';
+  ctx.font = 'bold 11px "Helvetica Neue", "Arial", sans-serif';
   ctx.fillStyle = 'rgba(31,31,31,1)'; // N700
   ctx.textBaseline = 'middle';
   const text = 'SCENTIVE';
@@ -227,6 +230,7 @@ export default class FluidInkSim {
     this._tex(this._dp, 'uT', 0, this._fbos[this._r].tex);
     this._tex(this._dp, 'uTextPat', 1, this._patTex);
     gl.uniform1f(gl.getUniformLocation(this._dp, 'uTime'), this.time);
+    gl.uniform2f(gl.getUniformLocation(this._dp, 'uRes'), this.canvas.width, this.canvas.height);
     this._draw(this._dp);
   }
 
