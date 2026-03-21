@@ -68,6 +68,7 @@
   line-height: 1.8;
   color: var(--color-text-secondary);
   max-width: 600px;
+  white-space: pre-line;
 }
 
 /* 키워드 상태 */
