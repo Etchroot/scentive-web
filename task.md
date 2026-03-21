@@ -1,115 +1,171 @@
-# Scentive 웹사이트 — 작업 추적 (task.md)
+# Scentive 웹사이트 — 프로젝트 문서 (task.md)
 
-> 주요 작업이 완료될 때마다 업데이트됩니다.
+> 기능 현황, 기술 스택, 파일 구조를 한눈에 파악할 수 있도록 관리됩니다.
 
 ---
 
-## 프로젝트 정보
+## 프로젝트 개요
 
 | 항목 | 내용 |
 |------|------|
-| 서비스명 | Scentive |
-| 기술 스택 | React (Vite), Three.js, CSS Variables, Firebase Hosting |
-| Firebase 프로젝트 ID | `janhyang-1e4bc` |
-| GitHub 레포 | `scentive-web` |
-| 앱 다운로드 URL | https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK?usp=drive_link |
-| 배포 브랜치 | `main` |
+| 서비스명 | Scentive (센티브) |
+| 핵심 카피 | "당신의 하루를 향으로 번역합니다." |
+| 플랫폼 | 웹 (반응형) + Android 앱 다운로드 유도 |
+| 배포 URL | https://janhyang-web.web.app |
+| Firebase 프로젝트 | `janhyang-web` |
+| GitHub 레포 | `scentive-web` (main 브랜치 push → 자동 배포) |
+| 앱 다운로드 URL | https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK |
 
 ---
 
-## 이미지 에셋 경로 안내
+## 기술 스택
 
-> 아래 경로에 이미지를 직접 복사해주세요.
+### 프론트엔드 프레임워크
+| 라이브러리 | 버전 | 용도 |
+|------------|------|------|
+| **React** | 18 | UI 컴포넌트 |
+| **Vite** | 5 | 번들러 / 개발 서버 |
+| **React Router DOM** | 6 | SPA 클라이언트 라우팅 |
+
+### 그래픽 / 시뮬레이션
+| 기술 | 용도 |
+|------|------|
+| **WebGL 1.0** | HeroSection 유체 잉크 시뮬레이션 |
+| **GLSL (Fragment Shader)** | 잉크 splat, curl-noise advection, caustic 조명, SCENTIVE 텍스트 패턴 |
+| **Canvas 2D API** | SCENTIVE 텍스트 패턴 텍스처 사전 렌더링 |
+| **Three.js** | (레거시 — 초기 버블 씬 구현 시 사용, 현재 미사용) |
+
+### 인프라 / 배포
+| 도구 | 용도 |
+|------|------|
+| **Firebase Hosting** | 정적 웹 호스팅, SPA rewrites |
+| **GitHub Actions** | main push 시 자동 빌드 + Firebase 배포 |
+
+---
+
+## 페이지 라우트 구조
+
+```
+/                  → HeroSection      (인터랙티브 잉크-수면 메인 화면)
+/how-it-works      → HowItWorksSection (서비스 소개 4단계)
+/brand-story       → BrandStorySection (브랜드 스토리)
+/manifesto         → ManifestoSection  (브랜드 선언)
+/app               → AppCtaSection     (앱 다운로드 CTA + Footer)
+```
+
+### 네비게이션 바 링크 순서
+서비스(`/how-it-works`) → 스토리(`/brand-story`) → 선언(`/manifesto`) → 감정-향 지도(외부) | [앱 다운로드 버튼 → `/app`]
+
+---
+
+## HeroSection — WebGL 유체 잉크 시뮬레이션
+
+가장 핵심적인 기능. 순수 WebGL로 구현된 인터랙티브 잉크-수면 시뮬레이션.
+
+### 셰이더 프로그램 (3개)
+
+| 프로그램 | 역할 |
+|----------|------|
+| **SPLAT** | 마우스 호버 시 감정 위치에 가우시안 잉크 점 주입. alpha 최대 0.68로 제한하여 항상 반투명 유지 |
+| **ADVECT** | curl-noise 기반 advection + 5-tap box diffusion. 잉크가 물결을 따라 자연스럽게 퍼짐 |
+| **DISPLAY** | 최종 합성 — 수면 caustic 조명 + 잉크 반투명 블렌딩 + SCENTIVE 텍스트 패턴 오버레이 |
+
+### 주요 알고리즘
+
+- **Curl-noise advection**: gradient noise의 컬(curl)을 이용한 발산 없는(divergence-free) 속도장 생성 → 잉크가 자연스러운 소용돌이 형태로 퍼짐
+- **Ping-pong FBO**: 512×512 더블 프레임버퍼로 잉크 상태를 매 프레임 교체하며 업데이트
+- **Caustic 조명**: 4항 sin/cos 간섭 패턴 (`pow(..., 4.0)`)으로 수면 광굴절 표현
+- **SCENTIVE 텍스트 패턴**: Canvas2D로 `bold 44px` 폰트의 "SCENTIVE" 텍스트를 512×256 POT 텍스처에 2행(벽돌 배치)으로 렌더링 → WebGL REPEAT 텍스처로 전달 → DISPLAY 셰이더에서 물결 왜곡 UV(`wUV`)로 샘플링
+
+### 인터랙션 흐름
+
+1. 감정 라벨에 **마우스 호버** → 매 프레임 5회 splat 주입, fill 게이지(0→1) 누적
+2. fill=1 도달 → 라벨 `labelDone` 스타일 적용 (흐려지고 작아짐)
+3. **전체 감정 완료** → `잔향` 오버레이 등장 (1.4s fade-in 애니메이션)
+4. 오버레이 **배경 클릭** → 초기화 + 상단 복귀
+5. **"서비스 둘러보기" 클릭** → 초기화 + `/how-it-works` 라우트 이동
+
+### 성능 최적화
+- React re-render 없이 RAF 루프 내 **직접 DOM 조작** (`el.style.setProperty('--fill', ...)`)
+- 모바일(`window.innerWidth < 768`)에서는 WebGL 비활성화 → 정적 배경으로 폴백
+
+---
+
+## 컴포넌트 아키텍처
+
+```
+src/
+├── App.jsx                          # BrowserRouter + Routes 정의
+├── main.jsx                         # React 진입점
+├── styles/
+│   ├── variables.css                # CSS 변수 (컬러 시스템)
+│   └── global.css                   # 전역 스타일
+├── components/
+│   ├── layout/
+│   │   ├── SectionWrapper.jsx       # bgType: 'warm'|'neutral'|'impact'
+│   │   └── Container.jsx            # 최대 너비 + 패딩
+│   ├── ui/
+│   │   ├── Button.jsx               # variant: 'primary'|'outline'|'ghost'
+│   │   ├── Tag.jsx                  # 소형 레이블
+│   │   ├── Divider.jsx              # 구분선
+│   │   └── AccentPanel.jsx          # border-left 강조 패널
+│   ├── sections/
+│   │   ├── HeroSection/
+│   │   │   ├── index.jsx            # 메인 컴포넌트 (RAF 루프, 상태 관리)
+│   │   │   ├── FluidInkSim.js       # WebGL 유체 시뮬레이션 클래스
+│   │   │   ├── HeroScene.js         # (레거시 Three.js 씬 — 미사용)
+│   │   │   ├── BubbleMesh.js        # (레거시 Three.js 버블 — 미사용)
+│   │   │   └── HeroSection.module.css
+│   │   ├── HowItWorksSection.jsx    # 서비스 소개
+│   │   ├── BrandStorySection.jsx    # 브랜드 스토리
+│   │   ├── ManifestoSection.jsx     # 브랜드 선언
+│   │   └── AppCtaSection.jsx        # 앱 다운로드 CTA + Footer
+│   └── common/
+│       └── Navbar.jsx               # sticky 네비게이션
+└── design/
+    └── color_table.txt              # 디자인 컬러 레퍼런스
+```
+
+---
+
+## 컬러 시스템
+
+> CSS 변수 기반. `design/color_table.txt` 참조.
+
+| 변수 | 값 | 용도 |
+|------|----|------|
+| `--color-point` | Warning 400 `#FFDD82` | 버튼·태그 소면적 강조 |
+| `--color-accent` | Warning 500 `#FFC62B` | 호버 강조 |
+| `--color-text-primary` | N700 `#1F1F1F` | 본문 텍스트 / 타일 선 색상 |
+| `--color-text-secondary` | N600 `#4B4B4B` | 보조 텍스트 |
+| `--color-text-muted` | N500 `#8E8E8E` | 힌트 텍스트 |
+| `--color-bg-warm` | Warning 200 `#FFF7E1` | 따뜻한 배경 |
+| `--color-bg-neutral` | N50 `#FAFAFA` | 중립 배경 |
+| `--color-bg-impact` | N400 `#CACACA` | 임팩트 배경 |
+
+---
+
+## 이미지 에셋 경로
 
 | 파일명 | 내용 | 사용 섹션 |
 |--------|------|----------|
-| `public/images/screenshot-01.jpg` | 일기 작성 화면 | How it works Step 01 |
-| `public/images/screenshot-02.jpg` | AI 분석 / 향 변환 애니메이션 | How it works Step 02 |
-| `public/images/screenshot-03.jpg` | 향 레시피 결과 (달고나) | How it works Step 03 |
-| `public/images/screenshot-04.jpg` | 12개월 아카이브 그리드 | How it works Step 04 |
-| `public/images/qr-code.png` | QR 코드 | App CTA 섹션 |
+| `public/images/screenshot-01.jpg` | 일기 작성 화면 | HowItWorks Step 1 |
+| `public/images/screenshot-02.jpg` | AI 분석 화면 | HowItWorks Step 2 |
+| `public/images/screenshot-03.jpg` | 향 레시피 결과 | HowItWorks Step 3 |
+| `public/images/screenshot-04.jpg` | 아카이브 그리드 | HowItWorks Step 4 |
+| `public/images/qr-code.png` | QR 코드 | AppCta 섹션 |
 
 ---
 
-## GitHub Actions 설정 안내
+## 배포 설정
 
-> 레포 생성 후 아래 시크릿을 GitHub Settings → Secrets → Actions에 추가해주세요.
+| 파일 | 내용 |
+|------|------|
+| `firebase.json` | public: `dist`, SPA rewrites → `/index.html` |
+| `.firebaserc` | project: `janhyang-web` |
+| `.github/workflows/firebase-deploy.yml` | main push → 자동 빌드 + 배포 |
 
-| 시크릿 키 | 내용 |
-|----------|------|
-| `FIREBASE_SERVICE_ACCOUNT` | Firebase 서비스 계정 JSON (base64 인코딩 필요 없음, 직접 붙여넣기) |
-
-워크플로우 파일: `.github/workflows/firebase-deploy.yml`
-
----
-
-## 작업 진행 현황
-
-### ✅ 완료
-- [ ] 초기 프로젝트 구조 기획
-
-### 🔄 진행 중
-- [ ] 전체 구현
-
-### ⏳ 대기
-
----
-
-## 파일 구조
-
-```
-scentive-web/
-├── public/
-│   └── images/
-│       ├── screenshot-01.jpg  ← 수동 추가 필요
-│       ├── screenshot-02.jpg  ← 수동 추가 필요
-│       ├── screenshot-03.jpg  ← 수동 추가 필요
-│       ├── screenshot-04.jpg  ← 수동 추가 필요
-│       └── qr-code.png        ← 수동 추가 필요
-├── src/
-│   ├── styles/
-│   │   ├── variables.css
-│   │   └── global.css
-│   ├── components/
-│   │   ├── layout/
-│   │   │   ├── SectionWrapper.jsx
-│   │   │   └── Container.jsx
-│   │   ├── ui/
-│   │   │   ├── Button.jsx
-│   │   │   ├── Tag.jsx
-│   │   │   ├── Divider.jsx
-│   │   │   └── AccentPanel.jsx
-│   │   ├── sections/
-│   │   │   ├── HeroSection/
-│   │   │   │   ├── index.jsx
-│   │   │   │   ├── HeroScene.js
-│   │   │   │   ├── BubbleMesh.js
-│   │   │   │   ├── ParticleSystem.js
-│   │   │   │   ├── LiquidBottle.js
-│   │   │   │   ├── shaders/
-│   │   │   │   │   ├── bubble.vert.glsl
-│   │   │   │   │   ├── bubble.frag.glsl
-│   │   │   │   │   ├── liquid.vert.glsl
-│   │   │   │   │   └── liquid.frag.glsl
-│   │   │   │   └── HeroOverlay.jsx
-│   │   │   ├── ManifestoSection.jsx
-│   │   │   ├── HowItWorksSection.jsx
-│   │   │   ├── BrandStorySection.jsx
-│   │   │   └── AppCtaSection.jsx
-│   │   └── common/
-│   │       ├── Navbar.jsx
-│   │       └── Footer.jsx
-│   ├── App.jsx
-│   └── main.jsx
-├── .github/
-│   └── workflows/
-│       └── firebase-deploy.yml
-├── firebase.json
-├── .firebaserc
-├── index.html
-├── vite.config.js
-└── package.json
-```
+**GitHub Secret 필요**: `FIREBASE_SERVICE_ACCOUNT` (Firebase 서비스 계정 JSON)
 
 ---
 
@@ -117,19 +173,11 @@ scentive-web/
 
 | 날짜 | 내용 |
 |------|------|
-| 2026-03-21 | 프로젝트 초기 계획 수립, task.md 생성 |
-| 2026-03-21 | 전체 구현 완료 — Vite 빌드 성공 (EXIT_CODE 0) |
-
----
-
-## 빌드 결과 (최신)
-
-```
-dist/index.html                  1.43 kB
-dist/assets/index-*.css         16.69 kB │ gzip: 4.01 kB
-dist/assets/index-*.js          34.29 kB │ gzip: 12.81 kB
-dist/assets/react-*.js         141.63 kB │ gzip: 45.44 kB
-dist/assets/three-*.js         485.78 kB │ gzip: 120.76 kB
-```
-
-**청크 분리 완료**: Three.js / React / App 분리로 lazy loading 최적화
+| 2026-03-21 | 프로젝트 초기 계획 및 전체 구현 |
+| 2026-03-22 | Three.js → 순수 WebGL로 HeroSection 전면 교체 |
+| 2026-03-22 | WebGL 유체 시뮬레이션 점진적 개선 (curl-noise, caustic, splat 튜닝) |
+| 2026-03-22 | 다이아몬드 타일 → SCENTIVE 텍스트 패턴 (Canvas2D 텍스처) |
+| 2026-03-22 | SPA React Router 라우팅 구조 확립 (5개 라우트) |
+| 2026-03-22 | 오버레이 CTA "서비스 둘러보기" 버그 수정 (useNavigate) |
+| 2026-03-22 | Navbar 링크 순서 조정, 앱 다운로드 버튼 내부 라우트 연결 |
+| 2026-03-22 | design/color_table.txt 추가 (N700=#1F1F1F 등 디자인 레퍼런스) |

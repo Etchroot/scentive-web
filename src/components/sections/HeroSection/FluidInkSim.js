@@ -41,6 +41,7 @@ void main(){
 
 const DISPLAY_FRAG = `precision highp float;
 uniform sampler2D uT;
+uniform sampler2D uTextPat;
 uniform float uTime;
 varying vec2 uv;
 
@@ -51,15 +52,6 @@ float caustic(vec2 p,float t){
          +sin((p.x+p.y)*6.4+t*.92)*.55
          +cos((p.x-p.y)*5.1-t*1.18)*.40;
   return pow(max(c*.28+.5,0.),4.);
-}
-
-// 다이아몬드 타일 — 세로로 긴 단일 선 (N700 색상)
-float diamondTile(vec2 p){
-  const float sz=0.432; // 2배 더 확대
-  vec2 q=mod(p,sz)/sz-0.5;
-  // x를 1.55배 압축 → 세로로 더 긴 다이아몬드
-  float d=abs(q.x)*1.55+abs(q.y)*0.82;
-  return smoothstep(0.020,0.0,abs(d-0.44));
 }
 
 void main(){
@@ -90,10 +82,9 @@ void main(){
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;
 
-  // 다이아몬드 타일 — N700(#1F1F1F), 잉크 아래서 희미해짐
-  float tile=diamondTile(wUV);
-  vec3 tileLine=vec3(0.122,0.122,0.122); // Neutral 700
-  col=mix(col,tileLine,tile*(1.0-ia*0.82)*0.48);
+  // SCENTIVE 텍스트 패턴 — N700, 물결 왜곡 적용, 잉크 아래서 희미해짐
+  float patMask=texture2D(uTextPat,wUV*vec2(3.5,7.0)).a;
+  col=mix(col,vec3(0.122,0.122,0.122),patMask*(1.0-ia*0.82)*0.44);
 
   gl_FragColor=vec4(min(col,vec3(1.)),1.);
 }`;
@@ -125,6 +116,35 @@ function mkFBO(gl, w, h) {
   return { tex, fbo };
 }
 
+// SCENTIVE 텍스트 패턴 텍스처 생성 (Canvas2D → WebGL REPEAT 텍스처)
+function mkTextPatTex(gl) {
+  const cw = 512, ch = 256; // POT — REPEAT + mipmap 지원
+  const cv = document.createElement('canvas');
+  cv.width = cw; cv.height = ch;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, cw, ch);
+  ctx.font = 'bold 44px "Helvetica Neue", "Arial", sans-serif';
+  ctx.fillStyle = 'rgba(31,31,31,1)'; // N700
+  ctx.textBaseline = 'middle';
+  const text = 'SCENTIVE';
+  const tw = ctx.measureText(text).width + 56; // 단어 간격
+  // Row 1 (y=72) — 정렬
+  for (let x = 0; x < cw + tw; x += tw) ctx.fillText(text, x, 72);
+  // Row 2 (y=200) — 절반 오프셋 (벽돌 배치)
+  for (let x = -tw / 2; x < cw + tw; x += tw) ctx.fillText(text, x, 200);
+
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cv);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  return tex;
+}
+
 export default class FluidInkSim {
   constructor(canvas) {
     this.canvas = canvas;
@@ -150,6 +170,7 @@ export default class FluidInkSim {
     });
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+    this._patTex = mkTextPatTex(gl);
   }
 
   _draw(prog) {
@@ -203,6 +224,7 @@ export default class FluidInkSim {
     gl.useProgram(this._dp);
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     this._tex(this._dp, 'uT', 0, this._fbos[this._r].tex);
+    this._tex(this._dp, 'uTextPat', 1, this._patTex);
     gl.uniform1f(gl.getUniformLocation(this._dp, 'uTime'), this.time);
     this._draw(this._dp);
   }
@@ -225,6 +247,7 @@ export default class FluidInkSim {
   dispose() {
     const gl = this.gl;
     this._fbos.forEach(({ tex, fbo }) => { gl.deleteTexture(tex); gl.deleteFramebuffer(fbo); });
+    gl.deleteTexture(this._patTex);
     gl.deleteBuffer(this._buf);
     [this._sp, this._ap, this._dp].forEach(p => gl.deleteProgram(p));
   }

@@ -56,16 +56,6 @@ export default function Navbar() {
             </NavLink>
           </li>
           <li>
-            <NavLink
-              to="/app"
-              className={({ isActive }) =>
-                isActive ? `${styles.link} ${styles.active}` : styles.link
-              }
-            >
-              다운로드
-            </NavLink>
-          </li>
-          <li>
             <a
               href={EMOTION_MAP_URL}
               target="_blank"
