@@ -61,6 +61,15 @@
   letter-spacing: -0.01em;
 }
 
+.lineDesc {
+  margin-top: 14px;
+  padding-left: 38px; /* lineIndex(22px) + gap(16px) */
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+}
+
 /* 키워드 상태 */
 .keywordActive {
   color: var(--color-point);
