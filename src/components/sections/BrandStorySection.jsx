@@ -16,7 +16,7 @@ const VISIONS = [
   {
     num: '01',
     title: '초개인화 향 서비스',
-    desc: '당신의 감정 데이터가 쌓일수록 더 정교해지는 향 레시피. 세상에 단 하나뿐인 당신의 향.',
+    desc: '당신의 감정 데이터가 쌓일수록 더 정교해지는 향 레시피.\n세상에 단 하나뿐인 당신의 향.',
     featured: false,
   },
   {
@@ -28,7 +28,7 @@ const VISIONS = [
   {
     num: '03',
     title: '피지컬 AI의 기본 감각',
-    desc: '디지털 AI가 후각을 이해할 때, 세상은 완전히 달라집니다. Scentive가 그 언어를 만듭니다.',
+    desc: '디지털 AI가 후각을 이해할 때, 세상은 완전히 달라집니다.\nScentive가 그 언어를 만듭니다.',
     featured: true,
   },
 ];
@@ -45,10 +45,10 @@ export default function BrandStorySection() {
               누구나 자신만의<br />인생의 향기가 있다
             </h2>
             <p className={styles.body1}>
-              우리는 누군가의 일기에서 향기를 발견했습니다.
-              기억은 향으로 피어나고, 감정은 냄새로 남습니다.
-              그런데 왜 우리는 시각과 청각에만 집중해왔을까요.
-              후각은 가장 원초적이고 가장 개인적인 감각입니다.
+              우리는 누군가의 일기에서 향기를 발견했습니다.<br />
+              기억은 향으로 피어나고, 감정은 냄새로 남습니다.<br />
+              그런데 왜 우리는 시각과 청각에만 집중해왔을까요.<br />
+              후각은 가장 원초적이고 가장 개인적인 감각입니다.<br />
               Scentive는 그 감각에 처음으로 언어를 부여합니다.
             </p>
             <AccentPanel className={styles.accent}>
@@ -93,7 +93,7 @@ export default function BrandStorySection() {
               >
                 <span className={styles.visionNum}>{v.num}</span>
                 <h3 className={styles.visionTitle}>{v.title}</h3>
-                <p className={styles.visionDesc}>{v.desc}</p>
+                <p className={styles.visionDesc} style={{ whiteSpace: 'pre-line' }}>{v.desc}</p>
               </div>
             ))}
           </div>

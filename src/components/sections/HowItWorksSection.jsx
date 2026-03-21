@@ -9,7 +9,7 @@ const STEPS = [
     num: '01',
     tag: '매일',
     title: '일기를 씁니다',
-    desc: '오늘 하루 있었던 일, 느꼈던 감정을 자유롭게 기록해요. 감정 태그로 그날의 기분을 더할 수 있어요.',
+    desc: '오늘 하루 있었던 일, 느꼈던 감정을 자유롭게 기록해요.\n감정 태그로 그날의 기분을 더할 수 있어요.',
     img: '/images/screenshot-01.jpg',
     imgAlt: '일기 작성 앱 화면',
   },
@@ -33,7 +33,7 @@ const STEPS = [
     num: '04',
     tag: '12개월 기록',
     title: '향 리포트로 아카이빙됩니다',
-    desc: '그 달의 향수가 완성되어 아카이브에 저장됩니다. 12개의 향수병이 하나씩 채워져 가요.',
+    desc: '그 달의 향수가 완성되어 아카이브에 저장됩니다.\n12개의 향수병이 하나씩 채워져 가요.',
     img: '/images/screenshot-04.jpg',
     imgAlt: '아카이브 앱 화면',
   },
@@ -54,7 +54,7 @@ function StepItem({ step, index, activeStep }) {
       <div className={styles.stepBody}>
         <Tag>{step.tag}</Tag>
         <h3 className={styles.stepTitle}>{step.title}</h3>
-        <p className={styles.stepDesc}>{step.desc}</p>
+        <p className={styles.stepDesc} style={{ whiteSpace: 'pre-line' }}>{step.desc}</p>
       </div>
 
       {/* 앱 스크린샷 */}
