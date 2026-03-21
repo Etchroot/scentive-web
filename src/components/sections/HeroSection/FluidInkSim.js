@@ -161,6 +161,16 @@ export default class FluidInkSim {
     this.canvas.height = Math.max(1, h);
   }
 
+  clear() {
+    const gl = this.gl;
+    this._fbos.forEach(({ fbo }) => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    });
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
   dispose() {
     const gl = this.gl;
     this._fbos.forEach(({ tex, fbo }) => { gl.deleteTexture(tex); gl.deleteFramebuffer(fbo); });

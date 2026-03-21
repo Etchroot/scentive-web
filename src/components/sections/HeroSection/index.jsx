@@ -27,7 +27,31 @@ export default function HeroSection() {
   const doneRef     = useRef(0);
   const labelRefs   = useRef([]);
   const [allDone, setAllDone] = useState(false);
+  const [overlayReady, setOverlayReady] = useState(false);
   const isMobile = useRef(typeof window !== 'undefined' && window.innerWidth < 768);
+
+  // 애니메이션 완료(~3.2s) 후 클릭 활성화
+  useEffect(() => {
+    if (!allDone) { setOverlayReady(false); return; }
+    const t = setTimeout(() => setOverlayReady(true), 3200);
+    return () => clearTimeout(t);
+  }, [allDone]);
+
+  const handleReset = () => {
+    if (!overlayReady) return;
+    setAllDone(false);
+    // fills + label DOM 초기화
+    fillsRef.current = EMOTIONS.map(() => 0);
+    doneRef.current = 0;
+    labelRefs.current.forEach(el => {
+      if (!el) return;
+      el.style.setProperty('--fill', 0);
+      el.classList.remove(styles.labelDone);
+      delete el.dataset.done;
+    });
+    simRef.current?.clear();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (isMobile.current) return;
@@ -138,9 +162,13 @@ export default function HeroSection() {
 
         {/* 잔향 — 모든 감정이 채워지면 수면 위로 떠오름 */}
         {allDone && (
-          <div className={styles.janhyangOverlay}>
+          <div
+            className={`${styles.janhyangOverlay} ${overlayReady ? styles.overlayReady : ''}`}
+            onClick={handleReset}
+          >
             <p className={styles.janhyangText}>잔향</p>
             <p className={styles.janhyangSub}>모든 감정이 향으로 피어났습니다</p>
+            {overlayReady && <p className={styles.overlayHint}>— 클릭하여 다시 시작 —</p>}
           </div>
         )}
       </div>

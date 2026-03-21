@@ -163,6 +163,21 @@
   animation: textRise 2s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
 }
 
+/* 애니메이션 완료 후 클릭 활성화 */
+.overlayReady {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.overlayHint {
+  margin: 20px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  animation: textRise 0.8s ease forwards;
+}
+
 @keyframes textRise {
   from {
     opacity: 0;
