@@ -76,6 +76,18 @@ export const EMOTION_BUBBLES = [
   { text: '특별한 데이트',         color: [1.0, 0.5,  0.6],  radius: 48 },
 ];
 
+// 깔대기 경계 (LiquidBottle funnelLines와 동일 좌표계)
+const FUNNEL_TOP_Y  =  0.9;   // 버블 상단 한계 (텍스트 아래)
+const FUNNEL_BOT_Y  =  0.05;  // 버블 하단 한계 (병목 위)
+const FUNNEL_TOP_X  =  3.0;   // y=1.0에서 x 반경
+const FUNNEL_BOT_X  =  0.15;  // y=-0.4에서 x 반경 (원래 깔대기 neck)
+
+// y 위치에서의 깔대기 x 한계 (선형 보간)
+function funnelXLimit(y) {
+  const t = Math.max(0, Math.min(1, (y - (-0.4)) / (1.0 - (-0.4))));
+  return FUNNEL_BOT_X + (FUNNEL_TOP_X - FUNNEL_BOT_X) * t;
+}
+
 export default class BubbleMesh {
   constructor(scene, count = EMOTION_BUBBLES.length) {
     this.count = count;
@@ -93,13 +105,14 @@ export default class BubbleMesh {
 
   _initPositions() {
     for (let i = 0; i < this.count; i++) {
-      this.positions.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 6,
-        (Math.random() - 0.5) * 2,
-      ));
+      // 깔대기 내 랜덤 위치로 초기화
+      const y = FUNNEL_BOT_Y + Math.random() * (FUNNEL_TOP_Y - FUNNEL_BOT_Y) * 0.88 + 0.02;
+      const xLim = funnelXLimit(y) * 0.72;
+      const x = (Math.random() - 0.5) * 2 * xLim;
+
+      this.positions.push(new THREE.Vector3(x, y, (Math.random() - 0.5) * 0.4));
       this.velocities.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.003,
+        (Math.random() - 0.5) * 0.005,
         (Math.random() - 0.5) * 0.003,
         0,
       ));
@@ -144,18 +157,50 @@ export default class BubbleMesh {
     this.meshes.forEach((mesh, i) => {
       if (this.completed[i]) return;
 
+      const pos = this.positions[i];
+      const vel = this.velocities[i];
+      const r = EMOTION_BUBBLES[i].radius / 100;
+
       // 부유 운동
       const phase = this.phases[i];
-      mesh.position.x = this.positions[i].x + Math.sin(time * 0.4 + phase) * 0.15;
-      mesh.position.y = this.positions[i].y + Math.cos(time * 0.3 + phase * 1.3) * 0.12;
+      mesh.position.x = pos.x + Math.sin(time * 0.4 + phase) * 0.12;
+      mesh.position.y = pos.y + Math.cos(time * 0.3 + phase * 1.3) * 0.10;
 
       // 속도 적용
-      this.positions[i].x += this.velocities[i].x;
-      this.positions[i].y += this.velocities[i].y;
+      pos.x += vel.x;
+      pos.y += vel.y;
 
-      // 경계 반사
-      if (Math.abs(this.positions[i].x) > 7) this.velocities[i].x *= -1;
-      if (Math.abs(this.positions[i].y) > 4.5) this.velocities[i].y *= -1;
+      // 상단 벽 반사
+      if (pos.y + r > FUNNEL_TOP_Y) {
+        pos.y = FUNNEL_TOP_Y - r;
+        vel.y = -Math.abs(vel.y) * 0.38;
+      }
+
+      // 하단 벽 반사
+      if (pos.y - r < FUNNEL_BOT_Y) {
+        pos.y = FUNNEL_BOT_Y + r;
+        vel.y = Math.abs(vel.y) * 0.38;
+      }
+
+      // 깔대기 사선 벽 반사
+      const xLim = funnelXLimit(pos.y) - r * 0.6;
+      if (pos.x > xLim) {
+        pos.x = xLim;
+        vel.x = -Math.abs(vel.x) * 0.40;
+      }
+      if (pos.x < -xLim) {
+        pos.x = -xLim;
+        vel.x = Math.abs(vel.x) * 0.40;
+      }
+
+      // 미세 랜덤 추가 (정체 방지)
+      vel.x += (Math.random() - 0.5) * 0.0007;
+      vel.y += (Math.random() - 0.5) * 0.0004;
+
+      // 속도 클램프
+      const maxV = 0.010;
+      vel.x = Math.max(-maxV, Math.min(maxV, vel.x));
+      vel.y = Math.max(-maxV, Math.min(maxV, vel.y));
 
       // 유니폼 업데이트
       const mat = this.materials[i];

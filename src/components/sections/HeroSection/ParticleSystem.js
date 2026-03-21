@@ -4,9 +4,7 @@ export default class ParticleSystem {
   constructor(scene) {
     this.scene = scene;
     this.particles = [];
-    this.funnelTarget = new THREE.Vector3(0, -0.5, 0); // 깔대기 입구
-    this.bottleTop = new THREE.Vector3(0, -2.2, 0);    // 병 입구
-    this.onBottleReach = null;
+    this.funnelNeck = new THREE.Vector3(0, -0.5, 0); // 깔대기 입구 (여기서 페이드아웃)
   }
 
   spawn(origin, color, count = 28) {
@@ -51,9 +49,9 @@ export default class ParticleSystem {
       geo,
       velocities,
       count,
-      reachedFunnel: new Array(count).fill(false),
-      reachedBottle: new Array(count).fill(false),
+      reached: new Array(count).fill(false),
       life: 1,
+      fading: false,
     });
   }
 
@@ -67,29 +65,24 @@ export default class ParticleSystem {
       }
 
       const pos = p.geo.attributes.position.array;
-      let allAtBottle = true;
+      let allReached = true;
 
       for (let i = 0; i < p.count; i++) {
-        if (p.reachedBottle[i]) continue;
-        allAtBottle = false;
+        if (p.reached[i]) continue;
+        allReached = false;
 
-        const px = pos[i * 3];
         const py = pos[i * 3 + 1];
 
-        // 깔대기 영역 도달 여부
-        if (!p.reachedFunnel[i] && py < this.funnelTarget.y) {
-          p.reachedFunnel[i] = true;
-          // 깔대기 → 병 방향으로 방향 전환
-          const dx = this.bottleTop.x - px;
-          p.velocities[i].x = dx * 0.04 + (Math.random() - 0.5) * 0.01;
-          p.velocities[i].y = -0.035 - Math.random() * 0.02;
+        // 깔대기 입구 도달 → 병목 방향으로 수렴
+        if (py < this.funnelNeck.y) {
+          p.reached[i] = true;
+          continue;
         }
 
-        // 병 입구 도달
-        if (py < this.bottleTop.y) {
-          p.reachedBottle[i] = true;
-          if (this.onBottleReach) this.onBottleReach();
-          continue;
+        // 깔대기 목으로 향하는 방향 보정
+        if (py < 0) {
+          const dx = this.funnelNeck.x - pos[i * 3];
+          p.velocities[i].x += dx * 0.003;
         }
 
         // 중력
@@ -101,9 +94,10 @@ export default class ParticleSystem {
 
       p.geo.attributes.position.needsUpdate = true;
 
-      if (allAtBottle) {
-        p.life -= dt * 2;
-        p.points.material.opacity = Math.max(0, p.life);
+      // 모두 도달 → 페이드아웃
+      if (allReached) {
+        p.life -= dt * 2.5;
+        p.points.material.opacity = Math.max(0, p.life * 0.85);
       }
 
       return true;

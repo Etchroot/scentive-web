@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import BubbleMesh, { EMOTION_BUBBLES } from './BubbleMesh';
 import ParticleSystem from './ParticleSystem';
-import LiquidBottle from './LiquidBottle';
 
 export default class HeroScene {
   constructor(canvas, onAllCompleted) {
@@ -12,7 +11,7 @@ export default class HeroScene {
     this.mouse = new THREE.Vector2(9999, 9999);
     this.raycaster = new THREE.Raycaster();
     this.hoveredIndex = -1;
-    this.fillSpeed = 0.35; // hover 유지 시 초당 채우기 속도
+    this.fillSpeed = 0.35;
     this.condensing = new Set();
     this.allDone = false;
 
@@ -47,20 +46,34 @@ export default class HeroScene {
     dir.position.set(3, 5, 5);
     this.scene.add(ambient, dir);
 
-    // 버블
+    // 버블 (깔대기 내 제한)
     this.bubbleMesh = new BubbleMesh(this.scene, EMOTION_BUBBLES.length);
 
     // 파티클 시스템
     this.particleSystem = new ParticleSystem(this.scene);
-    this.particleSystem.onBottleReach = () => {
-      this.liquidBottle.addLiquid(1 / EMOTION_BUBBLES.length);
-    };
 
-    // 향수병
-    this.liquidBottle = new LiquidBottle(this.scene);
+    // 깔대기 라인 (처음부터 표시)
+    this._buildFunnelLines();
 
-    // 안개 스프라이트 (마우스 trailing)
+    // 안개 스프라이트
     this._buildFogSprite();
+  }
+
+  _buildFunnelLines() {
+    // 깔대기 좌우 사선 라인
+    const geo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-3.2, 1.05, 0),
+      new THREE.Vector3(-0.15, -0.55, 0),
+      new THREE.Vector3( 0.15, -0.55, 0),
+      new THREE.Vector3( 3.2,  1.05, 0),
+    ]);
+    const mat = new THREE.LineBasicMaterial({
+      color: 0x1f1f1f,
+      transparent: true,
+      opacity: 0.45,
+    });
+    this.funnelLines = new THREE.LineSegments(geo, mat);
+    this.scene.add(this.funnelLines);
   }
 
   _buildFogSprite() {
@@ -115,23 +128,22 @@ export default class HeroScene {
   }
 
   _update(dt) {
-    // 마우스 월드 좌표 (z=0 평면)
+    // 마우스 월드 좌표
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     const mouseWorld = new THREE.Vector3();
     this.raycaster.ray.intersectPlane(plane, mouseWorld);
 
-    // 안개 스프라이트 위치
+    // 안개 스프라이트
     this.fogSprite.position.lerp(mouseWorld, 0.08);
 
     // 버블 업데이트
     this.bubbleMesh.update(this.time, dt);
 
-    // 레이캐스터 히트 테스트
+    // 레이캐스터 히트
     const meshes = this.bubbleMesh.getMeshes();
     const intersects = this.raycaster.intersectObjects(meshes, false);
 
-    // 이전 hover 초기화
     if (this.hoveredIndex !== -1) {
       this.bubbleMesh.setHover(this.hoveredIndex, false);
     }
@@ -159,9 +171,6 @@ export default class HeroScene {
     // 파티클 업데이트
     this.particleSystem.update(dt);
 
-    // 향수병 업데이트
-    this.liquidBottle.update(this.time, dt);
-
     // 모든 버블 완료 체크
     if (!this.allDone && this.bubbleMesh.getAllCompleted()) {
       this.allDone = true;
@@ -174,11 +183,6 @@ export default class HeroScene {
   _triggerCondense(idx, origin) {
     this.condensing.add(idx);
     this.bubbleMesh.startCondense(idx);
-
-    // 첫 버블 완료 시 병 show
-    if (!this.liquidBottle.group.visible) {
-      this.liquidBottle.show();
-    }
 
     // 파티클 스폰
     const bubble = EMOTION_BUBBLES[idx];

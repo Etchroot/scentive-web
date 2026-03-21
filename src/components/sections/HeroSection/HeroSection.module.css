@@ -1,10 +1,17 @@
 .hero {
   position: relative;
   width: 100%;
+  height: 200vh;
+}
+
+/* 캔버스 영역 — sticky로 뷰포트에 고정 */
+.stickyZone {
+  position: sticky;
+  top: 0;
+  width: 100%;
   height: calc(100svh - var(--navbar-height));
-  min-height: 600px;
-  background-color: #ffffff;
   overflow: hidden;
+  background-color: #ffffff;
 }
 
 .canvas {
@@ -39,4 +46,39 @@
 @keyframes floatBubble {
   0%, 100% { transform: translateY(0px) scale(1); }
   50%       { transform: translateY(-14px) scale(1.03); }
+}
+
+/* ─────────────────────────────────────────────
+   하단 향수병 섹션 (스크롤 후 등장)
+───────────────────────────────────────────── */
+.bottleSection {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  gap: 24px;
+}
+
+.bottleTag {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.bottleCaption {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+
+.bottleSvg {
+  width: 160px;
+  height: auto;
+  filter: drop-shadow(0 12px 32px rgba(0,0,0,0.06));
 }
