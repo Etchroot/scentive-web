@@ -7,7 +7,7 @@ const SIM_RES = 512;
 const VERT = `attribute vec2 a;varying vec2 uv;
 void main(){uv=a*.5+.5;gl_Position=vec4(a,0,1);}`;
 
-// 잉크 splat — 순수 가우시안
+// 잉크 splat — 순수 가우시안 (alpha 최대 0.68로 제한 → 항상 반투명)
 const SPLAT_FRAG = `precision highp float;
 uniform sampler2D uT;uniform vec2 uP;uniform vec3 uC;uniform float uR;varying vec2 uv;
 void main(){
@@ -15,7 +15,7 @@ void main(){
   float s=exp(-dot(d,d)/uR);
   vec4 cur=texture2D(uT,uv);
   vec3 col=mix(cur.rgb,uC,s*(1.-cur.a*.5));
-  gl_FragColor=vec4(col,min(cur.a+s*.14,1.));
+  gl_FragColor=vec4(col,min(cur.a+s*.14,0.68));
 }`;
 
 const ADVECT_FRAG = `precision highp float;
@@ -53,12 +53,16 @@ float caustic(vec2 p,float t){
   return pow(max(c*.28+.5,0.),4.);
 }
 
-// 다이아몬드 타일 외곽선 (물결 왜곡 UV 사용)
+// 다이아몬드 타일 — 외선 + 내선 이중 구조 (고급 패턴)
 float diamondTile(vec2 p){
-  const float sz=0.072;
+  const float sz=0.216; // 3배 크기
   vec2 q=mod(p,sz)/sz-0.5;
   float d=abs(q.x)+abs(q.y);
-  return smoothstep(0.038,0.0,abs(d-0.42));
+  // 외곽선 (굵고 진하게)
+  float outer=smoothstep(0.062,0.0,abs(d-0.44));
+  // 내측 장식선 (가는 보조선)
+  float inner=smoothstep(0.022,0.0,abs(d-0.32))*0.45;
+  return max(outer,inner);
 }
 
 void main(){
@@ -89,10 +93,10 @@ void main(){
   // 수면 코스틱 오버레이
   col+=vec3(.90,.97,1.)*ca*.018;
 
-  // 다이아몬드 타일 외곽선 — 잉크 아래서 희미해짐
+  // 다이아몬드 타일 — 잉크 아래서 희미해짐
   float tile=diamondTile(wUV);
-  vec3 tileLine=vec3(0.74,0.82,0.91);
-  col=mix(col,tileLine,tile*(1.0-ia*0.90)*0.28);
+  vec3 tileLine=vec3(0.48,0.60,0.75); // 진한 블루-그레이
+  col=mix(col,tileLine,tile*(1.0-ia*0.82)*0.52);
 
   gl_FragColor=vec4(min(col,vec3(1.)),1.);
 }`;
