@@ -6,6 +6,9 @@ import en from './locales/en.json';
 import ja from './locales/ja.json';
 import zh from './locales/zh.json';
 
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const savedLang = isLocal ? 'ko' : (localStorage.getItem('scentive-lang') || 'ko');
+
 i18n
   .use(initReactI18next)
   .init({
@@ -15,7 +18,7 @@ i18n
       ja: { translation: ja },
       zh: { translation: zh },
     },
-    lng: localStorage.getItem('scentive-lang') || 'ko',
+    lng: savedLang,
     fallbackLng: 'ko',
     interpolation: { escapeValue: false },
   });

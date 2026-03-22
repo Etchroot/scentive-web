@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SeoHead from '../common/SeoHead';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import Tag from '../ui/Tag';
@@ -50,7 +51,7 @@ export default function HowItWorksSection() {
   const [activeStep, setActiveStep] = useState(0);
   const itemRefs = useRef([]);
   const connectorFillRef = useRef(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const stepTexts = t('howItWorks.steps', { returnObjects: true });
   const STEPS = STEP_META.map((meta, i) => ({ ...meta, ...stepTexts[i] }));
@@ -82,6 +83,13 @@ export default function HowItWorksSection() {
   }, [activeStep]);
 
   return (
+    <>
+    <SeoHead
+      title="서비스 소개"
+      path="/how-it-works"
+      lang={i18n.language}
+      description="일기 → AI 감정 분석 → 향 레시피 → 아카이브. Scentive가 하루의 감정을 향으로 만드는 4단계 과정을 소개합니다."
+    />
     <SectionWrapper bgType="neutral" id="how-it-works" className={styles.section}>
       <Container>
         {/* 섹션 헤더 */}
@@ -108,5 +116,6 @@ export default function HowItWorksSection() {
         </div>
       </Container>
     </SectionWrapper>
+    </>
   );
 }

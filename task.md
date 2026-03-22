@@ -26,6 +26,8 @@
 | **React** | 18 | UI 컴포넌트 |
 | **Vite** | 5 | 번들러 / 개발 서버 |
 | **React Router DOM** | 6 | SPA 클라이언트 라우팅 |
+| **react-i18next** | - | 다국어(i18n) 지원 |
+| **i18next** | - | 번역 상태 관리 |
 
 ### 그래픽 / 시뮬레이션
 | 기술 | 용도 |
@@ -56,7 +58,7 @@
 - 라우트 전환 시 `ScrollToTop` 컴포넌트가 `window.scrollTo(0, 0)` 실행 → 항상 최상단부터 표시
 
 ### 네비게이션 바 링크 순서
-서비스(`/how-it-works`) → 스토리(`/brand-story`) → 브랜드 철학(`/manifesto`) → 감정-향 지도(외부) | [앱 다운로드 버튼 → `/app`]
+서비스(`/how-it-works`) → 스토리(`/brand-story`) → 브랜드 철학(`/manifesto`) → 감정-향 지도(외부) | [앱 다운로드 버튼 → `/app`] [지구본 아이콘 → 언어 드롭다운]
 
 ---
 
@@ -163,6 +165,12 @@
 src/
 ├── App.jsx                          # BrowserRouter + Routes + ScrollToTop
 ├── main.jsx                         # React 진입점
+├── i18n.js                          # i18next 초기화 (언어 localStorage 유지, ko fallback)
+├── locales/
+│   ├── ko.json                      # 한국어 — 단일 소스 (직접 편집)
+│   ├── en.json                      # 영어 — scripts/translate.js 자동 생성
+│   ├── ja.json                      # 일본어 — scripts/translate.js 자동 생성
+│   └── zh.json                      # 중국어(간체) — scripts/translate.js 자동 생성
 ├── styles/
 │   ├── variables.css                # CSS 변수 (컬러 시스템)
 │   └── global.css                   # 전역 스타일
@@ -191,6 +199,29 @@ src/
 └── design/
     └── color_table.txt              # 디자인 컬러 레퍼런스
 ```
+
+---
+
+## 다국어(i18n) 시스템
+
+### 구조
+- **단일 소스**: `src/locales/ko.json` — 모든 한국어 텍스트 중앙 관리
+- **자동 번역**: `scripts/translate.js` 실행 시 Claude API로 en/ja/zh 자동 생성
+- **fallback**: 번역 파일에 키 없으면 자동으로 한국어 표시
+
+### 번역 재생성 방법
+```bash
+# .env 파일에 ANTHROPIC_API_KEY=sk-ant-xxx 설정 후:
+node scripts/translate.js
+```
+
+### 언어 전환 UI
+- Navbar 우측 끝 지구본 아이콘 버튼 → 클릭 시 드롭다운 (한국어/English/日本語/中文)
+- 선택한 언어는 `localStorage('scentive-lang')`에 저장 → 재방문 시 유지
+
+### 번역 대상 섹션
+모든 섹션 (HeroSection 감정 라벨 포함, ManifestoSection keyword 포함)
+단, WebGL 좌표·색상·이미지 경로는 번역 대상에서 제외 (컴포넌트 상수로 관리)
 
 ---
 
@@ -239,3 +270,6 @@ src/
 | 2026-03-22 | BrandStory: 감각 그리드 세로 중앙 정렬, 비전 카드 번호 제거, 강조 카드 제거 |
 | 2026-03-22 | Navbar '선언' → '브랜드 철학' |
 | 2026-03-22 | ManifestoSection 각 선언문에 desc 본문 추가 (화학 분자 데이터 기반 과학적 내용 포함) |
+| 2026-03-22 | 감정 라벨 완료 시 향 이름으로 전환 + 향 고유 색상으로 배경 변경 (emotion→scent 전환 애니메이션) |
+| 2026-03-22 | 다국어 시스템 구축: react-i18next 세팅, ko/en/ja/zh locale JSON, Claude API 번역 스크립트 |
+| 2026-03-22 | Navbar 언어 스위처: 지구본 아이콘 클릭 → 드롭다운 언어 선택 (localStorage 유지) |

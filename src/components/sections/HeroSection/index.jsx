@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import FluidInkSim from './FluidInkSim';
+import SeoHead from '../../common/SeoHead';
 import styles from './HeroSection.module.css';
 
 // 비-텍스트 데이터 (WebGL 컬러, 위치, 향 색상) — 번역 불필요
@@ -22,7 +23,7 @@ const FILL_RATE = 0.70; // fill units per second while hovering
 
 export default function HeroSection() {
   const navigate    = useNavigate();
-  const { t }       = useTranslation();
+  const { t, i18n } = useTranslation();
   const canvasRef   = useRef(null);
   const simRef      = useRef(null);
   const rafRef      = useRef(null);
@@ -147,6 +148,12 @@ export default function HeroSection() {
   }, []);
 
   return (
+    <>
+    <SeoHead
+      path="/"
+      lang={i18n.language}
+      description="Scentive는 매일 쓰는 일기를 AI로 분석해 세상에 하나뿐인 나만의 향 레시피를 만들어드립니다. 감정을 향으로, 하루를 향수로."
+    />
     <section className={styles.hero} id="hero">
 
       {/* ── 텍스트 영역 — 수면 위 인트로 ── */}
@@ -205,5 +212,6 @@ export default function HeroSection() {
         )}
       </div>
     </section>
+    </>
   );
 }

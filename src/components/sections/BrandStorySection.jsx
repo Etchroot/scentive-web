@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import SeoHead from '../common/SeoHead';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import AccentPanel from '../ui/AccentPanel';
@@ -11,7 +12,7 @@ const SENSE_HIGHLIGHT = [false, false, false, false, true];
 const VISION_NUMS = ['01', '02', '03'];
 
 export default function BrandStorySection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const senseTexts = t('brandStory.senses', { returnObjects: true });
   const SENSES = senseTexts.map((s, i) => ({ ...s, highlight: SENSE_HIGHLIGHT[i] }));
@@ -20,6 +21,13 @@ export default function BrandStorySection() {
   const VISIONS = VISION_NUMS.map((num, i) => ({ num, ...visionTexts[i] }));
 
   return (
+    <>
+    <SeoHead
+      title="브랜드 스토리"
+      path="/brand-story"
+      lang={i18n.language}
+      description="후각은 가장 원초적이고 가장 개인적인 감각입니다. Scentive가 향의 언어를 만드는 이유와 나아갈 방향."
+    />
     <SectionWrapper bgType="warm" id="brand-story" className={styles.section}>
       <Container>
         {/* 파트 1 — Why we started */}
@@ -86,5 +94,6 @@ export default function BrandStorySection() {
         </div>
       </Container>
     </SectionWrapper>
+    </>
   );
 }

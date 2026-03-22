@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import SeoHead from '../common/SeoHead';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import styles from './ManifestoSection.module.css';
@@ -78,7 +79,7 @@ function ManifestoLine({ item, index: lineIdx }) {
 export default function ManifestoSection() {
   const sectionRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const lines = t('manifesto.lines', { returnObjects: true }).map((line, i) => ({
     ...line,
@@ -99,6 +100,13 @@ export default function ManifestoSection() {
   }, []);
 
   return (
+    <>
+    <SeoHead
+      title="브랜드 철학"
+      path="/manifesto"
+      lang={i18n.language}
+      description="글자는 감정을 담고, 향은 추억을 담습니다. Scentive가 감정과 향 사이를 데이터로 잇는 5가지 믿음."
+    />
     <SectionWrapper bgType="impact" id="manifesto" className={styles.section}>
       <Container>
         <div ref={sectionRef} className={styles.inner}>
@@ -122,5 +130,6 @@ export default function ManifestoSection() {
         />
       </div>
     </SectionWrapper>
+    </>
   );
 }

@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import SeoHead from '../common/SeoHead';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import Button from '../ui/Button';
@@ -8,9 +10,16 @@ import styles from './AppCtaSection.module.css';
 const APP_URL = 'https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK?usp=drive_link';
 
 export default function AppCtaSection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
+    <>
+    <SeoHead
+      title="앱 다운로드"
+      path="/app"
+      lang={i18n.language}
+      description="지금 Scentive 앱을 다운로드하고 한 달 후 세상에 하나뿐인 나만의 향 레시피를 받아보세요. Android 무료."
+    />
     <SectionWrapper bgType="impact" id="app-cta" className={styles.section}>
       <Container>
         <div className={styles.inner}>
@@ -73,6 +82,7 @@ export default function AppCtaSection() {
         <Footer />
       </Container>
     </SectionWrapper>
+    </>
   );
 }
 
@@ -89,13 +99,13 @@ function Footer() {
 
         {/* 링크 */}
         <nav className={styles.footerLinks} aria-label="footer navigation">
-          <a href="#" className={styles.footerLink}>{t('footer.privacy')}</a>
+          <Link to="/privacy" className={styles.footerLink}>{t('footer.privacy')}</Link>
           <a href="#" className={styles.footerLink}>{t('footer.terms')}</a>
           <a href="mailto:contact@scentive.io" className={styles.footerLink}>{t('footer.contact')}</a>
         </nav>
 
         {/* 카피라이트 */}
-        <p className={styles.copyright}>© 2025 Scentive</p>
+        <p className={styles.copyright}>© 2026 Scentive</p>
       </div>
     </footer>
   );

@@ -12,6 +12,7 @@ import ManifestoSection from './components/sections/ManifestoSection';
 import HowItWorksSection from './components/sections/HowItWorksSection';
 import BrandStorySection from './components/sections/BrandStorySection';
 import AppCtaSection from './components/sections/AppCtaSection';
+import PrivacyPage from './pages/PrivacyPage';
 
 function Layout({ children }) {
   return (
@@ -67,6 +68,7 @@ export default function App() {
             </Layout>
           }
         />
+        <Route path="/privacy" element={<PrivacyPage />} />
       </Routes>
     </BrowserRouter>
   );
