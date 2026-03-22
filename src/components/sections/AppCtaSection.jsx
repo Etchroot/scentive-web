@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import Button from '../ui/Button';
@@ -7,23 +8,23 @@ import styles from './AppCtaSection.module.css';
 const APP_URL = 'https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK?usp=drive_link';
 
 export default function AppCtaSection() {
+  const { t } = useTranslation();
+
   return (
     <SectionWrapper bgType="impact" id="app-cta" className={styles.section}>
       <Container>
         <div className={styles.inner}>
           {/* 아이브로우 */}
-          <p className={`${styles.eyebrow} label`}>— Start your scent journey</p>
+          <p className={`${styles.eyebrow} label`}>{t('appCta.eyebrow')}</p>
 
           {/* 헤드라인 */}
           <h2 className={styles.headline}>
-            오늘의 일기가{' '}
-            <span className={styles.highlight}>당신의 향</span>이 됩니다.
+            {t('appCta.headlinePre')}{' '}
+            <span className={styles.highlight}>{t('appCta.headlineHighlight')}</span>{t('appCta.headlinePost')}
           </h2>
 
           {/* 서브 */}
-          <p className={styles.sub}>
-            지금 시작하면 한 달 후, 처음으로 나만의 향 레시피를 받게 됩니다.
-          </p>
+          <p className={styles.sub}>{t('appCta.sub')}</p>
 
           {/* CTA 액션 영역 */}
           <div className={styles.ctaActions}>
@@ -32,13 +33,13 @@ export default function AppCtaSection() {
               <div className={styles.qrFrame}>
                 <img
                   src="/images/qr-code.png"
-                  alt="앱 다운로드 QR 코드"
+                  alt={t('appCta.qrAlt')}
                   className={styles.qrImg}
                   width={72}
                   height={72}
                 />
               </div>
-              <p className={styles.qrLabel}>카메라로 스캔</p>
+              <p className={styles.qrLabel}>{t('appCta.qrLabel')}</p>
             </div>
 
             {/* 수직 구분선 */}
@@ -61,9 +62,9 @@ export default function AppCtaSection() {
                   <path d="M12 16L6 10h4V3h4v7h4l-6 6z" fill="currentColor"/>
                   <path d="M20 21H4v-2h16v2z" fill="currentColor"/>
                 </svg>
-                앱 다운로드
+                {t('appCta.download')}
               </Button>
-              <p className={styles.btnSub}>Android · 무료</p>
+              <p className={styles.btnSub}>{t('appCta.platform')}</p>
             </div>
           </div>
         </div>
@@ -76,6 +77,8 @@ export default function AppCtaSection() {
 }
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className={styles.footer}>
       <Divider variant="default" style={{ opacity: 0.15, marginBottom: '32px' }} />
@@ -85,10 +88,10 @@ function Footer() {
         <span className={styles.footerLogo}>Scentive</span>
 
         {/* 링크 */}
-        <nav className={styles.footerLinks} aria-label="푸터 내비게이션">
-          <a href="#" className={styles.footerLink}>개인정보처리방침</a>
-          <a href="#" className={styles.footerLink}>이용약관</a>
-          <a href="mailto:contact@scentive.io" className={styles.footerLink}>문의하기</a>
+        <nav className={styles.footerLinks} aria-label="footer navigation">
+          <a href="#" className={styles.footerLink}>{t('footer.privacy')}</a>
+          <a href="#" className={styles.footerLink}>{t('footer.terms')}</a>
+          <a href="mailto:contact@scentive.io" className={styles.footerLink}>{t('footer.contact')}</a>
         </nav>
 
         {/* 카피라이트 */}

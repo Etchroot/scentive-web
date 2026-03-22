@@ -1,38 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FluidInkSim from './FluidInkSim';
 import styles from './HeroSection.module.css';
 
-// 감정 → 향 매핑 (잉크 컬러: 비비드, scentColor: 향 고유 색상)
-const EMOTIONS = [
-  { text: '따뜻한 차 한 잔',       color: [1.00, 0.38, 0.00], x: 25, y: 12, scent: '캐모마일',      scentColor: '#FFF7E1' },
-  { text: '취준 성공',             color: [0.05, 0.95, 0.12], x: 72, y: 8,  scent: '골드 앰버',    scentColor: '#FFAD00' },
-  { text: '완벽한 아침',           color: [0.00, 0.60, 1.00], x: 50, y: 22, scent: '화이트 머스크', scentColor: '#EFEFEF' },
-  { text: '이불 밖은 위험해',      color: [0.08, 0.10, 1.00], x: 18, y: 38, scent: '산달우드',      scentColor: '#FFE1D6' },
-  { text: '보고싶어',              color: [1.00, 0.04, 0.72], x: 80, y: 34, scent: '로즈',          scentColor: '#FFC8B6' },
-  { text: '특별한 데이트',         color: [1.00, 0.04, 0.18], x: 86, y: 52, scent: '자스민',        scentColor: '#FFE2EE' },
-  { text: '새 옷 쇼핑',            color: [0.00, 0.92, 0.70], x: 55, y: 55, scent: '그린 티',       scentColor: '#B0EBEC' },
-  { text: '아무것도 하기 싫은 날', color: [0.50, 0.00, 1.00], x: 20, y: 68, scent: '베티버',        scentColor: '#CACACA' },
-  { text: '오늘은 칼퇴',           color: [0.18, 1.00, 0.05], x: 75, y: 73, scent: '시트러스',      scentColor: '#C0E5D1' },
-  { text: '치킨 맛있다',           color: [1.00, 0.60, 0.00], x: 44, y: 85, scent: '바닐라',        scentColor: '#FFA487' },
+// 비-텍스트 데이터 (WebGL 컬러, 위치, 향 색상) — 번역 불필요
+const EMOTION_META = [
+  { color: [1.00, 0.38, 0.00], x: 25, y: 12, scentColor: '#FFF7E1' },
+  { color: [0.05, 0.95, 0.12], x: 72, y: 8,  scentColor: '#FFAD00' },
+  { color: [0.00, 0.60, 1.00], x: 50, y: 22, scentColor: '#EFEFEF' },
+  { color: [0.08, 0.10, 1.00], x: 18, y: 38, scentColor: '#FFE1D6' },
+  { color: [1.00, 0.04, 0.72], x: 80, y: 34, scentColor: '#FFC8B6' },
+  { color: [1.00, 0.04, 0.18], x: 86, y: 52, scentColor: '#FFE2EE' },
+  { color: [0.00, 0.92, 0.70], x: 55, y: 55, scentColor: '#B0EBEC' },
+  { color: [0.50, 0.00, 1.00], x: 20, y: 68, scentColor: '#CACACA' },
+  { color: [0.18, 1.00, 0.05], x: 75, y: 73, scentColor: '#C0E5D1' },
+  { color: [1.00, 0.60, 0.00], x: 44, y: 85, scentColor: '#FFA487' },
 ];
 
 const FILL_RATE = 0.70; // fill units per second while hovering
 
 export default function HeroSection() {
   const navigate    = useNavigate();
+  const { t }       = useTranslation();
   const canvasRef   = useRef(null);
   const simRef      = useRef(null);
   const rafRef      = useRef(null);
   const prevTimeRef = useRef(null);
   const hoverRef     = useRef(-1);
   const prevHoverRef = useRef(-1);
-  const hoverSizeRef = useRef(EMOTIONS.map(() => 0));
-  const fillsRef    = useRef(EMOTIONS.map(() => 0));
+  const hoverSizeRef = useRef(EMOTION_META.map(() => 0));
+  const fillsRef    = useRef(EMOTION_META.map(() => 0));
   const doneRef     = useRef(0);
   const labelRefs   = useRef([]);
   const [allDone, setAllDone] = useState(false);
   const [overlayReady, setOverlayReady] = useState(false);
+
+  // 텍스트 번역 병합 (렌더용)
+  const emotionTexts = t('hero.emotions', { returnObjects: true });
+  const EMOTIONS = EMOTION_META.map((meta, i) => ({ ...meta, ...emotionTexts[i] }));
 
   // 애니메이션 완료(~3.2s) 후 클릭 활성화
   useEffect(() => {
@@ -44,8 +50,8 @@ export default function HeroSection() {
   // 공통 초기화 (오버레이 닫기 + 상태 리셋)
   const _resetState = () => {
     setAllDone(false);
-    fillsRef.current = EMOTIONS.map(() => 0);
-    hoverSizeRef.current = EMOTIONS.map(() => 0);
+    fillsRef.current = EMOTION_META.map(() => 0);
+    hoverSizeRef.current = EMOTION_META.map(() => 0);
     prevHoverRef.current = -1;
     doneRef.current = 0;
     labelRefs.current.forEach(el => {
@@ -106,7 +112,7 @@ export default function HeroSection() {
         if (fills[idx] < 1) {
           fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
           hoverSizeRef.current[idx] = Math.min(hoverSizeRef.current[idx] + FILL_RATE * dt, 1);
-          const em = EMOTIONS[idx];
+          const em = EMOTION_META[idx]; // WebGL용: 텍스트 불필요
           const spread = 0.028 + fills[idx] * 0.049;
           const r = 0.35 + hoverSizeRef.current[idx] * 2.2;
           for (let k = 0; k < 5; k++) {
@@ -124,7 +130,7 @@ export default function HeroSection() {
               el.dataset.done = '1';
               el.classList.add(styles.labelDone);
               doneRef.current++;
-              if (doneRef.current === EMOTIONS.length) setAllDone(true);
+              if (doneRef.current === EMOTION_META.length) setAllDone(true);
             }
           }
         }
@@ -145,14 +151,12 @@ export default function HeroSection() {
 
       {/* ── 텍스트 영역 — 수면 위 인트로 ── */}
       <div className={styles.textZone}>
-        <span className={styles.eyebrow}>Scent × Emotion × AI</span>
+        <span className={styles.eyebrow}>{t('hero.eyebrow')}</span>
         <h1 className={styles.headline}>
-          당신의 하루를<br />
-          <span className={styles.highlight}>향으로</span> 번역합니다.
+          {t('hero.headlineLine1')}<br />
+          <span className={styles.highlight}>{t('hero.headlineHighlight')}</span> {t('hero.headlineLine2')}
         </h1>
-        <p className={styles.sub}>
-          일상과 감정에 마우스를 올려 수면을 향으로 물들여보세요
-        </p>
+        <p className={styles.sub}>{t('hero.sub')}</p>
       </div>
 
       {/* ── 수면 캔버스 영역 ── */}
@@ -194,9 +198,9 @@ export default function HeroSection() {
             className={`${styles.janhyangOverlay} ${overlayReady ? styles.overlayReady : ''}`}
             onClick={handleReset}
           >
-            <p className={styles.janhyangText}>잔향</p>
-            <p className={styles.janhyangSub}>모든 감정이 향으로 피어났습니다</p>
-            {overlayReady && <p className={styles.overlayHint} onClick={handleGoToService}>— 서비스 둘러보기 —</p>}
+            <p className={styles.janhyangText}>{t('hero.overlay.title')}</p>
+            <p className={styles.janhyangSub}>{t('hero.overlay.sub')}</p>
+            {overlayReady && <p className={styles.overlayHint} onClick={handleGoToService}>{t('hero.overlay.hint')}</p>}
           </div>
         )}
       </div>

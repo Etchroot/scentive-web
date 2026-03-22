@@ -68,6 +68,69 @@
   opacity: 1;
 }
 
+/* 언어 드롭다운 */
+.langWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.langToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color var(--transition-base);
+  border-radius: 0;
+}
+
+.langToggle:hover {
+  color: var(--color-text-primary);
+}
+
+.langDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 120px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-strong);
+  list-style: none;
+  padding: 4px 0;
+  z-index: 200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.langItem {
+  display: block;
+  width: 100%;
+  padding: 9px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.langItem:hover {
+  background: var(--color-bg-neutral);
+  color: var(--color-text-primary);
+}
+
+.langItemActive {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  background: var(--color-bg-warm);
+}
+
 /* 모바일 */
 @media (max-width: 640px) {
   .links {

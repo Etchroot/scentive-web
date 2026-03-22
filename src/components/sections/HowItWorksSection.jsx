@@ -1,42 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import Tag from '../ui/Tag';
 import styles from './HowItWorksSection.module.css';
 
-const STEPS = [
-  {
-    num: '01',
-    tag: '매일',
-    title: '일기를 씁니다',
-    desc: '오늘 하루 있었던 일, 느꼈던 감정을 자유롭게 기록해요.\n감정 태그로 그날의 기분을 더할 수 있어요.',
-    img: '/images/screenshot-01.jpg',
-    imgAlt: '일기 작성 앱 화면',
-  },
-  {
-    num: '02',
-    tag: '월말 자동',
-    title: 'AI가 감정을 분석합니다',
-    desc: '한 달간 쌓인 일기에서 감정·감각·형용사 키워드를 추출하고 패턴을 찾아냅니다.',
-    img: '/images/screenshot-02.jpg',
-    imgAlt: 'AI 분석 앱 화면',
-  },
-  {
-    num: '03',
-    tag: '50가지 어코드',
-    title: '향 레시피가 완성됩니다',
-    desc: '추출된 키워드를 50개 향 어코드 DB와 매칭해 탑·미들·베이스 노트로 구성된 나만의 레시피를 만들어요.',
-    img: '/images/screenshot-03.jpg',
-    imgAlt: '향 레시피 앱 화면',
-  },
-  {
-    num: '04',
-    tag: '12개월 기록',
-    title: '향 리포트로 아카이빙됩니다',
-    desc: '그 달의 향수가 완성되어 아카이브에 저장됩니다.\n12개의 향수병이 하나씩 채워져 가요.',
-    img: '/images/screenshot-04.jpg',
-    imgAlt: '아카이브 앱 화면',
-  },
+// 번역 불필요 데이터 (번호, 이미지 경로)
+const STEP_META = [
+  { num: '01', img: '/images/screenshot-01.jpg' },
+  { num: '02', img: '/images/screenshot-02.jpg' },
+  { num: '03', img: '/images/screenshot-03.jpg' },
+  { num: '04', img: '/images/screenshot-04.jpg' },
 ];
 
 function StepItem({ step, index, activeStep }) {
@@ -76,6 +50,10 @@ export default function HowItWorksSection() {
   const [activeStep, setActiveStep] = useState(0);
   const itemRefs = useRef([]);
   const connectorFillRef = useRef(null);
+  const { t } = useTranslation();
+
+  const stepTexts = t('howItWorks.steps', { returnObjects: true });
+  const STEPS = STEP_META.map((meta, i) => ({ ...meta, ...stepTexts[i] }));
 
   useEffect(() => {
     const observers = itemRefs.current.map((el, i) => {
@@ -108,8 +86,8 @@ export default function HowItWorksSection() {
       <Container>
         {/* 섹션 헤더 */}
         <div className={styles.header}>
-          <p className={`${styles.eyebrow} label`}>— How it works</p>
-          <h2 className={styles.title}>하루의 감정이 향이 되기까지</h2>
+          <p className={`${styles.eyebrow} label`}>{t('howItWorks.eyebrow')}</p>
+          <h2 className={styles.title}>{t('howItWorks.title')}</h2>
         </div>
 
         {/* 스텝 리스트 */}
