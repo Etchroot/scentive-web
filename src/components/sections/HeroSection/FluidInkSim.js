@@ -176,9 +176,9 @@ void main(){
 
   vec3 base;
   if(uHasCam>.5){
-    // Cover-fit: fill canvas, crop overflow, preserve aspect ratio
-    float fitX=uVAsp>uCAsp?uVAsp/uCAsp:1.;
-    float fitY=uVAsp>uCAsp?1.:uCAsp/uVAsp;
+    // Cover-fit: fill canvas, center-crop, preserve aspect ratio
+    float fitX=uVAsp>uCAsp?uCAsp/uVAsp:1.;
+    float fitY=uVAsp>uCAsp?1.:uVAsp/uCAsp;
     vec2 cuv=(uv-.5)*vec2(fitX,fitY)+.5;
     cuv.x=1.-cuv.x;
     base=texture2D(uCam,clamp(cuv,0.,1.)).rgb;
