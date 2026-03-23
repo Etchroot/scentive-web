@@ -503,8 +503,8 @@ export default class FluidInkSim {
     this._splatDye(x, y, color, r);
     // Gentle velocity push for natural ink spread
     const angle = Math.random() * Math.PI * 2;
-    const v = 0.18 + radius * 0.10;
-    this._splatVel(x, y, Math.cos(angle) * v, Math.sin(angle) * v, r * 2);
+    const v = 0.22 + radius * 0.12;
+    this._splatVel(x, y, Math.cos(angle) * v, Math.sin(angle) * v, r * 2.4);
   }
 
   /** Upload video frame as camera texture */
