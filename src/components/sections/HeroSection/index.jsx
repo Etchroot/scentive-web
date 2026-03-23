@@ -267,7 +267,7 @@ export default function HeroSection() {
               </filter>
             </svg>
             <p className={styles.introText}>
-              일상과 감정에 마우스를 올려<br />수면을 향으로 물들여보세요
+              일상과 감정에 {cameraGranted ? '손' : '마우스'}을 올려<br />수면을 향으로 물들여보세요
             </p>
           </div>
         )}
