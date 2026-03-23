@@ -28,7 +28,7 @@ const INK_ALPHA = 0.12;   // density added per dye splat unit
 const VERT = `attribute vec2 a;varying vec2 uv;
 void main(){uv=a*.5+.5;gl_Position=vec4(a,0,1);}`;
 
-// Generic splat — velocity (uA=0) or dye (uA>0)
+// Generic splat — velocity (uA=0) or dye (uA>0, weighted-average blend)
 const SPLAT = `precision highp float;
 uniform sampler2D uT;uniform vec2 uP;uniform vec3 uC;
 uniform float uR;uniform float uAsp;uniform float uA;
@@ -37,7 +37,17 @@ void main(){
   vec2 d=uv-uP; d.x*=uAsp;
   float s=exp(-dot(d,d)/uR);
   vec4 b=texture2D(uT,uv);
-  gl_FragColor=vec4(b.rgb+uC*s,b.a+uA*s);
+  if(uA<.001){
+    // Velocity splat — additive
+    gl_FragColor=vec4(b.rgb+uC*s, b.a);
+  } else {
+    // Dye splat — weighted average so colors never add to white
+    float w=uA*s;
+    float newA=b.a+w;
+    vec3 prev=b.rgb/max(b.a,.001);
+    vec3 blended=mix(prev,uC,w/max(newA,.001));
+    gl_FragColor=vec4(blended*newA, newA);
+  }
 }`;
 
 // Semi-Lagrangian advection with bilinear interpolation
@@ -123,10 +133,11 @@ void main(){
   gl_FragColor=vec4(v+f*uDt*uStr,0,1);
 }`;
 
-// Display — camera + water + multiply-blended ink
+// Display — camera (contain-fit) + water + multiply-blended ink
 const DISPLAY = `precision highp float;
 uniform sampler2D uDye;uniform sampler2D uCam;
 uniform float uTime;uniform float uHasCam;
+uniform float uCAsp;uniform float uVAsp;
 varying vec2 uv;
 
 float caustic(vec2 p,float t){
@@ -166,12 +177,23 @@ void main(){
 
   vec3 base;
   if(uHasCam>.5){
-    vec2 camUV=vec2(1.-wUV.x,wUV.y);
-    float rx=sin(camUV.y*30.+uTime*.8)*cos(camUV.x*25.)*.006;
-    float ry=cos(camUV.x*35.+uTime*1.1)*sin(camUV.y*20.)*.006;
-    camUV+=vec2(rx,ry);
-    base=texture2D(uCam,clamp(camUV,0.,1.)).rgb;
-    base+=vec3(.85,.93,1.)*ca*.08;
+    // Contain-fit: scale UV to preserve video aspect ratio
+    float fitX=uVAsp>uCAsp?1.:uVAsp/uCAsp;
+    float fitY=uVAsp>uCAsp?uCAsp/uVAsp:1.;
+    vec2 cuv=(wUV-.5)/vec2(fitX,fitY)+.5;
+
+    if(cuv.x<0.||cuv.x>1.||cuv.y<0.||cuv.y>1.){
+      // Letterbox area — white background with caustic
+      base=vec3(1.)+vec3(.86,.96,1.)*ca*.04;
+    } else {
+      // Mirror X for selfie + water distortion
+      cuv.x=1.-cuv.x;
+      float rx=sin(cuv.y*30.+uTime*.8)*cos(cuv.x*25.)*.006;
+      float ry=cos(cuv.x*35.+uTime*1.1)*sin(cuv.y*20.)*.006;
+      cuv+=vec2(rx,ry);
+      base=texture2D(uCam,clamp(cuv,0.,1.)).rgb;
+      base+=vec3(.85,.93,1.)*ca*.08;
+    }
   } else {
     vec3 w=vec3(.955,.967,.985);
     base=w+vec3(.86,.96,1.)*ca*.07+vec3(.9,.97,1.)*ca*.018;
@@ -310,6 +332,7 @@ export default class FluidInkSim {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
       new Uint8Array([0, 0, 0, 255]));
     this._hasCam = false;
+    this._camAsp = 1.333; // default 4:3 until first frame
 
     // Hand state
     this._handPos = [0, 0];
@@ -467,6 +490,8 @@ export default class FluidInkSim {
     this._tex(p, 'uCam', 1, this._camTex);
     gl.uniform1f(gl.getUniformLocation(p, 'uHasCam'), this._hasCam ? 1 : 0);
     gl.uniform1f(gl.getUniformLocation(p, 'uTime'), this.time);
+    gl.uniform1f(gl.getUniformLocation(p, 'uCAsp'), this._aspect);
+    gl.uniform1f(gl.getUniformLocation(p, 'uVAsp'), this._camAsp);
     this._draw(p);
   }
 
@@ -477,9 +502,9 @@ export default class FluidInkSim {
     const x = normX, y = 1 - normY;
     const r = 0.0022 * radius * radius;
     this._splatDye(x, y, color, r);
-    // Small velocity push for natural ink spread
+    // Small velocity push for natural ink spread (70% intensity)
     const angle = Math.random() * Math.PI * 2;
-    const v = 0.4 + radius * 0.25;
+    const v = (0.4 + radius * 0.25) * 0.7;
     this._splatVel(x, y, Math.cos(angle) * v, Math.sin(angle) * v, r * 3);
   }
 
@@ -492,6 +517,7 @@ export default class FluidInkSim {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     this._hasCam = true;
+    this._camAsp = video.videoWidth / Math.max(video.videoHeight, 1);
   }
 
   /** Set hand/pointer position and velocity (screen coords) */
