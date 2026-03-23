@@ -17,7 +17,7 @@
 const SIM = 512;
 const JACOBI = 24;
 const VEL_DISS  = 0.98;   // velocity dissipation — momentum persists ~2s
-const DYE_DISS  = 0.997;  // dye dissipation — ink fades very slowly
+const DYE_DISS  = 0.9985; // dye dissipation — ink lingers ~2s longer
 const VORT_STR  = 8.0;    // vorticity confinement strength (gentle swirl)
 const HAND_FORCE = 400.0; // hand velocity amplification
 const SPLAT_R   = 0.0015; // base Gaussian radius for velocity splats
