@@ -14,7 +14,7 @@
  *  10. Display (camera + water + multiply-blended ink)
  */
 
-const SIM = 1024;
+const SIM = 768;
 const JACOBI = 24;
 const VEL_DISS  = 0.98;   // velocity dissipation — momentum persists ~2s
 const DYE_DISS  = 0.9985; // dye dissipation — ink lingers ~2s longer
@@ -159,7 +159,7 @@ void main(){
 
   // 잉크
   vec4 dye=texture2D(uDye,wUV);
-  float tx=1./1024.;
+  float tx=1./768.;
   vec4 db=(texture2D(uDye,wUV+vec2(tx,0))+texture2D(uDye,wUV-vec2(tx,0))
           +texture2D(uDye,wUV+vec2(0,tx))+texture2D(uDye,wUV-vec2(0,tx)))*.25;
   dye=dye+(dye-db)*.15;
