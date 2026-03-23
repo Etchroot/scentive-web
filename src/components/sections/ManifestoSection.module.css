@@ -1,6 +1,42 @@
 .section {
   position: relative;
-  padding: 96px 0 120px;
+  padding: 0 0 120px;
+}
+
+/* ── 히어로 인트로 블록 ── */
+.heroIntro {
+  padding: 72px 0 56px;
+  border-bottom: 1px solid rgba(31, 31, 31, 0.15);
+  margin-bottom: 64px;
+}
+
+.heroEyebrow {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.heroHeadline {
+  font-size: clamp(32px, 4.2vw, 52px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.heroHighlight {
+  border-bottom: 3px solid var(--color-point);
+  padding-bottom: 1px;
+}
+
+.heroSub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
 }
 
 .inner {

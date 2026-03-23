@@ -1,53 +1,14 @@
 .hero {
   width: 100%;
-  min-height: 140vh;
-  background: #f5f7fa;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── 텍스트 영역 ── */
-.textZone {
-  flex-shrink: 0;
-  padding: 48px 64px 32px;
-  background: #ffffff;
+  height: calc(100vh - 56px);
   position: relative;
-  z-index: 10;
-}
-
-.eyebrow {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin-bottom: 12px;
-}
-
-.headline {
-  font-size: clamp(32px, 4.2vw, 52px);
-  font-weight: 500;
-  line-height: 1.15;
-  color: var(--color-text-primary);
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
-}
-
-.highlight {
-  border-bottom: 3px solid var(--color-point);
-  padding-bottom: 1px;
-}
-
-.sub {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-muted);
+  overflow: hidden;
 }
 
 /* ── 수면 캔버스 영역 ── */
 .canvasZone {
-  flex: 1;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #edf2f7;
 }
@@ -60,13 +21,6 @@
   display: block;
 }
 
-/* 모바일 폴백 — 수면 느낌의 정적 배경 */
-.mobileWater {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(160deg, #e8f4fd 0%, #dbeaf6 40%, #cfe0f0 100%);
-}
-
 /* ── SCENTIVE 텍스트 패턴 (CSS SVG 벡터) ── */
 .scentivePattern {
   position: absolute;
@@ -77,17 +31,74 @@
   background-size: 800px 400px;
 }
 
+/* ── 손가락 커서 (손 추적 활성 시 표시) ── */
+.handCursor {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+}
+
+/* ── 인트로 안내 문구 ── */
+.introHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  pointer-events: none;
+  filter: url(#inkDissolve);
+  animation: introFadeIn 0.8s ease both, inkDissolveOut 1.2s ease 3s both;
+}
+
+.introText {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  text-align: center;
+  padding: 32px 48px;
+  border-radius: 20px;
+  background: rgba(250, 250, 250, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes introFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes inkDissolveOut {
+  0%   { opacity: 1; }
+  60%  { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
 /* ── 감정 라벨 ── */
 .emotionLabel {
   position: absolute;
   transform: translate(-50%, -50%);
-  padding: 8px 16px;
-  border-radius: 28px;
+  padding: 16px 32px;
+  border-radius: 36px;
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 500;
   color: var(--color-text-primary);
   letter-spacing: -0.01em;
@@ -121,7 +132,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--color-text-primary);
@@ -136,7 +147,7 @@
 .labelInk {
   position: absolute;
   inset: 0;
-  border-radius: 28px;
+  border-radius: 36px;
   background: var(--label-color);
   opacity: 0.28;
   transform-origin: left center;
@@ -241,7 +252,6 @@
 
 /* ── 모바일 ── */
 @media (max-width: 640px) {
-  .textZone    { padding: 32px 24px 20px; }
-  .headline    { font-size: 30px; }
-  .emotionLabel { font-size: 12px; padding: 7px 13px; }
+  .emotionLabel { font-size: 20px; padding: 12px 24px; }
+  .handCursor { width: 18px; height: 18px; }
 }

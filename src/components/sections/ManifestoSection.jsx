@@ -109,6 +109,15 @@ export default function ManifestoSection() {
     />
     <SectionWrapper bgType="impact" id="manifesto" className={styles.section}>
       <Container>
+        {/* ── 히어로 인트로 텍스트 (HeroSection에서 이식) ── */}
+        <div className={styles.heroIntro}>
+          <span className={styles.heroEyebrow}>{t('hero.eyebrow')}</span>
+          <h1 className={styles.heroHeadline}>
+            {t('hero.headlineLine1')}<br />
+            <span className={styles.heroHighlight}>{t('hero.headlineHighlight')}</span> {t('hero.headlineLine2')}
+          </h1>
+        </div>
+
         <div ref={sectionRef} className={styles.inner}>
           {/* 아이브로우 */}
           <p className={`${styles.eyebrow} label`}>{t('manifesto.eyebrow')}</p>
