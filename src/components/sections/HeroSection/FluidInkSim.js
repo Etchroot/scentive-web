@@ -18,7 +18,7 @@ const SIM = 512;
 const JACOBI = 24;
 const VEL_DISS  = 0.98;   // velocity dissipation — momentum persists ~2s
 const DYE_DISS  = 0.997;  // dye dissipation — ink fades very slowly
-const VORT_STR  = 32.0;   // vorticity confinement strength
+const VORT_STR  = 8.0;    // vorticity confinement strength (gentle swirl)
 const HAND_FORCE = 400.0; // hand velocity amplification
 const SPLAT_R   = 0.0015; // base Gaussian radius for velocity splats
 const INK_ALPHA = 0.12;   // density added per dye splat unit
@@ -157,19 +157,19 @@ void main(){
   vec2 rip=vec2(bx+sx,by+sy);
   vec2 wUV=uv+rip;
 
-  // 잉크 + 샤프닝
+  // 잉크
   vec4 dye=texture2D(uDye,wUV);
   float tx=1./512.;
   vec4 db=(texture2D(uDye,wUV+vec2(tx,0))+texture2D(uDye,wUV-vec2(tx,0))
           +texture2D(uDye,wUV+vec2(0,tx))+texture2D(uDye,wUV-vec2(0,tx)))*.25;
-  dye=dye+(dye-db)*.22;
+  dye=dye+(dye-db)*.15;
 
   float den=clamp(dye.a,0.,1.);
-  float alpha=pow(den,1.5);
+  // 부드러운 불투명도 — 얇은 가장자리에서 밝아지지 않음
+  float alpha=smoothstep(0.,.55,den)*.88;
 
-  // 잉크 색상
-  vec3 ink=den>.001?dye.rgb/max(den,.01):vec3(1.);
-  ink=clamp(ink,0.,1.);
+  // 잉크 색소 — 저밀도 증폭 방지 (divisor 바닥 0.18)
+  vec3 ink=den>.02?clamp(dye.rgb/max(den,.18),0.,1.):vec3(1.);
 
   // 코스틱
   float ca=caustic(uv*2.4,uTime*.48);
@@ -501,10 +501,10 @@ export default class FluidInkSim {
     const x = normX, y = 1 - normY;
     const r = 0.0022 * radius * radius;
     this._splatDye(x, y, color, r);
-    // Small velocity push for natural ink spread (70% intensity)
+    // Gentle velocity push for natural ink spread
     const angle = Math.random() * Math.PI * 2;
-    const v = (0.4 + radius * 0.25) * 0.7;
-    this._splatVel(x, y, Math.cos(angle) * v, Math.sin(angle) * v, r * 3);
+    const v = 0.18 + radius * 0.10;
+    this._splatVel(x, y, Math.cos(angle) * v, Math.sin(angle) * v, r * 2);
   }
 
   /** Upload video frame as camera texture */

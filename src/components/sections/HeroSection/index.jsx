@@ -192,9 +192,9 @@ export default function HeroSection() {
           fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
           hoverSizeRef.current[idx] = Math.min(hoverSizeRef.current[idx] + FILL_RATE * dt, 1);
           const em = EMOTION_META[idx];
-          const spread = 0.028 + fills[idx] * 0.049;
-          const r = 0.35 + hoverSizeRef.current[idx] * 2.2;
-          for (let k = 0; k < 5; k++) {
+          const spread = 0.020 + fills[idx] * 0.032;
+          const r = 0.30 + hoverSizeRef.current[idx] * 1.3;
+          for (let k = 0; k < 3; k++) {
             sim.splat(
               em.x / 100 + (Math.random() - 0.5) * spread,
               em.y / 100 + (Math.random() - 0.5) * spread,
