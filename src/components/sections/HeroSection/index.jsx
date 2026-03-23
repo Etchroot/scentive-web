@@ -144,13 +144,11 @@ export default function HeroSection() {
       // ── 손 추적 ──
       detectHands(now);
       const hand = handDataRef.current;
-      let pointerActive = false;
 
       if (hand.detected && hand.tips.length > 0) {
-        // 손 추적 모드 — 검지로 수면 교란
+        // 손 추적 모드 — 검지로 잉크 흐름 교란
         const indexTip = hand.tips[1];
         sim.setHandState(indexTip.x, indexTip.y, hand.velocity.x, hand.velocity.y);
-        pointerActive = true;
 
         // 손가락 커서 표시 (직접 DOM 업데이트 — React 리렌더 방지)
         const cursor = cursorRef.current;
@@ -177,22 +175,8 @@ export default function HeroSection() {
         }
         hoverRef.current = nearestLabel;
       } else {
-        // 마우스/터치 폴백 — 수면 교란
+        // 마우스/터치 폴백 — 잉크 흐름 교란 없음 (라벨 호버만 React 이벤트로 처리)
         if (cursorRef.current) cursorRef.current.style.opacity = '0';
-
-        const p = pointerRef.current;
-        if (p.x >= 0 && p.y >= 0) {
-          const pp = prevPtrRef.current;
-          const vx = pp.x >= 0 ? p.x - pp.x : 0;
-          const vy = pp.y >= 0 ? p.y - pp.y : 0;
-          prevPtrRef.current = { x: p.x, y: p.y };
-          sim.setHandState(p.x, p.y, vx, vy);
-          pointerActive = true;
-        }
-        // 라벨 호버는 React 이벤트 핸들러가 처리
-      }
-
-      if (!pointerActive) {
         sim.clearHandState();
       }
 
