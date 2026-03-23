@@ -11,9 +11,9 @@
     "headlineLine1": "We translate",
     "headlineHighlight": "your day",
     "headlineLine2": "into scent.",
-    "sub": "Hover over moments and emotions to tint the surface with fragrance",
+    "sub": "Hover over moments and emotions to color the surface with fragrance",
     "overlay": {
-      "title": "Afterglow",
+      "title": "Sillage",
       "sub": "Every emotion has blossomed into scent",
       "hint": "— Explore the service —"
     },
@@ -47,7 +47,7 @@
         "scent": "Green Tea"
       },
       {
-        "text": "A do-nothing kind of day",
+        "text": "A day to do nothing",
         "scent": "Vetiver"
       },
       {
@@ -55,7 +55,7 @@
         "scent": "Citrus"
       },
       {
-        "text": "Chicken is delicious",
+        "text": "Fried chicken is the best",
         "scent": "Vanilla"
       }
     ]
@@ -66,27 +66,27 @@
       {
         "text": "Words carry emotions.",
         "keyword": "emotions",
-        "desc": "When we're sad, when we're happy, when we want to share how we feel — we write.\nEven a single diary line or a short message holds emotions in full.\nWriting is the most honest record of self-expression."
+        "desc": "When we're sad, when we're happy, when we want to convey our hearts — we write.\nEven in a single diary line or a brief message, emotions are deeply embedded.\nWriting is the most honest record of how we express ourselves."
       },
       {
         "text": "Scent carries memories.",
         "keyword": "memories",
-        "desc": "A single familiar scent can revive a forgotten moment.\nScent connects people to people, and for some, it becomes a language that expresses who they are more deeply than words ever could."
+        "desc": "A single familiar scent can revive a forgotten moment.\nScent connects people to people, and for some, it becomes a language that expresses who they are more deeply than words."
       },
       {
-        "text": "We bridge the two.",
+        "text": "We bridge the space between them.",
         "keyword": "bridge",
-        "desc": "For centuries, research and attempts to link scent with emotion and sensation have never ceased.\nThat accumulation fueled the fragrance industry, and today people discover identity and narrative in scent.\nScentive completes that connection with data."
+        "desc": "For centuries, research and attempts to connect scent with emotion and sensation have never ceased.\nThat accumulation fueled the fragrance industry, and today people discover identity and narrative in scent.\nScentive completes that link with data."
       },
       {
         "text": "Emotions become fragrance, preserved in data.",
         "keyword": "data",
-        "desc": "Yet scent has long been interpreted through intuition alone.\nScentive builds a precise database connecting emotion and scent by learning from tens of thousands of diary entries, public datasets, and the chemical properties of aroma molecules."
+        "desc": "Yet scent has long been interpreted through intuition alone.\nScentive builds a precise database connecting emotions and scent by learning from tens of thousands of diary entries, public datasets, and the chemical properties of aroma molecules."
       },
       {
         "text": "Data becomes a vast map of scent.",
         "keyword": "map",
-        "desc": "The ability to analyze what was once abstract scent through quantitative data — that itself is innovation.\nScentive's scent map starts from personal diaries and grows into an infrastructure applicable to anyone, in any context."
+        "desc": "The ability to analyze what was once abstract scent through quantitative data — that itself is innovation.\nScentive's scent map starts from personal diaries and grows into an infrastructure universally applicable to anyone, in any context."
       }
     ]
   },
@@ -97,25 +97,25 @@
       {
         "tag": "Daily",
         "title": "Write your diary",
-        "desc": "Freely record what happened today and how you felt.\nYou can add emotion tags to capture the mood of the day.",
+        "desc": "Freely record what happened today and how you felt.\nYou can add emotion tags to capture your mood.",
         "imgAlt": "Diary writing app screen"
       },
       {
         "tag": "End of month",
         "title": "AI analyzes your emotions",
-        "desc": "From a month's worth of diary entries, it extracts emotion, sensory, and adjective keywords and identifies patterns.",
+        "desc": "From a month's worth of diary entries, it extracts emotion, sensory, and descriptive keywords and identifies patterns.",
         "imgAlt": "AI analysis app screen"
       },
       {
         "tag": "50 accords",
         "title": "Your scent recipe is created",
-        "desc": "Extracted keywords are matched against a database of 50 scent accords to compose your personal recipe of top, middle, and base notes.",
+        "desc": "Extracted keywords are matched against a database of 50 scent accords to compose your own recipe of top, middle, and base notes.",
         "imgAlt": "Scent recipe app screen"
       },
       {
-        "tag": "12-month record",
+        "tag": "12 months",
         "title": "Archived as a scent report",
-        "desc": "That month's perfume is complete and saved to your archive.\nTwelve perfume bottles fill up, one by one.",
+        "desc": "That month's perfume is completed and saved in your archive.\nTwelve perfume bottles fill up one by one.",
         "imgAlt": "Archive app screen"
       }
     ]
@@ -124,7 +124,7 @@
     "part1": {
       "eyebrow": "— Why we started",
       "heading": "Everyone has their own\nsignature scent of life",
-      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only ever focused on sight and sound?\nSmell is the most primal and most personal sense.\nScentive gives that sense a language for the first time.",
+      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only focused on sight and sound?\nSmell is the most primal and most personal sense.\nScentive gives that sense a language for the first time.",
       "accent": "\"Everyone deserves a scent of their own.\""
     },
     "senses": [
@@ -156,15 +156,15 @@
       "visions": [
         {
           "title": "Hyper-personalized scent service",
-          "desc": "The more emotional data you accumulate, the more refined your scent recipe becomes.\nA fragrance that is uniquely yours."
+          "desc": "The more your emotional data accumulates, the more refined your scent recipe becomes.\nA fragrance that is yours and yours alone."
         },
         {
           "title": "Psychotherapy & spatial design",
           "desc": "A new methodology for designing spaces and experiences through emotion-scent mapping data."
         },
         {
-          "title": "A fundamental sense for physical AI",
-          "desc": "When digital AI understands smell, the world changes entirely.\nScentive is building that language."
+          "title": "A foundational sense for physical AI",
+          "desc": "When digital AI understands smell, the world changes completely.\nScentive creates that language."
         }
       ],
       "footerPrefix": "Scentive is not just an app.",
@@ -176,7 +176,7 @@
     "headlinePre": "Today's diary",
     "headlineHighlight": "becomes your scent",
     "headlinePost": ".",
-    "sub": "Start now, and in one month you'll receive your very first personal scent recipe.",
+    "sub": "Start now, and in one month you'll receive your very first personalized scent recipe.",
     "qrAlt": "App download QR code",
     "qrLabel": "Scan with camera",
     "download": "Download App",

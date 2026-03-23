@@ -75,10 +75,10 @@ export default function HeroSection() {
     simRef.current?.clear();
   };
 
-  const handleReset = () => {
+  const handleOverlayClick = () => {
     if (!overlayReady) return;
     _resetState();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/manifesto');
   };
 
   const handleGoToService = (e) => {
@@ -302,7 +302,7 @@ export default function HeroSection() {
         {allDone && (
           <div
             className={`${styles.janhyangOverlay} ${overlayReady ? styles.overlayReady : ''}`}
-            onClick={handleReset}
+            onClick={handleOverlayClick}
           >
             <p className={styles.janhyangText}>{t('hero.overlay.title')}</p>
             <p className={styles.janhyangSub}>{t('hero.overlay.sub')}</p>

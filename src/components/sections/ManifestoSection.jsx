@@ -116,7 +116,6 @@ export default function ManifestoSection() {
             {t('hero.headlineLine1')}<br />
             <span className={styles.heroHighlight}>{t('hero.headlineHighlight')}</span> {t('hero.headlineLine2')}
           </h1>
-          <p className={styles.heroSub}>{t('hero.sub')}</p>
         </div>
 
         <div ref={sectionRef} className={styles.inner}>
