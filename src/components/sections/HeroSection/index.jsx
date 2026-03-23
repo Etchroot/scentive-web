@@ -42,6 +42,7 @@ export default function HeroSection() {
   const prevPtrRef  = useRef({ x: -1, y: -1 });
   const [allDone, setAllDone] = useState(false);
   const [overlayReady, setOverlayReady] = useState(false);
+  const [introVisible, setIntroVisible] = useState(true);
 
   // ── 카메라 & 손 추적 ──
   const { videoRef, cameraGranted } = useCamera();
@@ -248,6 +249,28 @@ export default function HeroSection() {
 
         {/* 손가락 커서 — 손 추적 시 검지 위치 표시 */}
         <div ref={cursorRef} className={styles.handCursor} />
+
+        {/* 인트로 안내 문구 — 3초 후 잉크 흩어짐 효과로 사라짐 */}
+        {introVisible && (
+          <div
+            className={styles.introHint}
+            onAnimationEnd={(e) => {
+              if (e.animationName.includes('inkDissolve')) setIntroVisible(false);
+            }}
+          >
+            <svg width="0" height="0" aria-hidden="true">
+              <filter id="inkDissolve">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G">
+                  <animate attributeName="scale" from="0" to="180" begin="3s" dur="1.2s" fill="freeze" />
+                </feDisplacementMap>
+              </filter>
+            </svg>
+            <p className={styles.introText}>
+              일상과 감정에 마우스를 올려<br />수면을 향으로 물들여보세요
+            </p>
+          </div>
+        )}
 
         {/* 감정 라벨 — 수면 위에 떠있음 */}
         {EMOTIONS.map((em, i) => (

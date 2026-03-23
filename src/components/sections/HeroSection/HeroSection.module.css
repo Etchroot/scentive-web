@@ -47,6 +47,47 @@
   box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
 }
 
+/* ── 인트로 안내 문구 ── */
+.introHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  pointer-events: none;
+  filter: url(#inkDissolve);
+  animation: introFadeIn 0.8s ease both, inkDissolveOut 1.2s ease 3s both;
+}
+
+.introText {
+  margin: 0;
+  font-size: clamp(15px, 2.2vw, 20px);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  text-align: center;
+  padding: 20px 32px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes introFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes inkDissolveOut {
+  0%   { opacity: 1; }
+  60%  { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
 /* ── 감정 라벨 ── */
 .emotionLabel {
   position: absolute;
