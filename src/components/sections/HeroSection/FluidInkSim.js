@@ -176,17 +176,12 @@ void main(){
 
   vec3 base;
   if(uHasCam>.5){
-    // Contain-fit: scale UV to preserve video aspect ratio
-    float fitX=uVAsp>uCAsp?1.:uVAsp/uCAsp;
-    float fitY=uVAsp>uCAsp?uCAsp/uVAsp:1.;
-    vec2 cuv=(uv-.5)/vec2(fitX,fitY)+.5;
-
-    if(cuv.x<0.||cuv.x>1.||cuv.y<0.||cuv.y>1.){
-      base=vec3(1.);
-    } else {
-      cuv.x=1.-cuv.x;
-      base=texture2D(uCam,clamp(cuv,0.,1.)).rgb;
-    }
+    // Cover-fit: fill canvas, crop overflow, preserve aspect ratio
+    float fitX=uVAsp>uCAsp?uVAsp/uCAsp:1.;
+    float fitY=uVAsp>uCAsp?1.:uCAsp/uVAsp;
+    vec2 cuv=(uv-.5)*vec2(fitX,fitY)+.5;
+    cuv.x=1.-cuv.x;
+    base=texture2D(uCam,clamp(cuv,0.,1.)).rgb;
   } else {
     vec3 w=vec3(.955,.967,.985);
     base=w+vec3(.86,.96,1.)*ca*.07+vec3(.9,.97,1.)*ca*.018;
