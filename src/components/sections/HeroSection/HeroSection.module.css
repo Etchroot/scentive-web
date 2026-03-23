@@ -92,13 +92,13 @@
 .emotionLabel {
   position: absolute;
   transform: translate(-50%, -50%);
-  padding: 8px 16px;
-  border-radius: 28px;
+  padding: 16px 32px;
+  border-radius: 36px;
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 500;
   color: var(--color-text-primary);
   letter-spacing: -0.01em;
@@ -132,7 +132,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--color-text-primary);
@@ -147,7 +147,7 @@
 .labelInk {
   position: absolute;
   inset: 0;
-  border-radius: 28px;
+  border-radius: 36px;
   background: var(--label-color);
   opacity: 0.28;
   transform-origin: left center;
@@ -252,6 +252,6 @@
 
 /* ── 모바일 ── */
 @media (max-width: 640px) {
-  .emotionLabel { font-size: 12px; padding: 7px 13px; }
+  .emotionLabel { font-size: 20px; padding: 12px 24px; }
   .handCursor { width: 18px; height: 18px; }
 }
