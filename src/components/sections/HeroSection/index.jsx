@@ -9,16 +9,16 @@ import styles from './HeroSection.module.css';
 
 // 비-텍스트 데이터 (WebGL 컬러, 위치, 향 색상) — 번역 불필요
 const EMOTION_META = [
-  { color: [1.00, 0.38, 0.00], x: 25, y: 12, scentColor: '#FFF7E1' },
-  { color: [0.05, 0.95, 0.12], x: 72, y: 8,  scentColor: '#FFAD00' },
-  { color: [0.00, 0.60, 1.00], x: 50, y: 22, scentColor: '#EFEFEF' },
-  { color: [0.08, 0.10, 1.00], x: 18, y: 38, scentColor: '#FFE1D6' },
-  { color: [1.00, 0.04, 0.72], x: 80, y: 34, scentColor: '#FFC8B6' },
-  { color: [1.00, 0.04, 0.18], x: 86, y: 52, scentColor: '#FFE2EE' },
-  { color: [0.00, 0.92, 0.70], x: 55, y: 55, scentColor: '#B0EBEC' },
-  { color: [0.50, 0.00, 1.00], x: 20, y: 68, scentColor: '#CACACA' },
-  { color: [0.18, 1.00, 0.05], x: 75, y: 73, scentColor: '#C0E5D1' },
-  { color: [1.00, 0.60, 0.00], x: 44, y: 85, scentColor: '#FFA487' },
+  { color: [0.86, 0.40, 0.12], x: 25, y: 12, scentColor: '#FFF7E1' },
+  { color: [0.16, 0.68, 0.24], x: 72, y: 8,  scentColor: '#FFAD00' },
+  { color: [0.14, 0.50, 0.82], x: 50, y: 22, scentColor: '#EFEFEF' },
+  { color: [0.20, 0.18, 0.78], x: 18, y: 38, scentColor: '#FFE1D6' },
+  { color: [0.82, 0.18, 0.55], x: 80, y: 34, scentColor: '#FFC8B6' },
+  { color: [0.82, 0.20, 0.22], x: 86, y: 52, scentColor: '#FFE2EE' },
+  { color: [0.12, 0.68, 0.56], x: 55, y: 55, scentColor: '#B0EBEC' },
+  { color: [0.44, 0.14, 0.75], x: 20, y: 68, scentColor: '#CACACA' },
+  { color: [0.28, 0.72, 0.18], x: 75, y: 73, scentColor: '#C0E5D1' },
+  { color: [0.86, 0.52, 0.12], x: 44, y: 85, scentColor: '#FFA487' },
 ];
 
 const FILL_RATE = 0.70; // fill units per second while hovering

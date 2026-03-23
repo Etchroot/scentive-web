@@ -167,10 +167,9 @@ void main(){
   float den=clamp(dye.a,0.,1.);
   float alpha=pow(den,1.5);
 
-  // 잉크 색상 — 채도 부스트
+  // 잉크 색상
   vec3 ink=den>.001?dye.rgb/max(den,.01):vec3(1.);
-  float lm=dot(ink,vec3(.299,.587,.114));
-  ink=clamp(mix(vec3(lm),ink,1.35),0.,1.);
+  ink=clamp(ink,0.,1.);
 
   // 코스틱
   float ca=caustic(uv*2.4,uTime*.48);
