@@ -156,16 +156,6 @@ export default function HeroSection() {
     />
     <section className={styles.hero} id="hero">
 
-      {/* ── 텍스트 영역 — 수면 위 인트로 ── */}
-      <div className={styles.textZone}>
-        <span className={styles.eyebrow}>{t('hero.eyebrow')}</span>
-        <h1 className={styles.headline}>
-          {t('hero.headlineLine1')}<br />
-          <span className={styles.highlight}>{t('hero.headlineHighlight')}</span> {t('hero.headlineLine2')}
-        </h1>
-        <p className={styles.sub}>{t('hero.sub')}</p>
-      </div>
-
       {/* ── 수면 캔버스 영역 ── */}
       <div className={styles.canvasZone}>
         <canvas ref={canvasRef} className={styles.canvas} />

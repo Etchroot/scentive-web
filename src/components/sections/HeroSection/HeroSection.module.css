@@ -1,53 +1,14 @@
 .hero {
   width: 100%;
-  min-height: 140vh;
-  background: #f5f7fa;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── 텍스트 영역 ── */
-.textZone {
-  flex-shrink: 0;
-  padding: 48px 64px 32px;
-  background: #ffffff;
+  height: calc(100vh - 56px);
   position: relative;
-  z-index: 10;
-}
-
-.eyebrow {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin-bottom: 12px;
-}
-
-.headline {
-  font-size: clamp(32px, 4.2vw, 52px);
-  font-weight: 500;
-  line-height: 1.15;
-  color: var(--color-text-primary);
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
-}
-
-.highlight {
-  border-bottom: 3px solid var(--color-point);
-  padding-bottom: 1px;
-}
-
-.sub {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-muted);
+  overflow: hidden;
 }
 
 /* ── 수면 캔버스 영역 ── */
 .canvasZone {
-  flex: 1;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #edf2f7;
 }
