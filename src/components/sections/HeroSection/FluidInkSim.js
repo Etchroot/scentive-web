@@ -34,7 +34,7 @@ vec2 curl(vec2 p){
   return vec2(gn(p+vec2(0,e))-gn(p-vec2(0,e)),-(gn(p+vec2(e,0))-gn(p-vec2(e,0))))/(2.*e);
 }
 void main(){
-  vec2 vel=curl(uv*4.0+uTime*.068)*.00110;
+  vec2 vel=curl(uv*4.0+uTime*.068)*.00200;
   if(uHandOn>0.5){
     vec2 d=uv-uHand;
     float inf=exp(-dot(d,d)*60.0);
@@ -48,7 +48,7 @@ void main(){
   gl_FragColor=mix(adv,(adv+d1+d2+d3+d4)/5.,.15);
 }`;
 
-// 화면 출력 — 수면 + 코스틱 + 카메라 배경 블렌딩
+// 화면 출력 — 수면 + 코스틱 + 카메라 배경
 const DISPLAY_FRAG = `precision highp float;
 uniform sampler2D uT;
 uniform sampler2D uCam;
@@ -65,39 +65,44 @@ float caustic(vec2 p,float t){
 }
 
 void main(){
-  // 수면 물결 왜곡 UV
-  float rx=sin(uv.x*52.+uTime*1.2)*sin(uv.y*41.+uTime*.75)*.0018;
-  float ry=cos(uv.x*47.+uTime*.85)*cos(uv.y*58.+uTime*1.45)*.0018;
-  vec2 wUV=uv+vec2(rx,ry);
+  // 수면 물결 — 대규모 출렁임 + 소규모 잔물결
+  float bx=sin(uv.x*6.+uTime*.3)*cos(uv.y*5.+uTime*.2)*.005;
+  float by=cos(uv.x*5.+uTime*.25)*sin(uv.y*7.+uTime*.35)*.005;
+  float sx=sin(uv.x*52.+uTime*1.2)*sin(uv.y*41.+uTime*.75)*.002;
+  float sy=cos(uv.x*47.+uTime*.85)*cos(uv.y*58.+uTime*1.45)*.002;
+  vec2 ripple=vec2(bx+sx,by+sy);
+  vec2 wUV=uv+ripple;
 
   vec4 dye=texture2D(uT,wUV);
   float ia=clamp(dye.a*.85,0.,1.);
 
-  // 수면 기본색 — 카메라 허용 시 웹캠 블렌딩
-  vec3 water=vec3(.955,.967,.985);
+  // 코스틱
+  vec2 inkRefract=ripple*7.0*ia;
+  float ca=caustic(uv*2.4+inkRefract,uTime*.48);
+
+  vec3 base;
   if(uHasCam>0.5){
+    // ── 카메라 배경 — 수면 굴절로 왜곡된 깨끗한 웹캠 ──
     vec2 camUV=vec2(1.0-wUV.x,wUV.y);
-    vec3 cam=texture2D(uCam,camUV).rgb;
-    float cl=dot(cam,vec3(.299,.587,.114));
-    cam=mix(vec3(cl),cam,0.45)*0.4+0.58;
-    water=mix(water,cam,0.35);
+    // 바닥 굴절 (물 속으로 보는 느낌)
+    float refX=sin(camUV.y*30.+uTime*.8)*cos(camUV.x*25.)*.006;
+    float refY=cos(camUV.x*35.+uTime*1.1)*sin(camUV.y*20.)*.006;
+    camUV+=vec2(refX,refY);
+    base=texture2D(uCam,clamp(camUV,0.,1.)).rgb;
+    // 코스틱 빛 무늬 오버레이
+    base+=vec3(.85,.93,1.0)*ca*.08;
+  } else {
+    // ── 기본 수면 배경 (카메라 없음) ──
+    vec3 water=vec3(.955,.967,.985);
+    base=water+vec3(.86,.96,1.0)*ca*.07;
+    base+=vec3(.90,.97,1.)*ca*.018;
   }
 
-  // 코스틱: 잉크 두께에 따른 굴절
-  vec2 inkRefract=vec2(rx,ry)*7.0*ia;
-  float ca=caustic(uv*2.4+inkRefract,uTime*.48);
-  vec3 base=water+vec3(.86,.96,1.0)*ca*.07;
-
-  // 잉크 색상 추출
+  // 잉크 합성
   vec3 ink=dye.a>.001?dye.rgb/dye.a:vec3(0.);
   vec3 lum=vec3(dot(ink,vec3(.299,.587,.114)));
   ink=clamp(mix(lum,ink,1.00),0.,1.)*0.72;
-
-  // 반투명 합성
   vec3 col=mix(base,mix(base,ink,.65),ia);
-
-  // 수면 코스틱 오버레이
-  col+=vec3(.90,.97,1.)*ca*.018;
 
   gl_FragColor=vec4(min(col,vec3(1.)),1.);
 }`;
@@ -192,7 +197,9 @@ export default class FluidInkSim {
     if (!video || video.readyState < 2) return;
     const gl = this.gl;
     gl.bindTexture(gl.TEXTURE_2D, this._camTex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     this._hasCam = true;
   }
 
