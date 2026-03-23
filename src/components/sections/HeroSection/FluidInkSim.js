@@ -41,9 +41,9 @@ void main(){
     // Velocity splat — additive
     gl_FragColor=vec4(b.rgb+uC*s, b.a);
   } else {
-    // Dye splat — weighted average so colors never add to white
+    // Dye splat — weighted average, alpha capped at 1.0
     float w=uA*s;
-    float newA=b.a+w;
+    float newA=min(b.a+w,1.);
     vec3 prev=b.rgb/max(b.a,.001);
     vec3 blended=mix(prev,uC,w/max(newA,.001));
     gl_FragColor=vec4(blended*newA, newA);
