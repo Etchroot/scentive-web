@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import FluidInkSim from './FluidInkSim';
+import useCamera from './useCamera';
+import useHandTracker from './useHandTracker';
 import SeoHead from '../../common/SeoHead';
 import styles from './HeroSection.module.css';
 
@@ -20,6 +22,7 @@ const EMOTION_META = [
 ];
 
 const FILL_RATE = 0.70; // fill units per second while hovering
+const PROXIMITY = 7;    // % — 손가락↔라벨 근접 판정 거리
 
 export default function HeroSection() {
   const navigate    = useNavigate();
@@ -34,8 +37,15 @@ export default function HeroSection() {
   const fillsRef    = useRef(EMOTION_META.map(() => 0));
   const doneRef     = useRef(0);
   const labelRefs   = useRef([]);
+  const cursorRef   = useRef(null);
+  const pointerRef  = useRef({ x: -1, y: -1 });
+  const prevPtrRef  = useRef({ x: -1, y: -1 });
   const [allDone, setAllDone] = useState(false);
   const [overlayReady, setOverlayReady] = useState(false);
+
+  // ── 카메라 & 손 추적 ──
+  const { videoRef, cameraGranted } = useCamera();
+  const { handDataRef, detectHands } = useHandTracker(videoRef, cameraGranted);
 
   // 텍스트 번역 병합 (렌더용)
   const emotionTexts = t('hero.emotions', { returnObjects: true });
@@ -64,14 +74,12 @@ export default function HeroSection() {
     simRef.current?.clear();
   };
 
-  // 배경 클릭 → 초기화 + 상단 이동
   const handleReset = () => {
     if (!overlayReady) return;
     _resetState();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 서비스 둘러보기 클릭 → 초기화 + /how-it-works 라우트 이동
   const handleGoToService = (e) => {
     e.stopPropagation();
     if (!overlayReady) return;
@@ -79,6 +87,31 @@ export default function HeroSection() {
     navigate('/how-it-works');
   };
 
+  // ── 마우스/터치 포인터 추적 (수면 교란 폴백) ──
+  const handlePointerMove = useCallback((e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    pointerRef.current = {
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    };
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    pointerRef.current = {
+      x: (touch.clientX - rect.left) / rect.width,
+      y: (touch.clientY - rect.top) / rect.height,
+    };
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    pointerRef.current = { x: -1, y: -1 };
+    prevPtrRef.current = { x: -1, y: -1 };
+  }, []);
+
+  // ── 메인 시뮬레이션 루프 ──
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -102,8 +135,69 @@ export default function HeroSection() {
         : 0.016;
       prevTimeRef.current = now;
 
+      // ── 카메라 프레임 업데이트 ──
+      const video = videoRef.current;
+      if (video && video.readyState >= 2) {
+        sim.setCameraFrame(video);
+      }
+
+      // ── 손 추적 ──
+      detectHands(now);
+      const hand = handDataRef.current;
+      let pointerActive = false;
+
+      if (hand.detected && hand.tips.length > 0) {
+        // 손 추적 모드 — 검지로 수면 교란
+        const indexTip = hand.tips[1];
+        sim.setHandState(indexTip.x, indexTip.y, hand.velocity.x, hand.velocity.y);
+        pointerActive = true;
+
+        // 손가락 커서 표시 (직접 DOM 업데이트 — React 리렌더 방지)
+        const cursor = cursorRef.current;
+        if (cursor) {
+          cursor.style.left = `${indexTip.x * 100}%`;
+          cursor.style.top = `${indexTip.y * 100}%`;
+          cursor.style.opacity = '1';
+        }
+
+        // 손가락 끝 ↔ 감정 라벨 근접 판정
+        let nearestLabel = -1;
+        let nearestDist = Infinity;
+        for (const tip of hand.tips) {
+          for (let i = 0; i < EMOTION_META.length; i++) {
+            const em = EMOTION_META[i];
+            const dx = tip.x * 100 - em.x;
+            const dy = tip.y * 100 - em.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < PROXIMITY && dist < nearestDist) {
+              nearestLabel = i;
+              nearestDist = dist;
+            }
+          }
+        }
+        hoverRef.current = nearestLabel;
+      } else {
+        // 마우스/터치 폴백 — 수면 교란
+        if (cursorRef.current) cursorRef.current.style.opacity = '0';
+
+        const p = pointerRef.current;
+        if (p.x >= 0 && p.y >= 0) {
+          const pp = prevPtrRef.current;
+          const vx = pp.x >= 0 ? p.x - pp.x : 0;
+          const vy = pp.y >= 0 ? p.y - pp.y : 0;
+          prevPtrRef.current = { x: p.x, y: p.y };
+          sim.setHandState(p.x, p.y, vx, vy);
+          pointerActive = true;
+        }
+        // 라벨 호버는 React 이벤트 핸들러가 처리
+      }
+
+      if (!pointerActive) {
+        sim.clearHandState();
+      }
+
+      // ── 잉크 채우기 (기존 로직) ──
       const idx = hoverRef.current;
-      // 재호버 시 hover 크기 리셋 (fill 게이지는 유지)
       if (idx !== prevHoverRef.current) {
         if (idx >= 0) hoverSizeRef.current[idx] = 0;
         prevHoverRef.current = idx;
@@ -113,7 +207,7 @@ export default function HeroSection() {
         if (fills[idx] < 1) {
           fills[idx] = Math.min(fills[idx] + FILL_RATE * dt, 1);
           hoverSizeRef.current[idx] = Math.min(hoverSizeRef.current[idx] + FILL_RATE * dt, 1);
-          const em = EMOTION_META[idx]; // WebGL용: 텍스트 불필요
+          const em = EMOTION_META[idx];
           const spread = 0.028 + fills[idx] * 0.049;
           const r = 0.35 + hoverSizeRef.current[idx] * 2.2;
           for (let k = 0; k < 5; k++) {
@@ -123,7 +217,6 @@ export default function HeroSection() {
               em.color, r,
             );
           }
-          // Direct DOM update — avoids 60fps React re-renders
           const el = labelRefs.current[idx];
           if (el) {
             el.style.setProperty('--fill', fills[idx]);
@@ -136,6 +229,7 @@ export default function HeroSection() {
           }
         }
       }
+
       sim.step(dt);
     };
     rafRef.current = requestAnimationFrame(loop);
@@ -157,11 +251,19 @@ export default function HeroSection() {
     <section className={styles.hero} id="hero">
 
       {/* ── 수면 캔버스 영역 ── */}
-      <div className={styles.canvasZone}>
+      <div
+        className={styles.canvasZone}
+        onMouseMove={handlePointerMove}
+        onMouseLeave={handlePointerLeave}
+        onTouchMove={handleTouchMove}
+      >
         <canvas ref={canvasRef} className={styles.canvas} />
 
         {/* SCENTIVE 텍스트 패턴 — CSS SVG 벡터 (해상도 독립) */}
         <div className={styles.scentivePattern} aria-hidden="true" />
+
+        {/* 손가락 커서 — 손 추적 시 검지 위치 표시 */}
+        <div ref={cursorRef} className={styles.handCursor} />
 
         {/* 감정 라벨 — 수면 위에 떠있음 */}
         {EMOTIONS.map((em, i) => (
@@ -177,8 +279,8 @@ export default function HeroSection() {
               '--fill': 0,
               '--i': i,
             }}
-            onMouseEnter={() => { hoverRef.current = i; }}
-            onMouseLeave={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
+            onMouseEnter={() => { if (!handDataRef.current.detected) hoverRef.current = i; }}
+            onMouseLeave={() => { if (!handDataRef.current.detected && hoverRef.current === i) hoverRef.current = -1; }}
             onTouchStart={() => { hoverRef.current = i; }}
             onTouchEnd={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
             onTouchCancel={() => { if (hoverRef.current === i) hoverRef.current = -1; }}

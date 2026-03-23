@@ -21,13 +21,6 @@
   display: block;
 }
 
-/* 모바일 폴백 — 수면 느낌의 정적 배경 */
-.mobileWater {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(160deg, #e8f4fd 0%, #dbeaf6 40%, #cfe0f0 100%);
-}
-
 /* ── SCENTIVE 텍스트 패턴 (CSS SVG 벡터) ── */
 .scentivePattern {
   position: absolute;
@@ -36,6 +29,22 @@
   background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><text x='40' y='133' font-family='Helvetica Neue,Arial,sans-serif' font-weight='700' font-size='11' fill='%231F1F1F' fill-opacity='0.22'>SCENTIVE</text><text x='440' y='267' font-family='Helvetica Neue,Arial,sans-serif' font-weight='700' font-size='11' fill='%231F1F1F' fill-opacity='0.22'>SCENTIVE</text></svg>");
   background-repeat: repeat;
   background-size: 800px 400px;
+}
+
+/* ── 손가락 커서 (손 추적 활성 시 표시) ── */
+.handCursor {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
 }
 
 /* ── 감정 라벨 ── */
@@ -202,7 +211,6 @@
 
 /* ── 모바일 ── */
 @media (max-width: 640px) {
-  .textZone    { padding: 32px 24px 20px; }
-  .headline    { font-size: 30px; }
   .emotionLabel { font-size: 12px; padding: 7px 13px; }
+  .handCursor { width: 18px; height: 18px; }
 }
