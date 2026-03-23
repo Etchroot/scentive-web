@@ -166,7 +166,7 @@ void main(){
 
   float den=clamp(dye.a,0.,1.);
   // 부드러운 불투명도 — 얇은 가장자리에서 밝아지지 않음
-  float alpha=smoothstep(0.,.55,den)*.88;
+  float alpha=smoothstep(0.,.4,den)*.95;
 
   // 잉크 색소 — 저밀도 증폭 방지 (divisor 바닥 0.18)
   vec3 ink=den>.02?clamp(dye.rgb/max(den,.18),0.,1.):vec3(1.);
