@@ -56,7 +56,6 @@
 /* ── 카드 플립 컨테이너 ── */
 .flipContainer {
   perspective: 1200px;
-  min-height: 220px;
   transition: transform 0.3s ease, filter 0.3s ease;
   cursor: default;
 }
@@ -70,8 +69,6 @@
 .flipInner {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 220px;
   transform-style: preserve-3d;
   /* 초기 상태: 뒤집혀서 안 보임 */
   transform: rotateX(180deg);
@@ -125,19 +122,13 @@
   }
 }
 
-/* ── 카드 공통 면 — 검은 유광 플라스틱 ── */
-.flipFront,
-.flipBack {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  min-height: 220px;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+/* ── 카드 — 검은 유광 플라스틱 ── */
+.card {
   border-radius: 16px;
   padding: 36px 40px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 20px;
 
   /* 유광 검은 플라스틱 */
   background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 40%, #111 70%, #0c0c0c 100%);
@@ -148,11 +139,11 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -1px 0 rgba(0, 0, 0, 0.8);
   overflow: hidden;
+  position: relative;
 }
 
 /* 유광 반사 — 대각선 글로스 */
-.flipFront::before,
-.flipBack::before {
+.card::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -168,8 +159,7 @@
 }
 
 /* 호버 시 그림자 강화 */
-.flipContainer:hover .flipFront,
-.flipContainer:hover .flipBack {
+.flipContainer:hover .card {
   box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.6),
     0 20px 40px rgba(0, 0, 0, 0.5),
@@ -177,17 +167,11 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.9);
 }
 
-/* 뒷면 (180도 회전 상태) */
-.flipBack {
-  transform: rotateX(180deg);
-}
-
-/* ── 앞면 콘텐츠 ── */
-.frontContent {
+/* ── 카드 헤더: 번호 + 문장 ── */
+.cardHeader {
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  width: 100%;
 }
 
 .cardIndex {
@@ -211,31 +195,14 @@
   color: var(--color-point);
 }
 
-/* ── 뒷면 콘텐츠 ── */
-.backContent {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-}
-
-.backTitle {
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 600;
-  color: #ffffff;
-  line-height: 1.35;
-}
-
-.backHighlight {
-  color: var(--color-point);
-}
-
-.backDesc {
+/* ── 카드 설명 ── */
+.cardDesc {
   font-size: 14px;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
   white-space: pre-line;
-  max-width: 680px;
+  max-width: 720px;
+  padding-left: 62px; /* cardIndex 너비(42px) + gap(20px) 맞춤 */
 }
 
 /* ── 스크롤 인디케이터 ── */
@@ -264,18 +231,16 @@
   .section { padding: 0 0 80px; }
   .scrollTrack { display: none; }
 
-  .flipContainer { min-height: 180px; }
-  .flipInner { min-height: 180px; }
-  .flipFront, .flipBack {
-    min-height: 180px;
+  .card {
     padding: 24px 24px;
   }
 
   .cardIndex { font-size: 32px; }
 
-  .backDesc {
+  .cardDesc {
     font-size: 13px;
     line-height: 1.7;
+    padding-left: 52px; /* 32px + 20px */
   }
 
   .cardGrid { gap: 16px; }

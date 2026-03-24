@@ -18,7 +18,6 @@ function FlipCard({ item, index }) {
         if (entry.isIntersecting) {
           setVisible(true);
         } else if (entry.boundingClientRect.top > 0) {
-          // 뷰포트 아래로 벗어났을 때만 리셋 (위로 지나간 카드는 유지)
           setVisible(false);
         }
       },
@@ -36,9 +35,8 @@ function FlipCard({ item, index }) {
       style={{ '--delay': `${index * 120}ms` }}
     >
       <div className={styles.flipInner}>
-        {/* 앞면 — 번호 + 키워드 하이라이트 문장 */}
-        <div className={styles.flipFront}>
-          <div className={styles.frontContent}>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
             <span className={styles.cardIndex}>{item.index}</span>
             <p className={styles.cardStatement}>
               {item.text.split(item.keyword)[0]}
@@ -46,18 +44,7 @@ function FlipCard({ item, index }) {
               {item.text.split(item.keyword)[1]}
             </p>
           </div>
-        </div>
-
-        {/* 뒷면 — 제목 + 상세 설명 */}
-        <div className={styles.flipBack}>
-          <div className={styles.backContent}>
-            <p className={styles.backTitle}>
-              {item.text.split(item.keyword)[0]}
-              <span className={styles.backHighlight}>{item.keyword}</span>
-              {item.text.split(item.keyword)[1]}
-            </p>
-            <p className={styles.backDesc}>{item.desc}</p>
-          </div>
+          <p className={styles.cardDesc}>{item.desc}</p>
         </div>
       </div>
     </div>
