@@ -1,5 +1,7 @@
 .section {
   padding: 96px 0 120px;
+  position: relative;
+  overflow: hidden;
 }
 
 .eyebrow {
@@ -11,13 +13,67 @@
   display: block;
 }
 
+/* ── 파트1 배경 글로우 (중앙형, 크로스페이드) ── */
+.bgGlow {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color, 200, 200, 200), 0.45) 0%,
+    rgba(var(--glow-color, 200, 200, 200), 0.08) 55%,
+    rgba(var(--glow-color, 200, 200, 200), 0) 75%
+  );
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  z-index: 0;
+}
+
+.bgGlowActive {
+  opacity: 1;
+}
+
+/* ── 파트2 배경 글로우 (중앙형, 크로스페이드) ── */
+.bgGlowEdge {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, 0);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color, 200, 200, 200), 0.45) 0%,
+    rgba(var(--glow-color, 200, 200, 200), 0.08) 55%,
+    rgba(var(--glow-color, 200, 200, 200), 0) 75%
+  );
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  z-index: 0;
+}
+
+.bgGlowEdgeActive {
+  opacity: 1;
+}
+
 /* ─── 파트 1 ─── */
 .part1 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 64px;
-  align-items: center;
+  align-items: start;
   margin-bottom: 72px;
+  position: relative;
+  z-index: 1;
 }
 
 .part1Left {
@@ -44,61 +100,73 @@
   margin-top: 8px;
 }
 
-/* 5감 카드 */
-.sensesGrid {
+/* ── 에디토리얼 이미지 카드 그리드 ── */
+.editorialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.editorialCard {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  border: 1px solid var(--color-border-default);
+  gap: 14px;
+}
+
+/* 이미지 래퍼 — overflow hidden + 줌 효과 */
+.cardImageWrap {
   overflow: hidden;
+  border-radius: 4px;
+  aspect-ratio: 3 / 4;
+  background: var(--color-border-light);
 }
 
-.senseCard {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  background-color: #ffffff;
-  transition: background-color var(--transition-base);
-  position: relative;
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  transform: scale(1.05);
+  transition: filter 0.7s ease-in-out, transform 0.7s ease-in-out;
 }
 
-.senseCard + .senseCard {
-  border-top: 1px solid var(--color-border-light);
+.editorialCard:hover .cardImage {
+  filter: grayscale(0%);
+  transform: scale(1);
 }
 
-.senseHighlight {
-  background-color: var(--color-point);
-}
-
-.senseLabel {
-  font-size: 15px;
-  font-weight: 600;
+/* 카드 타이포 — 에디토리얼 세리프 */
+.cardTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
   color: var(--color-text-primary);
-  min-width: 36px;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
 }
 
-.senseDesc {
+.cardDesc {
   font-size: 13px;
+  line-height: 1.6;
   color: var(--color-text-secondary);
-  flex: 1;
-}
-
-.senseBadge {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-primary);
-  opacity: 0.6;
-  white-space: nowrap;
 }
 
 /* ─── 구분선 ─── */
 .divider {
   margin: 0 0 72px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ─── 파트 2 ─── */
+.part2 {
+  position: relative;
+  z-index: 1;
+}
+
 .part2Header {
   margin-bottom: 40px;
 }
@@ -119,25 +187,43 @@
 }
 
 .visionCard {
-  padding: 28px 24px;
+  padding: 24px;
   border: 1px solid var(--color-border-default);
   background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: border-color var(--transition-base);
+  gap: 16px;
+  cursor: pointer;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .visionCard:hover {
   border-color: var(--color-border-strong);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
+/* 비전 카드 이미지 */
+.visionImageWrap {
+  overflow: hidden;
+  border-radius: 4px;
+  aspect-ratio: 16 / 9;
+  background: var(--color-border-light);
+}
 
-.visionNum {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
-  font-weight: 500;
+.visionImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  transform: scale(1.05);
+  transition: filter 0.7s ease-in-out, transform 0.7s ease-in-out;
+}
+
+.visionCard:hover .visionImage {
+  filter: grayscale(0%);
+  transform: scale(1);
 }
 
 .visionTitle {
@@ -161,6 +247,8 @@
   padding: 24px 28px;
   border: 1px solid var(--color-border-strong);
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .dot {
@@ -181,17 +269,37 @@
   font-weight: 600;
 }
 
-/* 반응형 */
-@media (max-width: 900px) {
+/* ── 반응형 ── */
+@media (max-width: 1100px) {
   .part1 {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 48px;
   }
+}
+
+@media (max-width: 900px) {
   .visionsGrid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .section { padding: 72px 0 80px; }
+
+  .editorialGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .cardImageWrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  .cardTitle {
+    font-size: 20px;
+  }
+
+  .visionImageWrap {
+    aspect-ratio: 3 / 2;
+  }
 }

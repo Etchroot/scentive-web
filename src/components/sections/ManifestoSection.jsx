@@ -5,9 +5,9 @@ import SectionWrapper from '../layout/SectionWrapper';
 import Container from '../layout/Container';
 import styles from './ManifestoSection.module.css';
 
-function ManifestoLine({ item, index: lineIdx }) {
+function FlipCard({ item, index }) {
   const ref = useRef(null);
-  const [state, setState] = useState('hidden'); // hidden | active | revealed
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -16,62 +16,37 @@ function ManifestoLine({ item, index: lineIdx }) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setState('active');
-        } else if (entry.boundingClientRect.top < 0) {
-          // 위로 벗어남 → revealed
-          setState('revealed');
-        } else {
-          // 아래 → 다시 hidden
-          setState('hidden');
+          setVisible(true);
+        } else if (entry.boundingClientRect.top > 0) {
+          setVisible(false);
         }
       },
-      { threshold: 0.3, rootMargin: '-5% 0px -15% 0px' }
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const renderText = (text, keyword, lineState) => {
-    const parts = text.split(keyword);
-    if (parts.length < 2) return text;
-
-    if (lineState === 'revealed') {
-      return (
-        <>
-          {parts[0]}
-          <span className={styles.keywordRevealed}>{keyword}</span>
-          {parts[1]}
-        </>
-      );
-    }
-    if (lineState === 'active') {
-      return (
-        <>
-          {parts[0]}
-          <span className={styles.keywordActive}>{keyword}</span>
-          {parts[1]}
-        </>
-      );
-    }
-    return text;
-  };
-
   return (
     <div
       ref={ref}
-      className={`${styles.lineWrap} ${styles[state]}`}
-      style={{ transitionDelay: `${lineIdx * 0.04}s` }}
+      className={`${styles.flipContainer} ${visible ? styles.isVisible : styles.isHidden}`}
+      style={{ '--delay': `${index * 120}ms` }}
     >
-      <div className={styles.lineHeader}>
-        <span className={styles.lineIndex}>{item.index}</span>
-        <p className={styles.lineText}>
-          {renderText(item.text, item.keyword, state)}
-        </p>
+      <div className={styles.flipInner}>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIndex}>{item.index}</span>
+            <p className={styles.cardStatement}>
+              {item.text.split(item.keyword)[0]}
+              <span className={styles.keywordHighlight}>{item.keyword}</span>
+              {item.text.split(item.keyword)[1]}
+            </p>
+          </div>
+          <p className={styles.cardDesc}>{item.desc}</p>
+        </div>
       </div>
-      {item.desc && (
-        <p className={styles.lineDesc}>{item.desc}</p>
-      )}
     </div>
   );
 }
@@ -109,7 +84,7 @@ export default function ManifestoSection() {
     />
     <SectionWrapper bgType="impact" id="manifesto" className={styles.section}>
       <Container>
-        {/* ── 히어로 인트로 텍스트 (HeroSection에서 이식) ── */}
+        {/* 히어로 인트로 */}
         <div className={styles.heroIntro}>
           <span className={styles.heroEyebrow}>{t('hero.eyebrow')}</span>
           <h1 className={styles.heroHeadline}>
@@ -119,19 +94,18 @@ export default function ManifestoSection() {
         </div>
 
         <div ref={sectionRef} className={styles.inner}>
-          {/* 아이브로우 */}
           <p className={`${styles.eyebrow} label`}>{t('manifesto.eyebrow')}</p>
 
-          {/* 선언문 블록 */}
-          <div className={styles.lines}>
+          {/* 카드 플립 그리드 */}
+          <div className={styles.cardGrid}>
             {lines.map((item, i) => (
-              <ManifestoLine key={i} item={item} index={i} />
+              <FlipCard key={i} item={item} index={i} />
             ))}
           </div>
         </div>
       </Container>
 
-      {/* 우측 스크롤 인디케이터 */}
+      {/* 스크롤 인디케이터 */}
       <div className={styles.scrollTrack} aria-hidden="true">
         <div
           className={styles.scrollThumb}

@@ -97,14 +97,11 @@
       "body": "우리는 누군가의 일기에서 향기를 발견했습니다.\n기억은 향으로 피어나고, 감정은 냄새로 남습니다.\n그런데 왜 우리는 시각과 청각에만 집중해왔을까요.\n후각은 가장 원초적이고 가장 개인적인 감각입니다.\nScentive는 그 감각에 처음으로 언어를 부여합니다.",
       "accent": "\"모든 사람은 자신만의 향을 가질 자격이 있다.\""
     },
-    "senses": [
-      { "label": "시각", "desc": "색채와 빛의 언어" },
-      { "label": "청각", "desc": "소리와 리듬의 언어" },
-      { "label": "촉각", "desc": "질감과 온도의 언어" },
-      { "label": "미각", "desc": "맛과 향의 언어" },
-      { "label": "후각", "desc": "가장 덜 탐구된 감각" }
+    "editorialCards": [
+      { "title": "Emotional Mapping", "desc": "당신의 감정 곡선을 향의 노트로 변환합니다." },
+      { "title": "Memory Synthesis", "desc": "잊혀진 기억의 조각들을 향기로 다시 엮어냅니다." },
+      { "title": "Personal Signature", "desc": "당신을 가장 잘 표현하는 고유의 향을 제안합니다." }
     ],
-    "senseBadge": "Most unexplored",
     "part2": {
       "eyebrow": "— Where we're going",
       "heading": "향을 데이터로 만들면\n세상이 달라집니다",

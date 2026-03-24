@@ -136,11 +136,7 @@ export default function HeroSection() {
         : 0.016;
       prevTimeRef.current = now;
 
-      // ── 카메라 프레임 업데이트 ──
-      const video = videoRef.current;
-      if (video && video.readyState >= 2) {
-        sim.setCameraFrame(video);
-      }
+      // 카메라는 손 추적용으로만 사용 (배경 X, 코너 미리보기는 별도 DOM)
 
       // ── 손 추적 ──
       detectHands(now);
@@ -248,7 +244,20 @@ export default function HeroSection() {
         <div className={styles.scentivePattern} aria-hidden="true" />
 
         {/* 손가락 커서 — 손 추적 시 검지 위치 표시 */}
-        <div ref={cursorRef} className={styles.handCursor} />
+        <div ref={cursorRef} className={styles.handCursor}>
+          <span className={styles.handCursorIcon}>👆</span>
+        </div>
+
+        {/* 웹캠 미리보기 — 좌하단 코너 */}
+        {cameraGranted && (
+          <video
+            ref={el => { if (el && videoRef.current) { el.srcObject = videoRef.current.srcObject; el.play().catch(() => {}); } }}
+            className={styles.camPreview}
+            autoPlay
+            muted
+            playsInline
+          />
+        )}
 
         {/* 인트로 안내 문구 — 3초 후 잉크 흩어짐 효과로 사라짐 */}
         {introVisible && (
@@ -272,7 +281,23 @@ export default function HeroSection() {
           </div>
         )}
 
-        {/* 감정 라벨 — 수면 위에 떠있음 */}
+        {/* SVG Gooey 필터 — 라벨끼리 근접 시 액체처럼 달라붙는 효과 */}
+        <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
+          <defs>
+            <filter id="liquidGlass">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"
+                result="liquid"
+              />
+              <feComposite in="SourceGraphic" in2="liquid" operator="atop" />
+            </filter>
+          </defs>
+        </svg>
+
+        {/* 감정 라벨 — Liquid Glass */}
         {EMOTIONS.map((em, i) => (
           <div
             key={i}
@@ -292,9 +317,11 @@ export default function HeroSection() {
             onTouchEnd={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
             onTouchCancel={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
           >
+            <span className={styles.labelRefraction} />
             <span className={styles.emotionText}>{em.text}</span>
             <span className={styles.scentText}>{em.scent}</span>
             <span className={styles.labelInk} />
+            <span className={styles.labelShimmer} />
           </div>
         ))}
 

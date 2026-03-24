@@ -1,0 +1,82 @@
+/* ── GlowingEffect ── */
+
+.inactiveBorder {
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.inactiveBorderVisible {
+  opacity: 1;
+}
+
+.inactiveBorderWhite {
+  border-color: #fff;
+}
+
+.inactiveBorderOnly {
+  display: block !important;
+}
+
+/* 메인 글로우 컨테이너 */
+.glowContainer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 100;
+  transition: opacity 0.3s ease;
+}
+
+.glowContainerVisible {
+  opacity: 1;
+}
+
+.glowContainerBlur {
+  filter: blur(var(--blur));
+}
+
+.glowContainerHidden {
+  display: none !important;
+}
+
+/* 글로우 본체 */
+.glow {
+  border-radius: inherit;
+}
+
+.glow::after {
+  content: "";
+  border-radius: inherit;
+  position: absolute;
+  inset: calc(-1 * var(--glowingeffect-border-width));
+  border: var(--glowingeffect-border-width) solid transparent;
+  background: var(--gradient);
+  background-attachment: fixed;
+  opacity: var(--active);
+  transition: opacity 0.3s ease;
+  mask-clip: padding-box, border-box;
+  -webkit-mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(#0000, #0000),
+    conic-gradient(
+      from calc((var(--start) - var(--spread)) * 1deg),
+      #00000000 0deg,
+      #fff,
+      #00000000 calc(var(--spread) * 2deg)
+    );
+  -webkit-mask-image:
+    linear-gradient(#0000, #0000),
+    conic-gradient(
+      from calc((var(--start) - var(--spread)) * 1deg),
+      #00000000 0deg,
+      #fff,
+      #00000000 calc(var(--spread) * 2deg)
+    );
+}
