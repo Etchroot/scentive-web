@@ -34,17 +34,32 @@
 /* ── 손가락 커서 (손 추적 활성 시 표시) ── */
 .handCursor {
   position: absolute;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1.5px solid rgba(255, 255, 255, 0.65);
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -80%);
   pointer-events: none;
   z-index: 15;
   opacity: 0;
   transition: opacity 0.25s ease;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+}
+
+.handCursorIcon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+/* ── 웹캠 미리보기 (좌하단) ── */
+.camPreview {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: 160px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 16;
+  pointer-events: none;
+  object-fit: cover;
+  transform: scaleX(-1);
 }
 
 /* ── 인트로 안내 문구 ── */
@@ -253,5 +268,6 @@
 /* ── 모바일 ── */
 @media (max-width: 640px) {
   .emotionLabel { font-size: 20px; padding: 12px 24px; }
-  .handCursor { width: 18px; height: 18px; }
+  .handCursorIcon { font-size: 26px; }
+  .camPreview { width: 120px; left: 10px; bottom: 10px; }
 }

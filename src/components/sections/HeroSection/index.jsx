@@ -136,11 +136,7 @@ export default function HeroSection() {
         : 0.016;
       prevTimeRef.current = now;
 
-      // ── 카메라 프레임 업데이트 ──
-      const video = videoRef.current;
-      if (video && video.readyState >= 2) {
-        sim.setCameraFrame(video);
-      }
+      // 카메라는 손 추적용으로만 사용 (배경 X, 코너 미리보기는 별도 DOM)
 
       // ── 손 추적 ──
       detectHands(now);
@@ -248,7 +244,20 @@ export default function HeroSection() {
         <div className={styles.scentivePattern} aria-hidden="true" />
 
         {/* 손가락 커서 — 손 추적 시 검지 위치 표시 */}
-        <div ref={cursorRef} className={styles.handCursor} />
+        <div ref={cursorRef} className={styles.handCursor}>
+          <span className={styles.handCursorIcon}>👆</span>
+        </div>
+
+        {/* 웹캠 미리보기 — 좌하단 코너 */}
+        {cameraGranted && (
+          <video
+            ref={el => { if (el && videoRef.current) { el.srcObject = videoRef.current.srcObject; el.play().catch(() => {}); } }}
+            className={styles.camPreview}
+            autoPlay
+            muted
+            playsInline
+          />
+        )}
 
         {/* 인트로 안내 문구 — 3초 후 잉크 흩어짐 효과로 사라짐 */}
         {introVisible && (
