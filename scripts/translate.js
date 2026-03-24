@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Scentive 번역 스크립트
+ * NewNose 번역 스크립트
  *
  * 사용법:
  *   ANTHROPIC_API_KEY=sk-ant-xxx node scripts/translate.js
@@ -45,12 +45,12 @@ const source = JSON.parse(
 );
 
 async function translate(obj, targetLangKo, targetLangCode) {
-  const prompt = `아래 JSON은 한국어 웹사이트(향수 추천 서비스 "Scentive")의 UI 텍스트입니다.
+  const prompt = `아래 JSON은 한국어 웹사이트(향수 추천 서비스 "NewNose")의 UI 텍스트입니다.
 이를 ${targetLangKo}로 번역해주세요.
 
 번역 규칙:
 1. JSON 키(key)는 절대 변경하지 마세요. 값(value)만 번역합니다.
-2. "Scentive" 브랜드명은 번역하지 마세요.
+2. "NewNose" 브랜드명은 번역하지 마세요.
 3. \\n (줄바꿈 문자)은 그대로 유지하세요.
 4. "keyword" 값은 반드시 같은 항목의 "text" 값 안에 포함된 단어(부분 문자열)여야 합니다.
 5. "eyebrow" 키의 값(예: "— How it works", "— Our belief" 등)은 영어 그대로 두거나 ${targetLangKo}로 번역하세요.
@@ -90,7 +90,7 @@ ${JSON.stringify(obj, null, 2)}`;
   return JSON.parse(jsonMatch[0]);
 }
 
-console.log('🌐 Scentive 번역 시작...\n');
+console.log('🌐 NewNose 번역 시작...\n');
 
 for (const [lang, langKo] of Object.entries(TARGET_LANGS)) {
   process.stdout.write(`  ${langKo} (${lang}) 번역 중... `);

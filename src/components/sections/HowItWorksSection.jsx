@@ -97,7 +97,7 @@ export default function HowItWorksSection() {
         title="서비스 소개"
         path="/how-it-works"
         lang={i18n.language}
-        description="일기 → AI 감정 분석 → 향 레시피 → 아카이브. Scentive가 하루의 감정을 향으로 만드는 4단계 과정을 소개합니다."
+        description="일기 → AI 감정 분석 → 향 레시피 → 아카이브. NewNose가 하루의 감정을 향으로 만드는 4단계 과정을 소개합니다."
       />
       <SectionWrapper bgType="neutral" id="how-it-works" className={styles.section}>
         <Container>

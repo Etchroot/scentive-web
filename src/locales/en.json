@@ -76,17 +76,17 @@
       {
         "text": "We bridge the two.",
         "keyword": "bridge",
-        "desc": "For a long time, researchers and creators have tried to link scent with emotion and sensation.\nThat body of work grew the fragrance industry, and today people discover identity and narrative in scent.\nScentive completes that link with data."
+        "desc": "For a long time, researchers and creators have tried to link scent with emotion and sensation.\nThat body of work grew the fragrance industry, and today people discover identity and narrative in scent.\nNewNose completes that link with data."
       },
       {
         "text": "Emotions become fragrance, preserved in data.",
         "keyword": "data",
-        "desc": "Yet for so long, scent has been understood through intuition alone.\nScentive builds a precise database connecting emotion and scent by learning from tens of thousands of diary entries, public datasets, and the chemical properties of aroma molecules."
+        "desc": "Yet for so long, scent has been understood through intuition alone.\nNewNose builds a precise database connecting emotion and scent by learning from tens of thousands of diary entries, public datasets, and the chemical properties of aroma molecules."
       },
       {
         "text": "Data becomes a vast map of scent.",
         "keyword": "map",
-        "desc": "The ability to analyze what was once abstract scent through quantitative data — that itself is innovation.\nScentive's scent map starts from personal diaries and grows into an infrastructure applicable to anyone, in any context."
+        "desc": "The ability to analyze what was once abstract scent through quantitative data — that itself is innovation.\nNewNose's scent map starts from personal diaries and grows into an infrastructure applicable to anyone, in any context."
       }
     ]
   },
@@ -124,7 +124,7 @@
     "part1": {
       "eyebrow": "— Why we started",
       "heading": "Everyone has their own\nsignature scent of life",
-      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only ever focused on sight and sound?\nSmell is the most primal and most personal sense.\nScentive gives that sense a language for the very first time.",
+      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only ever focused on sight and sound?\nSmell is the most primal and most personal sense.\nNewNose gives that sense a language for the very first time.",
       "accent": "\"Everyone deserves a scent that is uniquely their own.\""
     },
     "editorialCards": [
@@ -155,10 +155,10 @@
         },
         {
           "title": "A fundamental sense for physical AI",
-          "desc": "When digital AI understands smell, the world changes entirely.\nScentive is building that language."
+          "desc": "When digital AI understands smell, the world changes entirely.\nNewNose is building that language."
         }
       ],
-      "footerPrefix": "Scentive is not just an app.",
+      "footerPrefix": "NewNose is not just an app.",
       "footerStrong": "It is the first data infrastructure for creating the language of scent."
     }
   },

@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 const SITE_URL = 'https://janhyang-web.web.app';
-const SITE_NAME = 'Scentive';
+const SITE_NAME = 'NewNose';
 
 /**
  * 페이지별 SEO 메타 태그 컴포넌트

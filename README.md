@@ -1,8 +1,8 @@
-# Scentive 웹사이트
+# NewNose 웹사이트
 
 **"당신의 하루를 향으로 번역해드립니다."**
 
-Scentive 앱 서비스를 소개하는 기업/팀 소개 웹사이트입니다.
+NewNose 앱 서비스를 소개하는 기업/팀 소개 웹사이트입니다.
 
 🌐 **라이브 URL**: https://janhyang-web.web.app
 

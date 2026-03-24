@@ -1,4 +1,4 @@
-# CLAUDE.md — Scentive 웹사이트 공통 규칙
+# CLAUDE.md — NewNose 웹사이트 공통 규칙
 
 > 작업 전 반드시 읽으세요. 섹션별 기획·스펙은 `planning.md`를 참조하세요.
 
@@ -8,7 +8,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 서비스명 | Scentive (센티브) |
+| 서비스명 | NewNose (센티브) |
 | 웹사이트 성격 | 앱 서비스를 만든 기업/팀 소개 웹사이트 |
 | 핵심 카피 | "당신의 하루를 향으로 번역해드립니다." |
 | 플랫폼 | 웹 (반응형, Android 앱 다운로드 유도) |
@@ -107,7 +107,7 @@ components/
 | 항목 | 내용 |
 |------|------|
 | 호스팅 | Firebase Hosting · 프로젝트명 `Janhyang` |
-| 레포지토리 | GitHub · `scentive-web` |
+| 레포지토리 | GitHub · `newnose-web` |
 | 자동 배포 | GitHub Actions → `main` 브랜치 push 시 Firebase 자동 배포 |
 | 배포 명령 | `firebase deploy --only hosting` |
 
