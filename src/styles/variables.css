@@ -24,8 +24,8 @@
   --color-border-light:   #EEEEEE;
 
   /* 레이아웃 */
-  --container-max-width: 1200px;
-  --container-padding: 0 52px;
+  --container-max-width: 1600px;
+  --container-padding: 0 48px;
   --navbar-height: 56px;
 
   /* 트랜지션 */

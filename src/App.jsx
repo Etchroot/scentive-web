@@ -7,6 +7,7 @@ function ScrollToTop() {
   return null;
 }
 import Navbar from './components/common/Navbar';
+import ParticleCanvas from './components/common/ParticleCanvas';
 import HeroSection from './components/sections/HeroSection/index';
 import ManifestoSection from './components/sections/ManifestoSection';
 import HowItWorksSection from './components/sections/HowItWorksSection';
@@ -19,6 +20,7 @@ function Layout({ children }) {
     <>
       <Navbar />
       <main>{children}</main>
+      <ParticleCanvas />
     </>
   );
 }

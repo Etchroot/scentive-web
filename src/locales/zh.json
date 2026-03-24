@@ -127,29 +127,11 @@
       "body": "我们从某个人的日记中发现了香气。\n记忆化为香气绽放，情感以气味留存。\n可为什么我们一直只关注视觉和听觉呢？\n嗅觉是最原始、最私人的感官。\nScentive首次为这种感官赋予了语言。",
       "accent": "\"每个人都有权拥有属于自己的香气。\""
     },
-    "senses": [
-      {
-        "label": "视觉",
-        "desc": "色彩与光的语言"
-      },
-      {
-        "label": "听觉",
-        "desc": "声音与节奏的语言"
-      },
-      {
-        "label": "触觉",
-        "desc": "质感与温度的语言"
-      },
-      {
-        "label": "味觉",
-        "desc": "味道与风味的语言"
-      },
-      {
-        "label": "嗅觉",
-        "desc": "最未被探索的感官"
-      }
+    "editorialCards": [
+      { "title": "Emotional Mapping", "desc": "将您的情感曲线转化为香气的音符。" },
+      { "title": "Memory Synthesis", "desc": "将遗忘的记忆碎片重新编织成香气。" },
+      { "title": "Personal Signature", "desc": "为您量身定制最能表达您的独特香气。" }
     ],
-    "senseBadge": "最未被探索",
     "part2": {
       "eyebrow": "— Where we're going",
       "heading": "当香气变成数据\n世界将会改变",

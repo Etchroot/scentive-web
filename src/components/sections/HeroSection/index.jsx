@@ -281,7 +281,23 @@ export default function HeroSection() {
           </div>
         )}
 
-        {/* 감정 라벨 — 수면 위에 떠있음 */}
+        {/* SVG Gooey 필터 — 라벨끼리 근접 시 액체처럼 달라붙는 효과 */}
+        <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
+          <defs>
+            <filter id="liquidGlass">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"
+                result="liquid"
+              />
+              <feComposite in="SourceGraphic" in2="liquid" operator="atop" />
+            </filter>
+          </defs>
+        </svg>
+
+        {/* 감정 라벨 — Liquid Glass */}
         {EMOTIONS.map((em, i) => (
           <div
             key={i}
@@ -301,9 +317,11 @@ export default function HeroSection() {
             onTouchEnd={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
             onTouchCancel={() => { if (hoverRef.current === i) hoverRef.current = -1; }}
           >
+            <span className={styles.labelRefraction} />
             <span className={styles.emotionText}>{em.text}</span>
             <span className={styles.scentText}>{em.scent}</span>
             <span className={styles.labelInk} />
+            <span className={styles.labelShimmer} />
           </div>
         ))}
 

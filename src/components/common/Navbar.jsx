@@ -55,16 +55,6 @@ export default function Navbar() {
         <ul className={styles.links}>
           <li>
             <NavLink
-              to="/manifesto"
-              className={({ isActive }) =>
-                isActive ? `${styles.link} ${styles.active}` : styles.link
-              }
-            >
-              {t('navbar.philosophy')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/how-it-works"
               className={({ isActive }) =>
                 isActive ? `${styles.link} ${styles.active}` : styles.link
@@ -81,6 +71,16 @@ export default function Navbar() {
               }
             >
               {t('navbar.story')}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/manifesto"
+              className={({ isActive }) =>
+                isActive ? `${styles.link} ${styles.active}` : styles.link
+              }
+            >
+              {t('navbar.philosophy')}
             </NavLink>
           </li>
           <li>

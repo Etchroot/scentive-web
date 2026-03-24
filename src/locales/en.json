@@ -127,29 +127,11 @@
       "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only focused on sight and sound?\nSmell is the most primal and most personal sense.\nScentive gives that sense a language for the first time.",
       "accent": "\"Everyone deserves a scent of their own.\""
     },
-    "senses": [
-      {
-        "label": "Sight",
-        "desc": "The language of color and light"
-      },
-      {
-        "label": "Hearing",
-        "desc": "The language of sound and rhythm"
-      },
-      {
-        "label": "Touch",
-        "desc": "The language of texture and temperature"
-      },
-      {
-        "label": "Taste",
-        "desc": "The language of flavor and aroma"
-      },
-      {
-        "label": "Smell",
-        "desc": "The most unexplored sense"
-      }
+    "editorialCards": [
+      { "title": "Emotional Mapping", "desc": "We translate your emotional curves into notes of fragrance." },
+      { "title": "Memory Synthesis", "desc": "We weave forgotten fragments of memory back into scent." },
+      { "title": "Personal Signature", "desc": "We craft a unique fragrance that best expresses who you are." }
     ],
-    "senseBadge": "Most unexplored",
     "part2": {
       "eyebrow": "— Where we're going",
       "heading": "When scent becomes data,\nthe world changes",
