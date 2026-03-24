@@ -7,7 +7,7 @@ import ja from './locales/ja.json';
 import zh from './locales/zh.json';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const savedLang = isLocal ? 'ko' : (localStorage.getItem('scentive-lang') || 'ko');
+const savedLang = isLocal ? 'ko' : (localStorage.getItem('newnose-lang') || 'ko');
 
 i18n
   .use(initReactI18next)

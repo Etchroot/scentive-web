@@ -80,7 +80,7 @@ export default function ManifestoSection() {
       title="브랜드 철학"
       path="/manifesto"
       lang={i18n.language}
-      description="글자는 감정을 담고, 향은 추억을 담습니다. Scentive가 감정과 향 사이를 데이터로 잇는 5가지 믿음."
+      description="글자는 감정을 담고, 향은 추억을 담습니다. NewNose가 감정과 향 사이를 데이터로 잇는 5가지 믿음."
     />
     <SectionWrapper bgType="impact" id="manifesto" className={styles.section}>
       <Container>

@@ -227,7 +227,7 @@ export default function HeroSection() {
     <SeoHead
       path="/"
       lang={i18n.language}
-      description="Scentive는 매일 쓰는 일기를 AI로 분석해 세상에 하나뿐인 나만의 향 레시피를 만들어드립니다. 감정을 향으로, 하루를 향수로."
+      description="NewNose는 매일 쓰는 일기를 AI로 분석해 세상에 하나뿐인 나만의 향 레시피를 만들어드립니다. 감정을 향으로, 하루를 향수로."
     />
     <section className={styles.hero} id="hero">
 
@@ -240,8 +240,8 @@ export default function HeroSection() {
       >
         <canvas ref={canvasRef} className={styles.canvas} />
 
-        {/* SCENTIVE 텍스트 패턴 — CSS SVG 벡터 (해상도 독립) */}
-        <div className={styles.scentivePattern} aria-hidden="true" />
+        {/* NEWNOSE 텍스트 패턴 — CSS SVG 벡터 (해상도 독립) */}
+        <div className={styles.newnosePattern} aria-hidden="true" />
 
         {/* 손가락 커서 — 손 추적 시 검지 위치 표시 */}
         <div ref={cursorRef} className={styles.handCursor}>

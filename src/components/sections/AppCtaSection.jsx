@@ -18,7 +18,7 @@ export default function AppCtaSection() {
       title="앱 다운로드"
       path="/app"
       lang={i18n.language}
-      description="지금 Scentive 앱을 다운로드하고 한 달 후 세상에 하나뿐인 나만의 향 레시피를 받아보세요. Android 무료."
+      description="지금 NewNose 앱을 다운로드하고 한 달 후 세상에 하나뿐인 나만의 향 레시피를 받아보세요. Android 무료."
     />
     <SectionWrapper bgType="impact" id="app-cta" className={styles.section}>
       <Container>
@@ -95,17 +95,17 @@ function Footer() {
 
       <div className={styles.footerInner}>
         {/* 로고 */}
-        <span className={styles.footerLogo}>Scentive</span>
+        <span className={styles.footerLogo}>NewNose</span>
 
         {/* 링크 */}
         <nav className={styles.footerLinks} aria-label="footer navigation">
           <Link to="/privacy" className={styles.footerLink}>{t('footer.privacy')}</Link>
           <a href="#" className={styles.footerLink}>{t('footer.terms')}</a>
-          <a href="mailto:contact@scentive.io" className={styles.footerLink}>{t('footer.contact')}</a>
+          <a href="mailto:contact@newnose.io" className={styles.footerLink}>{t('footer.contact')}</a>
         </nav>
 
         {/* 카피라이트 */}
-        <p className={styles.copyright}>© 2026 Scentive</p>
+        <p className={styles.copyright}>© 2026 NewNose</p>
       </div>
     </footer>
   );

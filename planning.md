@@ -1,4 +1,4 @@
-# planning.md — Scentive 웹사이트 기획 문서
+# planning.md — NewNose 웹사이트 기획 문서
 
 > 섹션별 레이아웃·인터랙션·기술 스펙을 기록합니다.
 > 공통 룰(컬러, 컴포넌트 등)은 `CLAUDE.md`를 참조하세요.
@@ -133,7 +133,7 @@ uniform float uHover;      // 0.0 | 1.0
 
 6. 라벨 reveal
    모든 버블 완료 후 CSS overlay fade-in
-   "Scentive" 텍스트 + 스크롤 화살표
+   "NewNose" 텍스트 + 스크롤 화살표
 ```
 
 ### 성능 가이드라인
@@ -296,7 +296,7 @@ heading: "향을 데이터로 만들면 세상이 달라집니다"
   01. 초개인화 향 서비스
   02. 심리 치료 & 공간 설계
   03. 피지컬 AI의 기본 감각 → N700 featured 카드
-footer: "Scentive는 앱 서비스가 아닙니다. 향의 언어를 만드는 첫 번째 데이터 인프라입니다."
+footer: "NewNose는 앱 서비스가 아닙니다. 향의 언어를 만드는 첫 번째 데이터 인프라입니다."
   → N700 border, 투명 배경, W400 dot
 ```
 
@@ -322,9 +322,9 @@ AppCtaSection (N400 배경, padding 72px 52px 80px, center 정렬)
 │       ├── <Button variant="primary"> Google Play에서 다운로드
 │       └── 서브라벨: "Android · 무료"
 └── Footer (border-top rgba(N700, 0.15))
-    ├── 로고: "Scentive"
+    ├── 로고: "NewNose"
     ├── 링크: 개인정보처리방침 / 이용약관 / 문의하기
-    └── 카피라이트: "© 2025 Scentive"
+    └── 카피라이트: "© 2025 NewNose"
 ```
 
 ### 카피 의도

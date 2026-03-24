@@ -38,7 +38,7 @@ export default function BrandStorySection() {
       title="브랜드 스토리"
       path="/brand-story"
       lang={i18n.language}
-      description="후각은 가장 원초적이고 가장 개인적인 감각입니다. Scentive가 향의 언어를 만드는 이유와 나아갈 방향."
+      description="후각은 가장 원초적이고 가장 개인적인 감각입니다. NewNose가 향의 언어를 만드는 이유와 나아갈 방향."
     />
     <SectionWrapper bgType="neutral" id="brand-story" className={styles.section}>
       {/* 파트1 배경 글로우 — 중앙형, 크로스페이드 */}

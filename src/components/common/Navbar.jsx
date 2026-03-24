@@ -39,7 +39,7 @@ export default function Navbar() {
 
   const changeLang = (lang) => {
     i18n.changeLanguage(lang);
-    localStorage.setItem('scentive-lang', lang);
+    localStorage.setItem('newnose-lang', lang);
     setLangOpen(false);
   };
 
@@ -47,8 +47,8 @@ export default function Navbar() {
     <nav className={`${styles.nav} ${scrolled ? styles.shadowed : ''}`}>
       <div className={styles.inner}>
         {/* 로고 */}
-        <Link to="/" className={styles.logo} aria-label="Scentive 홈">
-          Scentive
+        <Link to="/" className={styles.logo} aria-label="NewNose 홈">
+          NewNose
         </Link>
 
         {/* 링크 */}
