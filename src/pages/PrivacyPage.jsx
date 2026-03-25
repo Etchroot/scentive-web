@@ -8,13 +8,13 @@ export default function PrivacyPage() {
       <div className={styles.container}>
 
         <header className={styles.header}>
-          <div className={styles.appName}>센티브 (NewNose)</div>
+          <div className={styles.appName}>잔향 (Janhyang)</div>
           <h1 className={styles.title}>개인정보처리방침</h1>
           <div className={styles.effectiveDate}>시행일자: 2026년 3월 22일</div>
         </header>
 
         <div className={styles.intro}>
-          (주)센티브(이하 "회사")는 「센티브(NewNose)」 서비스(이하 "서비스") 이용자의 개인정보를 소중히 여기며,
+          (주)뉴노즈(이하 "회사")는 「잔향(Janhyang)」 서비스(이하 "서비스") 이용자의 개인정보를 소중히 여기며,
           「개인정보 보호법」을 준수합니다.
           본 방침은 서비스가 수집하는 개인정보의 항목, 수집 목적, 보유 기간, 그리고 이용자의 권리에 대해 안내합니다.
         </div>
@@ -170,7 +170,7 @@ export default function PrivacyPage() {
           <div className={styles.contactCard}>
             <p><strong>개인정보 보호책임자</strong></p>
             <p>성명: 배성우</p>
-            <p>소속: (주)센티브</p>
+            <p>소속: (주)뉴노즈</p>
             <p>이메일: <a href="mailto:newnose@gmail.com">newnose@gmail.com</a></p>
             <p>처리 기간: 접수 후 10일 이내</p>
           </div>
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
         </section>
 
         <footer className={styles.footer}>
-          <p>(주)센티브 (NewNose) &nbsp;|&nbsp; 개인정보처리방침 시행일자: 2026년 3월 22일</p>
+          <p>(주)뉴노즈 (NewNose) &nbsp;|&nbsp; 개인정보처리방침 시행일자: 2026년 3월 22일</p>
         </footer>
 
       </div>
