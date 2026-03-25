@@ -100,7 +100,7 @@ function Footer() {
         {/* 링크 */}
         <nav className={styles.footerLinks} aria-label="footer navigation">
           <Link to="/privacy" className={styles.footerLink}>{t('footer.privacy')}</Link>
-          <a href="#" className={styles.footerLink}>{t('footer.terms')}</a>
+          <a href="/terms_of_use.html" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>{t('footer.terms')}</a>
           <a href="mailto:contact@newnose.io" className={styles.footerLink}>{t('footer.contact')}</a>
         </nav>
 
