@@ -82,7 +82,38 @@ export default function ManifestoSection() {
       lang={i18n.language}
       description="글자는 감정을 담고, 향은 추억을 담습니다. NewNose가 감정과 향 사이를 데이터로 잇는 5가지 믿음."
     />
+    <div ref={sectionRef}>
     <SectionWrapper bgType="impact" id="manifesto" className={styles.section}>
+      {/* 배경 영상 */}
+      <video
+        className={styles.bgVideo}
+        src="/images/petals_mobile.mp4"
+        autoPlay
+        muted
+        playsInline
+        onTimeUpdate={(e) => {
+          const vid = e.target;
+          const remain = vid.duration - vid.currentTime;
+          // 끝 1초: 페이드아웃
+          if (remain < 1) {
+            vid.style.opacity = remain;
+          }
+          // 시작 1초: 페이드인
+          else if (vid.currentTime < 1) {
+            vid.style.opacity = vid.currentTime;
+          }
+          else {
+            vid.style.opacity = 1;
+          }
+        }}
+        onEnded={(e) => {
+          const vid = e.target;
+          vid.style.opacity = 0;
+          vid.currentTime = 0;
+          vid.play();
+        }}
+      />
+      <div className={styles.bgOverlay} />
       <Container>
         {/* 히어로 인트로 */}
         <div className={styles.heroIntro}>
@@ -93,7 +124,7 @@ export default function ManifestoSection() {
           </h1>
         </div>
 
-        <div ref={sectionRef} className={styles.inner}>
+        <div className={styles.inner}>
           <p className={`${styles.eyebrow} label`}>{t('manifesto.eyebrow')}</p>
 
           {/* 카드 플립 그리드 */}
@@ -113,6 +144,7 @@ export default function ManifestoSection() {
         />
       </div>
     </SectionWrapper>
+    </div>
     </>
   );
 }
