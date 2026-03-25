@@ -2,7 +2,7 @@
 
 **"당신의 하루를 향으로 번역해드립니다."**
 
-NewNose 앱 서비스를 소개하는 기업/팀 소개 웹사이트입니다.
+잔향(Janhyang) 앱 서비스를 소개하는 (주)뉴노즈(NewNose) 기업 웹사이트입니다.
 
 🌐 **라이브 URL**: https://janhyang-web.web.app
 
@@ -17,6 +17,7 @@ NewNose 앱 서비스를 소개하는 기업/팀 소개 웹사이트입니다.
 | 다국어 | react-i18next (ko / en / ja / zh) |
 | SEO | react-helmet-async |
 | 렌더링 | WebGL (FluidInkSim — 잉크 번짐 시뮬레이션) |
+| 애니메이션 | motion/react (Framer Motion) |
 | 호스팅 | Firebase Hosting |
 | 자동 배포 | GitHub Actions → main 브랜치 push 시 자동 배포 |
 
@@ -44,7 +45,7 @@ npm run build
 | 경로 | 컴포넌트 | 설명 |
 |------|----------|------|
 | `/` | HeroSection | 메인 — WebGL 잉크 번짐 인터랙션 |
-| `/how-it-works` | HowItWorksSection | 서비스 작동 방식 3단계 |
+| `/how-it-works` | HowItWorksSection | 서비스 작동 방식 4단계 (3D 카드 스택 슬라이더) |
 | `/brand-story` | BrandStorySection | 브랜드 스토리 |
 | `/manifesto` | ManifestoSection | 브랜드 선언문 |
 | `/app` | AppCtaSection | 앱 다운로드 CTA + 푸터 |
@@ -59,7 +60,8 @@ src/
 ├── components/
 │   ├── common/
 │   │   ├── Navbar.jsx          # 스티키 네비게이션 + 언어 전환 드롭다운
-│   │   └── SeoHead.jsx         # 페이지별 메타태그 (Helmet 래퍼)
+│   │   ├── SeoHead.jsx         # 페이지별 메타태그 (Helmet 래퍼)
+│   │   └── ParticleCanvas.jsx  # 마우스 추적 입자 애니메이션 (전역)
 │   ├── layout/
 │   │   ├── SectionWrapper.jsx  # bgType: warm | neutral | impact
 │   │   └── Container.jsx       # 최대 너비 + 좌우 패딩
@@ -67,7 +69,9 @@ src/
 │   │   ├── Button.jsx          # variant: primary | outline | ghost
 │   │   ├── Tag.jsx
 │   │   ├── Divider.jsx
-│   │   └── AccentPanel.jsx
+│   │   ├── AccentPanel.jsx
+│   │   ├── GlowingEffect.jsx   # conic-gradient 애니메이션 테두리 글로우
+│   │   └── GlowingEffect.module.css
 │   └── sections/
 │       ├── HeroSection/
 │       │   ├── index.jsx       # WebGL 인터랙션 + 감정 라벨
@@ -89,6 +93,11 @@ src/
 scripts/
 └── translate.js                # ko.json → en/ja/zh 자동 번역 스크립트
 public/
+├── images/
+│   ├── petals_mobile.mp4       # 브랜드 철학 섹션 배경 영상
+│   ├── story-*.jpg             # 브랜드 스토리 에디토리얼 이미지
+│   └── vision-*.jpg            # 브랜드 스토리 비전 이미지
+├── terms_of_use.html           # 이용약관 (독립 HTML)
 ├── robots.txt
 └── sitemap.xml
 ```

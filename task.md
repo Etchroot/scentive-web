@@ -8,7 +8,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 서비스명 | NewNose (센티브) |
+| 서비스명 | 잔향 (Janhyang) — 회사: (주)뉴노즈 (NewNose) |
 | 핵심 카피 | "당신의 하루를 향으로 번역합니다." |
 | 플랫폼 | 웹 (반응형) + Android 앱 다운로드 유도 |
 | 배포 URL | https://janhyang-web.web.app |
@@ -34,7 +34,8 @@
 |------|------|
 | **WebGL 1.0** | HeroSection 유체 잉크 시뮬레이션 |
 | **GLSL (Fragment Shader)** | 잉크 splat, curl-noise advection, caustic 조명 |
-| **CSS SVG inline** | NEWNOSE 워터마크 패턴 (벡터, 해상도 독립) |
+| **CSS SVG inline** | NewNose 워터마크 패턴 (벡터, 해상도 독립) |
+| **motion/react** | 카드 스택 슬라이더, 페이지 전환 애니메이션 |
 | **Three.js** | (레거시 — 초기 버블 씬 구현 시 사용, 현재 미사용) |
 
 ### 인프라 / 배포
@@ -102,22 +103,32 @@
 ## 섹션별 주요 사항
 
 ### HowItWorksSection (`/how-it-works`)
-- 4단계 스크롤 스텝 리스트 (IntersectionObserver로 활성 스텝 감지)
-- 앱 스크린샷: `phoneBezel` 180px (모바일 135px) — 9:19 비율 폰 목업
-- 수직 커넥터 라인: 스크롤에 따라 노란색으로 채워짐
-- desc 텍스트: 마침표 이후 줄바꿈 (`white-space: pre-line`)
+- **3D 팬 스타일 카드 스택 슬라이더** (motion/react 애니메이션)
+- 활성 카드가 앞에, 비활성 카드는 뒤로 기울어지고 축소되는 3D perspective 효과
+- 좌우 화살표 + 스와이프(드래그) + 도트 네비게이션으로 전환
+- 5초 간격 자동 재생 (마우스 호버 시 일시정지) + 프로그레스 바
+- 우측 텍스트 패널: AnimatePresence로 제목/설명 페이드 전환
+- GlowingEffect: conic-gradient 마스크 기반 알록달록 테두리 글로우 (활성 카드만)
+- 앱 스크린샷: phoneBezel 폰 목업
 
 ### BrandStorySection (`/brand-story`)
-- **파트 1 — Why we started**: 좌측 텍스트 + 우측 5감 카드 그리드 (`align-items: center`로 세로 중앙 정렬)
-- **파트 2 — Where we're going**: 3개 비전 카드 (번호 없음, 동일 스타일)
-- 모든 컴포넌트 `border-radius: 0` (직각 모서리)
+- **파트 1 — Why we started**: 좌측 텍스트 + 우측 에디토리얼 이미지 카드 3장
+  - 그레이스케일 → 컬러 호버, 줌아웃 효과
+  - Cormorant Garamond 세리프 이탤릭 제목
+  - 중앙 radial-gradient 크로스페이드 글로우 (카드별 고유 색상)
+- **파트 2 — Where we're going**: 3개 비전 카드 (이미지 + 텍스트)
+  - 16:9 이미지, 그레이스케일 → 컬러 호버
+  - 가장자리 inset box-shadow 크로스페이드 글로우
 - desc 텍스트: 마침표 이후 줄바꿈
 
 ### ManifestoSection (`/manifesto`)
-- 5개 선언문 라인, 스크롤 IntersectionObserver로 hidden→active→revealed 상태 전환
-- 각 라인에 `keyword` 하이라이트 (active: 노란 배경, revealed: 노란 밑줄)
-- 각 라인 아래 **desc 본문** 추가 (마침표 후 줄바꿈, `padding-left: 38px`으로 번호와 정렬)
+- **검은 유광 플라스틱 카드 플립 애니메이션** (스코어보드 스타일 X축 회전)
+  - `linear-gradient(135deg, #0c0c0c → #1a1a1a → #0c0c0c)` 유광 표면
+  - IntersectionObserver: 뷰포트 진입 시 플립인, 아래로 벗어날 때만 리셋 (위로 지나간 카드는 유지)
+  - 카드 앞면: 번호 + 키워드 하이라이트(노란색) 문장 + desc 설명
+- **배경 영상**: `petals_mobile.mp4` 정방향 루프 재생, 끝/시작 1초 페이드 아웃/인
 - 우측 스크롤 진행 인디케이터
+- 히어로 인트로 (eyebrow + headline)
 
 #### ManifestoSection 선언문 내용 요약
 | 라인 | 핵심 메시지 |
@@ -132,7 +143,7 @@
 
 ### AppCtaSection (`/app`)
 - 앱 다운로드 CTA (QR코드 + 버튼)
-- Footer 포함 (개인정보처리방침, 이용약관, 문의하기)
+- Footer 포함 (개인정보처리방침, 이용약관 `/terms_of_use.html`, 문의하기)
 
 ---
 
@@ -182,7 +193,9 @@ src/
 │   │   ├── Button.jsx               # variant: 'primary'|'outline'|'ghost', border-radius: 0
 │   │   ├── Tag.jsx                  # 소형 레이블
 │   │   ├── Divider.jsx              # 구분선
-│   │   └── AccentPanel.jsx          # border-left 강조 패널
+│   │   ├── AccentPanel.jsx          # border-left 강조 패널
+│   │   ├── GlowingEffect.jsx        # conic-gradient 애니메이션 테두리 글로우
+│   │   └── GlowingEffect.module.css
 │   ├── sections/
 │   │   ├── HeroSection/
 │   │   │   ├── index.jsx            # 메인 컴포넌트 (RAF 루프, 마우스/터치 이벤트, 상태 관리)
@@ -190,12 +203,13 @@ src/
 │   │   │   ├── HeroScene.js         # (레거시 Three.js 씬 — 미사용)
 │   │   │   ├── BubbleMesh.js        # (레거시 Three.js 버블 — 미사용)
 │   │   │   └── HeroSection.module.css  # NEWNOSE SVG 워터마크 패턴 포함
-│   │   ├── HowItWorksSection.jsx    # 서비스 소개 4단계
-│   │   ├── BrandStorySection.jsx    # 브랜드 스토리 (Why / Where)
-│   │   ├── ManifestoSection.jsx     # 브랜드 철학 선언 (5개 라인 + desc)
+│   │   ├── HowItWorksSection.jsx    # 3D 카드 스택 슬라이더 (motion/react)
+│   │   ├── BrandStorySection.jsx    # 에디토리얼 이미지 카드 + 크로스페이드 글로우
+│   │   ├── ManifestoSection.jsx     # 유광 카드 플립 애니메이션 + 배경 영상
 │   │   └── AppCtaSection.jsx        # 앱 다운로드 CTA + Footer
 │   └── common/
-│       └── Navbar.jsx               # sticky 네비게이션
+│       ├── Navbar.jsx               # sticky 네비게이션
+│       └── ParticleCanvas.jsx       # 마우스 추적 입자 애니메이션 (전역)
 └── design/
     └── color_table.txt              # 디자인 컬러 레퍼런스
 ```
@@ -229,11 +243,16 @@ node scripts/translate.js
 
 | 파일명 | 내용 | 사용 섹션 |
 |--------|------|----------|
-| `public/images/screenshot-01.jpg` | 일기 작성 화면 | HowItWorks Step 1 |
-| `public/images/screenshot-02.jpg` | AI 분석 화면 | HowItWorks Step 2 |
-| `public/images/screenshot-03.jpg` | 향 레시피 결과 | HowItWorks Step 3 |
-| `public/images/screenshot-04.jpg` | 아카이브 그리드 | HowItWorks Step 4 |
+| `public/images/screenshot-01~04.jpg` | 앱 스크린샷 (일기→분석→레시피→아카이브) | HowItWorks |
+| `public/images/story-emotion.jpg` | 감정 매핑 에디토리얼 | BrandStory Part1 |
+| `public/images/story-memory.jpg` | 기억 합성 에디토리얼 | BrandStory Part1 |
+| `public/images/story-signature.jpg` | 개인 시그니처 에디토리얼 | BrandStory Part1 |
+| `public/images/vision-personalize.jpg` | 개인화 비전 | BrandStory Part2 |
+| `public/images/vision-therapy.jpg` | 테라피 비전 | BrandStory Part2 |
+| `public/images/vision-ai.jpg` | AI 비전 | BrandStory Part2 |
+| `public/images/petals_mobile.mp4` | 꽃잎 배경 영상 | ManifestoSection |
 | `public/images/qr-code.png` | QR 코드 | AppCta 섹션 |
+| `public/terms_of_use.html` | 이용약관 (독립 HTML) | Footer 링크 |
 
 ---
 
@@ -273,3 +292,13 @@ node scripts/translate.js
 | 2026-03-22 | 감정 라벨 완료 시 향 이름으로 전환 + 향 고유 색상으로 배경 변경 (emotion→scent 전환 애니메이션) |
 | 2026-03-22 | 다국어 시스템 구축: react-i18next 세팅, ko/en/ja/zh locale JSON, Claude API 번역 스크립트 |
 | 2026-03-22 | Navbar 언어 스위처: 지구본 아이콘 클릭 → 드롭다운 언어 선택 (localStorage 유지) |
+| 2026-03-25 | HowItWorksSection: 2×2 그리드 → 3D 팬 스타일 카드 스택 슬라이더 (motion/react) |
+| 2026-03-25 | GlowingEffect 컴포넌트 추가 (conic-gradient 애니메이션 테두리 글로우) |
+| 2026-03-25 | ParticleCanvas 추가 (마우스 추적 입자 애니메이션, 전역) |
+| 2026-03-25 | BrandStorySection: 오감 테이블 → 에디토리얼 이미지 카드 + 크로스페이드 글로우 |
+| 2026-03-25 | HeroSection: 감정 라벨에 Liquid Glass 효과 (SVG gooey 필터 + shimmer) |
+| 2026-03-25 | ManifestoSection: 검은 유광 카드 플립 애니메이션 + 배경 영상(petals_mobile.mp4) |
+| 2026-03-25 | 컨테이너 max-width 1200→1600px, Cormorant Garamond 폰트 추가 |
+| 2026-03-25 | 네이밍 정리: 앱=잔향, 회사=(주)뉴노즈/NewNose, SCENTIVE 제거 |
+| 2026-03-25 | 감정-향 지도 링크 → visualization-iota.vercel.app |
+| 2026-03-25 | 이용약관(terms_of_use.html) 추가 및 Footer 연결 |

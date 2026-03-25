@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '../ui/Button';
 import styles from './Navbar.module.css';
 
-const EMOTION_MAP_URL = 'https://janhyang-1e4bc.web.app';
+const EMOTION_MAP_URL = 'https://visualization-iota.vercel.app/';
 
 const LANGS = [
   { code: 'ko', label: '한국어' },
