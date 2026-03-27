@@ -143,9 +143,7 @@ export default function HeroSection() {
       const hand = handDataRef.current;
 
       if (hand.detected && hand.tips.length > 0) {
-        // 손 추적 모드 — 검지로 잉크 흐름 교란
         const indexTip = hand.tips[1];
-        sim.setHandState(indexTip.x, indexTip.y, hand.velocity.x, hand.velocity.y);
 
         // 손가락 커서 표시 (직접 DOM 업데이트 — React 리렌더 방지)
         const cursor = cursorRef.current;
@@ -171,6 +169,13 @@ export default function HeroSection() {
           }
         }
         hoverRef.current = nearestLabel;
+
+        // 라벨 근처일 때만 잉크 흐름 교란, 벗어나면 물결만
+        if (nearestLabel >= 0) {
+          sim.setHandState(indexTip.x, indexTip.y, hand.velocity.x, hand.velocity.y);
+        } else {
+          sim.clearHandState();
+        }
       } else {
         // 마우스/터치 폴백 — 잉크 흐름 교란 없음 (라벨 호버만 React 이벤트로 처리)
         if (cursorRef.current) cursorRef.current.style.opacity = '0';

@@ -7,7 +7,7 @@ import Button from '../ui/Button';
 import Divider from '../ui/Divider';
 import styles from './AppCtaSection.module.css';
 
-const APP_URL = 'https://drive.google.com/drive/folders/10FYPt371_So8zH8Hr2OANEFgddIPXEMK?usp=drive_link';
+const APP_URL = 'https://drive.google.com/drive/folders/1FPUaRjuF9mBwnzWcvgTyzolVJfUjRJmq?usp=drive_link';
 
 export default function AppCtaSection() {
   const { t, i18n } = useTranslation();
@@ -44,8 +44,8 @@ export default function AppCtaSection() {
                   src="/images/qr-code.png"
                   alt={t('appCta.qrAlt')}
                   className={styles.qrImg}
-                  width={72}
-                  height={72}
+                  width={108}
+                  height={108}
                 />
               </div>
               <p className={styles.qrLabel}>{t('appCta.qrLabel')}</p>
@@ -55,7 +55,7 @@ export default function AppCtaSection() {
             <Divider
               variant="strong"
               direction="vertical"
-              style={{ opacity: 0.2, height: 72, alignSelf: 'center' }}
+              style={{ opacity: 0.2, height: 108, alignSelf: 'center' }}
             />
 
             {/* 버튼 블록 */}
