@@ -289,6 +289,11 @@
 @media (max-width: 640px) {
   .section { padding: 72px 0 80px; }
 
+  .sliderLayout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
   .stackContainer {
     max-width: 320px;
   }
@@ -319,6 +324,10 @@
 
   .navPrev { left: -8px; }
   .navNext { right: -8px; }
+
+  .infoPanel {
+    order: 2;
+  }
 
   .infoNum { font-size: 48px; }
   .infoTitle { font-size: 22px; }
