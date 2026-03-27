@@ -179,12 +179,7 @@ export default function HowItWorksSection() {
                             </div>
                           </div>
 
-                          <div className={styles.cardBody}>
-                            <h3 className={styles.cardTitle}>{step.title}</h3>
-                            <p className={styles.cardDesc} style={{ whiteSpace: 'pre-line' }}>
-                              {step.desc}
-                            </p>
-                          </div>
+
                         </div>
                       </div>
                     </motion.div>

@@ -131,9 +131,75 @@
   background: var(--color-bg-warm);
 }
 
+/* 햄버거 버튼 — 모바일에서만 표시 */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.bar {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--color-text-primary);
+  border-radius: 1px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  transform-origin: center;
+}
+
+.barOpen1 { transform: translateY(6.5px) rotate(45deg); }
+.barOpen2 { opacity: 0; }
+.barOpen3 { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* 모바일 드롭다운 메뉴 */
+.mobileMenu {
+  display: none;
+  flex-direction: column;
+  background: #ffffff;
+  border-top: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-strong);
+  padding: 8px 0;
+}
+
+.mobileLink {
+  display: block;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.mobileLink:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-neutral);
+}
+
+.mobileLink.active {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
 /* 모바일 */
 @media (max-width: 640px) {
   .links {
     display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .mobileMenu {
+    display: flex;
   }
 }
