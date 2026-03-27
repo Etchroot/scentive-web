@@ -55,7 +55,7 @@ export default function AppCtaSection() {
             <Divider
               variant="strong"
               direction="vertical"
-              style={{ opacity: 0.2, height: 160, alignSelf: 'center' }}
+              style={{ opacity: 0.2, height: 180, alignSelf: 'center' }}
             />
 
             {/* 버튼 블록 */}
