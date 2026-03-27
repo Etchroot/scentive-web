@@ -90,10 +90,10 @@
 }
 
 .downloadBtn {
-  font-size: 15px;
-  padding: 14px 28px;
-  border-radius: 6px;
-  gap: 10px;
+  font-size: 18px;
+  padding: 20px 40px;
+  border-radius: 8px;
+  gap: 12px;
 }
 
 .btnSub {
