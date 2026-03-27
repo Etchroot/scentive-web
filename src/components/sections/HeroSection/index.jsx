@@ -78,7 +78,7 @@ export default function HeroSection() {
   const handleOverlayClick = () => {
     if (!overlayReady) return;
     _resetState();
-    navigate('/manifesto');
+    navigate('/how-it-works');
   };
 
   const handleGoToService = (e) => {
