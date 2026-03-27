@@ -323,6 +323,13 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
   animation: textRise 0.8s ease forwards;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  font-family: inherit;
 }
 
 @keyframes textRise {
