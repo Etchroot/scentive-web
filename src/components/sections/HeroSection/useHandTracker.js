@@ -12,7 +12,7 @@ const WASM_CDN =
   'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.33/wasm';
 const MODEL_URL =
   'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task';
-const DETECT_INTERVAL = 50; // ~20 fps 쓰로틀
+const DETECT_INTERVAL = 100; // ~10 fps 쓰로틀
 
 export default function useHandTracker(videoRef, enabled) {
   const dataRef = useRef({
