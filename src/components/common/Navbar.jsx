@@ -17,6 +17,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const dropdownRef = useRef(null);
 
@@ -98,6 +99,18 @@ export default function Navbar() {
           </li>
         </ul>
 
+        {/* 모바일 햄버거 버튼 */}
+        <button
+          className={styles.hamburger}
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label="메뉴 열기"
+          aria-expanded={menuOpen}
+        >
+          <span className={`${styles.bar} ${menuOpen ? styles.barOpen1 : ''}`} />
+          <span className={`${styles.bar} ${menuOpen ? styles.barOpen2 : ''}`} />
+          <span className={`${styles.bar} ${menuOpen ? styles.barOpen3 : ''}`} />
+        </button>
+
         {/* CTA */}
         <Button variant="primary" onClick={() => navigate('/app')}>
           {t('navbar.download')}
@@ -135,6 +148,42 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      {/* 모바일 드롭다운 메뉴 */}
+      {menuOpen && (
+        <div className={styles.mobileMenu}>
+          <NavLink
+            to="/how-it-works"
+            className={({ isActive }) => `${styles.mobileLink} ${isActive ? styles.active : ''}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t('navbar.service')}
+          </NavLink>
+          <NavLink
+            to="/brand-story"
+            className={({ isActive }) => `${styles.mobileLink} ${isActive ? styles.active : ''}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t('navbar.story')}
+          </NavLink>
+          <NavLink
+            to="/manifesto"
+            className={({ isActive }) => `${styles.mobileLink} ${isActive ? styles.active : ''}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t('navbar.philosophy')}
+          </NavLink>
+          <a
+            href={EMOTION_MAP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${styles.mobileLink} ${styles.external}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t('navbar.emotionMap')}
+          </a>
+        </div>
+      )}
     </nav>
   );
 }

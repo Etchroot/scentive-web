@@ -78,7 +78,7 @@ export default function HeroSection() {
   const handleOverlayClick = () => {
     if (!overlayReady) return;
     _resetState();
-    navigate('/manifesto');
+    navigate('/how-it-works');
   };
 
   const handleGoToService = (e) => {
@@ -123,8 +123,11 @@ export default function HeroSection() {
     simRef.current = sim;
 
     const resize = () => {
+      const MAX_SIM = 800;
       const w = canvas.clientWidth, h = canvas.clientHeight;
-      if (w > 0 && h > 0) sim.resize(w, h);
+      if (w <= 0 || h <= 0) return;
+      const scale = Math.min(1, MAX_SIM / Math.max(w, h));
+      sim.resize(Math.round(w * scale), Math.round(h * scale));
     };
     resize();
     window.addEventListener('resize', resize);
