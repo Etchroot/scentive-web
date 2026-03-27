@@ -41,7 +41,7 @@ export default function AppCtaSection() {
             <div className={styles.qrBlock}>
               <div className={styles.qrFrame}>
                 <img
-                  src="/images/qr-code.png"
+                  src="/images/qr_app.png"
                   alt={t('appCta.qrAlt')}
                   className={styles.qrImg}
                   width={160}
