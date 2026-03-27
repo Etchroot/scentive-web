@@ -57,20 +57,20 @@
 }
 
 .qrFrame {
-  width: 88px;
-  height: 88px;
+  width: 180px;
+  height: 180px;
   background: #ffffff;
   border: 1.5px solid var(--color-border-strong);
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 12px;
 }
 
 .qrImg {
-  width: 72px;
-  height: 72px;
+  width: 156px;
+  height: 156px;
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -90,10 +90,10 @@
 }
 
 .downloadBtn {
-  font-size: 15px;
-  padding: 14px 28px;
-  border-radius: 6px;
-  gap: 10px;
+  font-size: 18px;
+  padding: 20px 40px;
+  border-radius: 8px;
+  gap: 12px;
 }
 
 .btnSub {

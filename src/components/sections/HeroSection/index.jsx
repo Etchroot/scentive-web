@@ -338,7 +338,7 @@ export default function HeroSection() {
           >
             <p className={styles.janhyangText}>{t('hero.overlay.title')}</p>
             <p className={styles.janhyangSub}>{t('hero.overlay.sub')}</p>
-            {overlayReady && <p className={styles.overlayHint} onClick={handleGoToService}>{t('hero.overlay.hint')}</p>}
+            {overlayReady && <button type="button" className={styles.overlayHint} onClick={handleGoToService}>{t('hero.overlay.hint')}</button>}
           </div>
         )}
       </div>

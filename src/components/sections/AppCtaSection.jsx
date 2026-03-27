@@ -41,11 +41,11 @@ export default function AppCtaSection() {
             <div className={styles.qrBlock}>
               <div className={styles.qrFrame}>
                 <img
-                  src="/images/qr-code.png"
+                  src="/images/qr_app.png"
                   alt={t('appCta.qrAlt')}
                   className={styles.qrImg}
-                  width={108}
-                  height={108}
+                  width={160}
+                  height={160}
                 />
               </div>
               <p className={styles.qrLabel}>{t('appCta.qrLabel')}</p>
@@ -55,7 +55,7 @@ export default function AppCtaSection() {
             <Divider
               variant="strong"
               direction="vertical"
-              style={{ opacity: 0.2, height: 108, alignSelf: 'center' }}
+              style={{ opacity: 0.2, height: 180, alignSelf: 'center' }}
             />
 
             {/* 버튼 블록 */}
