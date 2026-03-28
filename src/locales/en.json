@@ -11,9 +11,9 @@
     "headlineLine1": "We translate",
     "headlineHighlight": "your day",
     "headlineLine2": "into scent.",
-    "sub": "Hover over everyday moments and emotions to tint your senses with fragrance",
+    "sub": "Hover over everyday moments and emotions to color your senses with fragrance",
     "overlay": {
-      "title": "Lingering Note",
+      "title": "Afterglow",
       "sub": "Every emotion has blossomed into scent",
       "hint": "— Explore the service —"
     },
@@ -31,7 +31,7 @@
         "scent": "White Musk"
       },
       {
-        "text": "Too cozy to leave bed",
+        "text": "Outside the blanket is dangerous",
         "scent": "Sandalwood"
       },
       {
@@ -47,7 +47,7 @@
         "scent": "Green Tea"
       },
       {
-        "text": "A do-nothing kind of day",
+        "text": "A day I don't want to do anything",
         "scent": "Vetiver"
       },
       {
@@ -55,7 +55,7 @@
         "scent": "Citrus"
       },
       {
-        "text": "Chicken tastes amazing",
+        "text": "Chicken is delicious",
         "scent": "Vanilla"
       }
     ]
@@ -66,27 +66,27 @@
       {
         "text": "Words carry emotions.",
         "keyword": "emotions",
-        "desc": "When we're sad, when we're happy, when we want to share how we feel — we write.\nEven a single diary entry, even one message, is steeped in emotions.\nWriting is the most honest record of who we are."
+        "desc": "When we're sad, happy, or want to share our hearts, we write.\nEven in a single diary entry or a short message, emotions are woven in.\nWriting is the most honest record of how we express ourselves."
       },
       {
         "text": "Scent carries memories.",
         "keyword": "memories",
-        "desc": "A single familiar scent can revive a forgotten moment.\nScent connects people to people, and for some, it becomes a language that expresses the self more deeply than words."
+        "desc": "A single familiar scent can revive a forgotten moment.\nScent connects people to people, and for some, it becomes a language that expresses who they are more deeply than words."
       },
       {
         "text": "We bridge the two.",
         "keyword": "bridge",
-        "desc": "For centuries, research and attempts to link scent with emotion and sensation have never ceased.\nThat accumulation grew the fragrance industry, and today people discover identity and narrative in scent.\nNewNose completes that connection with data."
+        "desc": "For centuries, research and attempts to connect scent with emotion and sensation have never ceased.\nThat accumulation grew the fragrance industry, and today people discover identity and narrative in scent.\nNewNose completes that connection with data."
       },
       {
         "text": "Emotions become fragrance, preserved in data.",
         "keyword": "data",
-        "desc": "Yet for a long time, scent has been understood only through intuition.\nNewNose builds a precise database connecting emotion and scent by learning from tens of thousands of diary entries, public data, and the chemical properties of aroma molecules."
+        "desc": "Yet scent has long been understood through intuition alone.\nNewNose builds a precise database linking emotion and scent by learning from tens of thousands of diary entries, public data, and the chemical properties of fragrance molecules."
       },
       {
         "text": "Data becomes a vast map of scent.",
         "keyword": "map",
-        "desc": "The ability to analyze what was once abstract scent through quantitative data — that itself is innovation.\nNewNose's scent map starts from personal diaries and grows into an infrastructure applicable to anyone, in any situation."
+        "desc": "Being able to analyze what was once abstract scent through quantitative data — that itself is innovation.\nNewNose's scent map starts from personal diaries and grows into an infrastructure applicable to anyone, in any situation."
       }
     ]
   },
@@ -97,25 +97,25 @@
       {
         "tag": "Daily",
         "title": "Write your diary",
-        "desc": "Freely record what happened today and how you felt.\nYou can add emotion tags to capture the mood of the day.",
+        "desc": "Freely record what happened today and how you felt.\nYou can add emotion tags to capture the mood of your day.",
         "imgAlt": "Diary writing app screen"
       },
       {
-        "tag": "End of month",
+        "tag": "End of month, automatic",
         "title": "AI analyzes your emotions",
-        "desc": "From a month of diary entries, the AI extracts emotion, sensory, and descriptive keywords and identifies patterns.",
+        "desc": "From a month's worth of diary entries, the AI extracts emotion, sensory, and adjective keywords and finds patterns.",
         "imgAlt": "AI analysis app screen"
       },
       {
-        "tag": "50 accords",
+        "tag": "2,387 accords",
         "title": "Your scent recipe is created",
-        "desc": "Extracted keywords are matched against a database of 50 scent accords to compose your own recipe of top, middle, and base notes.",
+        "desc": "Extracted keywords are matched against a database of 2,387 scent accords to compose your own recipe of top, middle, and base notes.",
         "imgAlt": "Scent recipe app screen"
       },
       {
-        "tag": "12-month record",
+        "tag": "12 months of records",
         "title": "Archived as a scent report",
-        "desc": "That month's fragrance is completed and saved to your archive.\nTwelve perfume bottles, filled one by one.",
+        "desc": "That month's perfume is completed and saved to your archive.\nTwelve perfume bottles are filled one by one.",
         "imgAlt": "Archive app screen"
       }
     ]
@@ -124,21 +124,21 @@
     "part1": {
       "eyebrow": "— Why we started",
       "heading": "Everyone has their own\nsignature scent of life",
-      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only ever focused on sight and sound?\nSmell is the most primal and most personal sense.\nNewNose gives that sense a language for the very first time.",
+      "body": "We discovered fragrance in someone's diary.\nMemories bloom into scent, and emotions linger as smell.\nSo why have we only focused on sight and sound?\nSmell is the most primal and most personal sense.\nNewNose gives that sense a language for the first time.",
       "accent": "\"Everyone deserves a scent of their own.\""
     },
     "editorialCards": [
       {
         "title": "Emotional Mapping",
-        "desc": "Your emotional curves, translated into scent notes."
+        "desc": "We translate your emotional curves into scent notes."
       },
       {
         "title": "Memory Synthesis",
-        "desc": "Forgotten fragments of memory, woven back together through fragrance."
+        "desc": "We weave forgotten fragments of memory back together through fragrance."
       },
       {
         "title": "Personal Signature",
-        "desc": "A unique scent that best expresses who you are."
+        "desc": "We suggest a unique scent that best represents you."
       }
     ],
     "part2": {
@@ -147,19 +147,19 @@
       "visions": [
         {
           "title": "Hyper-personalized scent service",
-          "desc": "The more emotional data you build, the more refined your scent recipe becomes.\nA fragrance that is yours alone."
+          "desc": "A scent recipe that becomes more refined as your emotional data grows.\nA fragrance that is uniquely yours."
         },
         {
           "title": "Psychotherapy & spatial design",
           "desc": "A new methodology for designing spaces and experiences through emotion-scent mapping data."
         },
         {
-          "title": "A foundational sense for physical AI",
-          "desc": "When digital AI understands smell, the world changes entirely.\nNewNose is building that language."
+          "title": "A fundamental sense for physical AI",
+          "desc": "When digital AI understands smell, the world changes completely.\nNewNose is building that language."
         }
       ],
       "footerPrefix": "NewNose is not just an app.",
-      "footerStrong": "It is the first data infrastructure for the language of scent."
+      "footerStrong": "It is the first data infrastructure for creating the language of scent."
     }
   },
   "appCta": {
